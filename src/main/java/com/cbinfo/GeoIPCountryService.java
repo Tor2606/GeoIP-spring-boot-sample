@@ -20,7 +20,7 @@ public class GeoIPCountryService implements CountryService{
     @Override
     public String getCountry(String ip) {
 
-        File file = new File("C:\\resources\\location\\GeoLiteCity.dat");
+        File file = new File("src/main/resources/location/GeoLiteCity.dat");
         LookupService lookup = null;
         try {
             lookup = new LookupService(file,LookupService.GEOIP_MEMORY_CACHE);

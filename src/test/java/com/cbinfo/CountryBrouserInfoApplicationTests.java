@@ -6,13 +6,15 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = CountryBrouserInfoApplication.class)
-@WebAppConfiguration
+import static junit.framework.TestCase.assertEquals;
+
 public class CountryBrouserInfoApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	public void countryServiceTest() {
+		GeoIPCountryService countryService = new GeoIPCountryService();
+		System.out.println(countryService.getCountry("93.75.82.147"));
+		assertEquals("UA", countryService.getCountry("93.75.82.147"));
 	}
 
 }
