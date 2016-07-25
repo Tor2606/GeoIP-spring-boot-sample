@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="CountryBrowserInfo:war">
+  <artifact type="war" build-on-make="true" name="CountryBrowserInfo:war">
     <output-path>$PROJECT_DIR$/out/artifacts/CountryBrowserInfo_war</output-path>
     <root id="archive" name="CountryBrowserInfo_war.war">
       <element id="artifact" artifact-name="CountryBrowserInfo:war exploded" />

@@ -3,8 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/webapp" charset="windows-1251" />
-    <file url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF" charset="windows-1251" />
-    <file url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/base.jspf" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/base.jspf" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/jsp" charset="UTF-8" />
   </component>
 </project>
