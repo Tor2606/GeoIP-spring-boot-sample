@@ -4,4 +4,4 @@ out/
 target/ 
 mvnw
 mvnw.cmd
-*.iml
+CountryBrowserInfo.iml
