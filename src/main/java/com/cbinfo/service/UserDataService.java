@@ -29,8 +29,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class UserDataService {
-    private static final String SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
+
+    private static final String SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
 
     LoadingCache<String, String> countryCache =
             CacheBuilder.newBuilder()
@@ -45,7 +47,7 @@ public class UserDataService {
                     });
 
 
-    public UserDataDto getData(HttpServletRequest request){
+    public UserDataDto getData(HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         UserDataDto userDataDto = new UserDataDto();
         try {
@@ -59,7 +61,7 @@ public class UserDataService {
     protected UserDataDto setUserDataDTOFields(UserDataDto userDataDto, HttpServletRequest request) {
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         String userAgent = request.getHeader("User-Agent");
-        if (isBlank(userAgent)){
+        if (isBlank(userAgent)) {
             return userDataDto;
         }
         // TODO: 06.09.16 and more agent information fields
@@ -74,26 +76,33 @@ public class UserDataService {
     }
 
     protected String getCountry(String ip) throws UnknownHostException {
-            if(checkLocalHost(ip)){
-                return "localhost";
-            }
-            String URLAdress = SERVICE_URL_ADDRESS + ip + "/json";
+        if (checkLocalHost(ip)) {
+            // TODO replace string with constant
+            return "localhost";
+        }
+        // TODO fix typo
+        String URLAdress = SERVICE_URL_ADDRESS + ip + "/json";
+        // TODO we dont need to instantiate it with null (for local variables)
         String data = null;
         try {
             data = readDataFromURL(new URLWrapper(URLAdress));
         } catch (IOException e) {
+            // TODO never do this - e.printStackTrace();
             e.printStackTrace();
             return "undefined (no connection to the service)";
         }
+        // TODO move to separate method
         Gson gson = new GsonBuilder().create();
-            UserDataDto userDataDtoForJson = gson.fromJson(data, UserDataDto.class);
-            return userDataDtoForJson.getCountry();
+        UserDataDto userDataDtoForJson = gson.fromJson(data, UserDataDto.class);
+        return userDataDtoForJson.getCountry();
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        String localIp ="127.0.0.1";
+        // TODO move to constants
+        String localIp = "127.0.0.1";
 
-        if(ip.equals(localIp)){
+        // TODO replace with ternary operator
+        if (ip.equals(localIp)) {
             return true;
         }
         return false;
@@ -106,6 +115,7 @@ public class UserDataService {
     }
 
     protected String readDataFromBufferedReader(BufferedReader bufferedReader) {
+        // TODO replace with try-with-resources
         try {
             String input;
             StringBuilder result = new StringBuilder();
@@ -115,7 +125,7 @@ public class UserDataService {
             return result.toString();
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-        } finally{
+        } finally {
             try {
                 bufferedReader.close();
             } catch (IOException e) {
@@ -126,14 +136,14 @@ public class UserDataService {
         return null;
     }
 
-    public class URLWrapper{
+    public class URLWrapper {
         URL url;
 
         public URLWrapper(String spec) throws MalformedURLException {
             url = new URL(spec);
         }
 
-        public URLConnection openConnection() throws IOException{
+        public URLConnection openConnection() throws IOException {
             return url.openConnection();
         }
     }

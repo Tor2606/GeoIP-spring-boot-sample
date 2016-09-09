@@ -1,11 +1,10 @@
 package com.cbinfo.dto;
 
-import net.sf.uadetector.UserAgentFamily;
-
 /**
  * Created by Igor on 22.07.2016.
  */
 public class UserDataDto {
+
     private String country;
     private String userAgent;
     private String browser;

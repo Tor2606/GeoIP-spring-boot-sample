@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class CountryBrowserController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
 
     @Autowired
