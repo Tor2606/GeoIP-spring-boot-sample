@@ -1,7 +1,7 @@
 package com.cbinfo.controller;
 
 
-import com.cbinfo.dto.UserDataDto;
+import com.cbinfo.dto.UserDataDTO;
 import com.cbinfo.service.UserDataService;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,20 +46,20 @@ public class CountryBrowserControllerTest {
 
     @Test
     public void getCountryBrowserDataTest() throws Exception {
-        UserDataDto userDataDto = createUserDataDto();
-        when(userDataService.getData(any())).thenReturn(userDataDto);
+        UserDataDTO userDataDTO = createUserDataDto();
+        when(userDataService.getData(any())).thenReturn(userDataDTO);
         mockMvc.perform(get("/info"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.browser", is(userDataDto.getBrowser())))
-                .andExpect(jsonPath("$.operationalSystem", is(userDataDto.getOperatingSystem())))
-                .andExpect(jsonPath("$.userAgent", is(userDataDto.getUserAgent())))
-                .andExpect(jsonPath("$.country", is(userDataDto.getCountry())));
+                .andExpect(jsonPath("$.browser", is(userDataDTO.getBrowser())))
+                .andExpect(jsonPath("$.operationalSystem", is(userDataDTO.getOperatingSystem())))
+                .andExpect(jsonPath("$.userAgent", is(userDataDTO.getUserAgent())))
+                .andExpect(jsonPath("$.country", is(userDataDTO.getCountry())));
     }
 
-    private UserDataDto createUserDataDto() {
-        UserDataDto result = new UserDataDto();
+    private UserDataDTO createUserDataDto() {
+        UserDataDTO result = new UserDataDTO();
         result.setBrowser("Chrome");
         result.setOperatingSystem("Linux Mint");
         result.setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36");

@@ -1,6 +1,6 @@
 package com.cbinfo.controller;
 
-import com.cbinfo.dto.UserDataDto;
+import com.cbinfo.dto.UserDataDTO;
 import com.cbinfo.service.UserDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CountryBrowserController {
 
     @RequestMapping(value="/info")
     @ResponseBody
-    public UserDataDto getCountryBrowserData(HttpServletRequest request) {
+    public UserDataDTO getCountryBrowserData(HttpServletRequest request) {
         LOGGER.info("Request to \"/info\"");
         return userDataService.getData(request);
     }

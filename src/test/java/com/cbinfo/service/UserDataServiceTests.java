@@ -1,7 +1,6 @@
 package com.cbinfo.service;
 
-import com.cbinfo.dto.UserDataDto;
-import com.google.common.cache.CacheLoader;
+import com.cbinfo.dto.UserDataDTO;
 import com.google.common.cache.LoadingCache;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -9,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -17,17 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -70,7 +63,7 @@ public class UserDataServiceTests {
 	public void getDataMethodAndWholeServiceTest() throws Exception {
 		when(countryCashMock.get(any())).thenReturn("CH");
 
-		UserDataDto actual = userDataService.getData(httpServletRequestMock);
+		UserDataDTO actual = userDataService.getData(httpServletRequestMock);
 
 		assertThat(actual.getBrowser(), is("Chrome"));
 		assertThat(actual.getCountry(), is("CH"));
@@ -89,9 +82,9 @@ public class UserDataServiceTests {
 
 	@Test
 	public void setUserDataDTOFieldsTest() throws IOException {
-		UserDataDto userDataDto = new UserDataDto();
+		UserDataDTO userDataDTO = new UserDataDTO();
 
-		UserDataDto actual = userDataService.setUserDataDTOFields(userDataDto, httpServletRequestMock);
+		UserDataDTO actual = userDataService.setUserDataDTOFields(userDataDTO, httpServletRequestMock);
 
 		assertThat(actual.getBrowser(), is("Chrome"));
 		assertThat(actual.getOperatingSystem(), is("Linux"));

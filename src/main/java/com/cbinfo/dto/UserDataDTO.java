@@ -3,7 +3,7 @@ package com.cbinfo.dto;
 /**
  * Created by Igor on 22.07.2016.
  */
-public class UserDataDto {
+public class UserDataDTO {
 
     private String country;
     private String userAgent;
