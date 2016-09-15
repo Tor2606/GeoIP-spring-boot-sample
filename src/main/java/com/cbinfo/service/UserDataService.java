@@ -32,7 +32,8 @@ public class UserDataService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
     private static final String LOCALHOST = "localhost";
-    public static final String LOCALIP = "127.0.0.1";
+    private static final String LOCAL_IP = "127.0.0.1";
+    private static final String UNDEFINED_COUNTRY = "undefined";
     private static final String SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
 
     LoadingCache<String, String> countryCache =
@@ -89,7 +90,7 @@ public class UserDataService {
         } catch (IOException e) {
             // TODO never do this - e.printStackTrace();
             LOGGER.error(e.getMessage());
-            return "undefined (no connection to the service)";
+            return UNDEFINED_COUNTRY;
         }
         // TODO move to separate method
         return getCountryFromJSON(data);
@@ -104,16 +105,16 @@ public class UserDataService {
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
         // TODO replace with ternary operator(? 2:0)
-        return (ip.equals(LOCALIP)) ? true : false;
+        return (ip.equals(LOCAL_IP)) ? true : false;
     }
 
     protected String readDataFromURL(URLWrapper ipInfoURL) throws IOException {
         URLConnection urlConnection = ipInfoURL.openConnection();
         InputStreamReader inputStreamReader = new InputStreamReader(urlConnection.getInputStream());
-        return readDataFromBufferedReader(inputStreamReader);
+        return readDataFromInputStreamReader(inputStreamReader);
     }
 
-    protected String readDataFromBufferedReader(InputStreamReader inputStreamReader) {
+    protected String readDataFromInputStreamReader(InputStreamReader inputStreamReader) {
         // TODO replace with try-with-resources(try())
         try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)){
             String input;
