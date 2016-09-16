@@ -1,20 +1,22 @@
 package com.cbinfo.dto.form;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
 
 public class UserForm {
-    @Length(min=4, max=64, message = "Bitte gültigen Vornamen eingeben (4-64 Zeichen)")
+
     private String firstName;
 
-    @Length(min=4, max=64, message = "Bitte gültigen Nachnamen eingeben (4-64 Zeichen)")
     private String lastName;
 
+    @Email(message = "Please, write your e-mail in valid form")
+    @NotEmpty(message = "")
     private String email;
 
-    @Length(min=6, max=64, message = "Bitte gültigen Passwort eingeben (6-64 Zeichen)")
+    @Length(min=6, max=20, message = "Bitte gültigen Passwort eingeben (6-64 Zeichen)")
     private String password;
 
     @NotEmpty(message = "Bitte Geschlecht eigeben")
