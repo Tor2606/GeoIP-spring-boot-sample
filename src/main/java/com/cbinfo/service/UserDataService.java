@@ -78,21 +78,16 @@ public class UserDataService {
 
     protected String getCountry(String ip) throws UnknownHostException {
         if (checkLocalHost(ip)) {
-            // TODO make string constant
             return LOCALHOST;
         }
-        // TODO fix typo
         String URLAddress = SERVICE_URL_ADDRESS + ip + "/json";
-        // TODO we dont need to instantiate it with null (for local variables)
         String data;
         try {
             data = readDataFromURL(new URLWrapper(URLAddress));
         } catch (IOException e) {
-            // TODO never do this - e.printStackTrace();
             LOGGER.error(e.getMessage());
             return UNDEFINED_COUNTRY;
         }
-        // TODO move to separate method
         return getCountryFromJSON(data);
     }
 
@@ -104,8 +99,7 @@ public class UserDataService {
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        // TODO replace with ternary operator(? 2:0)
-        return (ip.equals(LOCAL_IP)) ? true : false;
+        return ip.equals(LOCAL_IP) ? true : false;
     }
 
     protected String readDataFromURL(URLWrapper ipInfoURL) throws IOException {
@@ -115,7 +109,6 @@ public class UserDataService {
     }
 
     protected String readDataFromInputStreamReader(InputStreamReader inputStreamReader) {
-        // TODO replace with try-with-resources(try())
         try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)){
             String input;
             StringBuilder result = new StringBuilder();
