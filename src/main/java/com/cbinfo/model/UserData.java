@@ -12,7 +12,7 @@ public class UserData {
 
     @Id
     @Column(name = "user_data_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long user_data_id;
 
     @Column(name = "time")
