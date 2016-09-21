@@ -58,20 +58,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/app/**").authenticated();
         http.formLogin()
-                    .defaultSuccessUrl("/app")
-                    .loginPage("/")
-                    .permitAll()
+                .loginPage("/login")
+                .defaultSuccessUrl("/app")
+                .failureUrl("/login?error")
+                .usernameParameter("username").passwordParameter("password")
+                .permitAll()
+
                 .and()
-                    .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/").invalidateHttpSession(true)
-                    .permitAll()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout").invalidateHttpSession(true)
+                .permitAll()
+
                 .and()
-                    .rememberMe().tokenRepository(persistentTokenRepository())
-                    .tokenValiditySeconds(31536000);
+                .rememberMe().tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(31536000);
 
         http.csrf().csrfTokenRepository(csrfTokenRepository());
-
         http.headers().frameOptions().disable();//why disable
     }
 

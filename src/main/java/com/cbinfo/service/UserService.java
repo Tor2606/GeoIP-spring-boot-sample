@@ -20,4 +20,8 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public boolean isEmailRegistered(String email) {
+        return findByEmail(email) == null ? Boolean.FALSE : Boolean.TRUE;
+    }
 }
