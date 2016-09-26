@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Country browser info</title>
+    <th:block th:include="templates/headerinc :: head"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:include="fragments/header :: header"></th:block>
+    <div class="context">
+        <h3>Requests info table:</h3>
+        <table class="table">
+            <tr th:each="userData : ${userData}">
+                <td data-th-text="${#dates.format(userData.time,'dd MMM yyyy')}">...</td>
+                <td data-th-text="${userData.user.email}">...</td>
+                <td data-th-text="${userData.country}">...</td>
+                <td data-th-text="${userData.userAgent}">...</td>
+                <td data-th-text="${userData.browser}">...</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

@@ -34,6 +34,10 @@ public class UserCreationController {
         return "app";
     }
 
+    @RequestMapping(value = "registration", method = RequestMethod.GET)
+    public ModelAndView registration(ModelAndView modelAndView, UserForm userForm){
+        return modelAndView;
+    }
 
     protected void setErrorMessage(List<String> errors, ModelMap modelMap) {
         modelMap.addAttribute("errorText", StringUtils.join(errors, System.getProperty("line.separator")));

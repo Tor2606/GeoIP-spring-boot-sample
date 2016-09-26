@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static PasswordEncoder encoder;
 
     @Autowired
-    private UserDetailsService customUserDetailsService;
+    private UserDetailsService customUserDetailsService;//return UserDetails
 
     /*all it does is keep Spring
     Security from evaluating access to resources*/
@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     to set up some minimal level of
     authorization to make Spring Security require users to log in*/
     /*Everything under the /secure/ URL requires the user to have the USER
-    permissions, whereas access to /admin/
+    permissions, whereas access to /application/
     and everything under it requires the ADMIN permission*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -61,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .defaultSuccessUrl("/app")
                 .failureUrl("/login?error")
-                .usernameParameter("username").passwordParameter("password")
+                //.usernameParameter("email").passwordParameter("password")
                 .permitAll()
 
                 .and()
@@ -84,6 +84,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
+
+        //builder.authenticationProvider(this.authenticationService)//implementsAuthProvider
+        /*public interface AuthenticationService extends AuthenticationProvider
+        {
+            @Override
+            UserPrincipal authenticate(Authentication authentication);
+
+            void saveUser(
+                    @NotNull(message = "{validate.authenticate.saveUser}") @Valid
+                            UserPrincipal principal,
+                    String newPassword
+            );
+        } */
+
     }
 
     @Bean
