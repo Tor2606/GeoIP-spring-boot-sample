@@ -1,6 +1,8 @@
 package com.cbinfo.service;
 
 import com.cbinfo.dto.UserDataDTO;
+import com.cbinfo.model.UserData;
+import com.cbinfo.repository.UserDataRepository;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -11,6 +13,7 @@ import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +34,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class UserDataService {
+    @Autowired
+    private UserDataRepository userDataRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
     private static final String LOCALHOST = "localhost";
@@ -47,6 +54,9 @@ public class UserDataService {
                             return getCountry(ip);
                         }
                     });
+
+    @Autowired
+    private UserService userService;
 
 
     public UserDataDTO getData(HttpServletRequest request) {
@@ -67,6 +77,7 @@ public class UserDataService {
             return userDataDTO;
         }
         ReadableUserAgent agent = parser.parse(userAgent);
+        userDataDTO.setIp(request.getRemoteAddr());
         userDataDTO.setUserAgent(userAgent);
         userDataDTO.setDeviceCategory(agent.getDeviceCategory().getName());
         userDataDTO.setAgentFamily(agent.getFamily().getName());
@@ -121,6 +132,30 @@ public class UserDataService {
         }
 
         return null;
+    }
+
+    public void save(UserDataDTO userDataDTO){
+        UserData userData = this.createUserData(userDataDTO);
+        userDataRepository.save(userData);
+        return;
+    }
+
+    public List<UserData> getAll(){
+        return userDataRepository.findAll();
+    }
+
+    private UserData createUserData(UserDataDTO userDataDTO) {
+        UserData userData = new UserData();
+        userData.setTime(new Date());
+        userData.setAgentFamily(userDataDTO.getAgentFamily());
+        userData.setBrowser(userDataDTO.getBrowser());
+        userData.setDeviceCategory(userDataDTO.getDeviceCategory());
+        userData.setCountry(userDataDTO.getCountry());
+        userData.setIp(userDataDTO.getIp());
+        userData.setOperatingSystem(userDataDTO.getOperatingSystem());
+        userData.setProducer(userDataDTO.getProducer());
+        userData.setUser(userService.findByUserIp(userDataDTO.getIp()));
+        return userData;
     }
 
     public class URLWrapper {

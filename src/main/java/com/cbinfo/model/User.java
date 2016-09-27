@@ -31,6 +31,9 @@ public class User implements UserDetails{
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "user_ip")
+    private String userIp;
+
     @OneToMany(mappedBy = "user")
     private List<UserData> userData;
 
@@ -113,4 +116,11 @@ public class User implements UserDetails{
         this.lastName = lastName;
     }
 
+    public String getUserIp() {
+        return userIp;
+    }
+
+    public void setUserIp(String userIp) {
+        this.userIp = userIp;
+    }
 }

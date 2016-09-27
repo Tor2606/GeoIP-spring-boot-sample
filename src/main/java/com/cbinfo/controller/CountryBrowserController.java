@@ -24,10 +24,11 @@ public class CountryBrowserController {
     @Autowired
     private UserDataService userDataService;
 
-    @RequestMapping(value="/info")
+    @RequestMapping("/info")
     @ResponseBody
     public UserDataDTO getCountryBrowserData(HttpServletRequest request) {
-        LOGGER.info("Request to \"/info\"");
-        return userDataService.getData(request);
+        UserDataDTO result = userDataService.getData(request);
+        userDataService.save(result);
+        return result;
     }
 }

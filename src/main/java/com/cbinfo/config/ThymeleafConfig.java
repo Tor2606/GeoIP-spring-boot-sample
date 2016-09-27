@@ -17,6 +17,7 @@ public class ThymeleafConfig {
 
     @Bean
     public TemplateResolver defaultTemplateResolver() {
+        //// TODO: 26.09.16 Is it possible to move it to prop.
         TemplateResolver resolver = new TemplateResolver();
         resolver.setResourceResolver(thymeleafResourceResolver());
         resolver.setPrefix(this.properties.getPrefix());

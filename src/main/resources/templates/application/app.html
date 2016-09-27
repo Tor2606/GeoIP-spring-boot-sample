@@ -1,25 +1,59 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Country browser info</title>
-    <th:block th:include="templates/headerinc :: head"></th:block>
+    <title>Login to cbinfo</title>
+    <link rel="stylesheet" href="/src/main/wro/css/login.css" th:href="@{/src/main/wro/css/login.css}"/>
+    <!-- Bootstrap -->
+    <link href="/src/main/wro/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" rel="stylesheet" media="screen">
+
 </head>
 <body>
+<header>
+    <div class="col-md-10">
+        <p th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+            Time
+        </p>
+        <p th:text="Current user ${user}">User</p>
+    </div>
+    <div class="col-md-2">
+        <button th:action="@{/logout}" class="btn">Logout</button>
+        <button th:action="@{/users/edit}" class="btn">Edit profile</button>
+    </div>
+</header>
 <div class="container">
-    <th:block th:include="fragments/header :: header"></th:block>
-    <div class="context">
+    <div class="row context">
         <h3>Requests info table:</h3>
-        <table class="table">
-            <tr th:each="userData : ${userData}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Index</th>
+                <th>Time</th>
+                <th>User's email(if available)</th>
+                <th>Country</th>
+                <th>UserAgent</th>
+                <th>Browser</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="userData : ${userDataList}">
+                <td th:text="${userDataStat.count}">...</td>
                 <td data-th-text="${#dates.format(userData.time,'dd MMM yyyy')}">...</td>
                 <td data-th-text="${userData.user.email}">...</td>
                 <td data-th-text="${userData.country}">...</td>
                 <td data-th-text="${userData.userAgent}">...</td>
                 <td data-th-text="${userData.browser}">...</td>
             </tr>
+            </tbody>
         </table>
     </div>
-
 </div>
+
+<footer class="container-fluid">
+    <p>By Islabukhin</p>
+</footer>
+
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="/js/bootstrap.min.js" th:src="@{js/bootstrap.min.js}"></script>
 </body>
 </html>

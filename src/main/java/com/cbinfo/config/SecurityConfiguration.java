@@ -61,13 +61,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .defaultSuccessUrl("/app")
                 .failureUrl("/login?error")
-                //.usernameParameter("email").passwordParameter("password")
+                .usernameParameter("email").passwordParameter("password")
                 .permitAll()
 
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").invalidateHttpSession(true)
+                .logoutSuccessUrl("/login").invalidateHttpSession(true)
                 .permitAll()
 
                 .and()
@@ -80,25 +80,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /*sets up the AuthenticationProvider
     that we should use for authenticating users*/
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-
-        //builder.authenticationProvider(this.authenticationService)//implementsAuthProvider
-        /*public interface AuthenticationService extends AuthenticationProvider
-        {
-            @Override
-            UserPrincipal authenticate(Authentication authentication);
-
-            void saveUser(
-                    @NotNull(message = "{validate.authenticate.saveUser}") @Valid
-                            UserPrincipal principal,
-                    String newPassword
-            );
-        } */
-
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

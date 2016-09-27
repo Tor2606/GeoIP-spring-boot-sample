@@ -5,6 +5,7 @@ package com.cbinfo.dto;
  */
 public class UserDataDTO {
 
+    private String ip;
     private String country;
     private String userAgent;
     private String browser;
@@ -68,5 +69,13 @@ public class UserDataDTO {
 
     public String getProducer() {
         return producer;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

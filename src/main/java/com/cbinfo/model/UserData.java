@@ -1,5 +1,8 @@
 package com.cbinfo.model;
 
+import com.cbinfo.dto.UserDataDTO;
+import com.cbinfo.service.UserService;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -23,6 +26,9 @@ public class UserData {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "ip")
+    private String ip;
+
     @Column(name = "country")
     private String country;
 
@@ -40,11 +46,6 @@ public class UserData {
 
     @Column(name = "producer")
     private String producer;
-
-    @PrePersist
-    protected void onCreate() {
-        time = new Date();
-    }
 
     public String getDeviceCategory() {
         return deviceCategory;
@@ -127,5 +128,13 @@ public class UserData {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }
