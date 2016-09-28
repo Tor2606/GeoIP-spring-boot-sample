@@ -4,7 +4,7 @@
     <title>Login to cbinfo</title>
     <link rel="stylesheet" href="../../wro/css/login.css" th:href="@{/src/main/wro/css/login.css}"/>
     <!-- Bootstrap -->
-    <link href="../../wro/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" rel="stylesheet" media="screen">
+    <link href="../../wro/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
 </head>
 <body>
 <div class="container">
@@ -14,7 +14,7 @@
                 <h2>Please, log in</h2>
                 <div th:if="${param.error}" class="alert alert-danger">Wrong email or password</div>
                 <form class="form login-form" th:action="@{/login}" method="post">
-                    <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="$_csrf.token"/>
+                    <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}"/>
                     <div class="control-group">
                         <label for="login-email" class="placeholder-hidden">Email</label>
                         <div class="controls">
@@ -34,7 +34,7 @@
                     <div class="control-group">
                         <div class="controls">
                             <label class="checkbox">
-                                <input type="checkbox" tabindex="3" name="remember-me" checked="checked">
+                                <input type="checkbox" tabindex="3" name="remember-me" checked="checked"/>
                                 <small>remember me</small>
                             </label>
                         </div>
@@ -46,7 +46,7 @@
                     </div>
                 </form>
                 <p class="text-info">Do not have an account?</p>
-                <button class="btn btn-info">Registration</button>
+                <a class="btn btn-info" th:href="@{users/createPage}" role="button">Create user</a>
             </div>
         </div>
     </div>

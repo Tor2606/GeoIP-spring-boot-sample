@@ -28,7 +28,8 @@ public class CountryBrowserController {
     @ResponseBody
     public UserDataDTO getCountryBrowserData(HttpServletRequest request) {
         UserDataDTO result = userDataService.getData(request);
-        userDataService.save(result);
+        userDataService.saveUserData(result);
+        //// TODO: 27.09.16 make method in contr, + change to saveUserData
         return result;
     }
 }

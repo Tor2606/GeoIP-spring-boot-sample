@@ -34,10 +34,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class UserDataService {
-    @Autowired
-    private UserDataRepository userDataRepository;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
+
     private static final String LOCALHOST = "localhost";
     private static final String LOCAL_IP = "127.0.0.1";
     private static final String UNDEFINED_COUNTRY = "undefined";
@@ -56,8 +54,10 @@ public class UserDataService {
                     });
 
     @Autowired
-    private UserService userService;
+    private UserDataRepository userDataRepository;
 
+    @Autowired
+    private UserService userService;
 
     public UserDataDTO getData(HttpServletRequest request) {
         UserDataDTO userDataDTO = new UserDataDTO();
@@ -134,7 +134,7 @@ public class UserDataService {
         return null;
     }
 
-    public void save(UserDataDTO userDataDTO){
+    public void saveUserData(UserDataDTO userDataDTO){
         UserData userData = this.createUserData(userDataDTO);
         userDataRepository.save(userData);
         return;

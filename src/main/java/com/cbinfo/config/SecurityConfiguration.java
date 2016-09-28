@@ -30,15 +30,13 @@ import javax.sql.DataSource;
 @ComponentScan
 @EnableAutoConfiguration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
 
     private static PasswordEncoder encoder;
-
-    @Autowired
-    private UserDetailsService customUserDetailsService;//return UserDetails
 
     /*all it does is keep Spring
     Security from evaluating access to resources*/

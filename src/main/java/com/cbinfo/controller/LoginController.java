@@ -13,10 +13,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
 
-    private static final String LOGIN_VIEW = "/login";
+    private static final String LOGIN_VIEW = "login";
     private static final String REDIRECT_TO_APP_HANDLER = "redirect:application/app";
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getLogin(){
         if(SecurityContextHolder.getContext().getAuthentication()!=null){
             if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String)){
