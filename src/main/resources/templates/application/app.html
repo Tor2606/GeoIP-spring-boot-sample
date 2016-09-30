@@ -13,7 +13,7 @@
         <p th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
             Time
         </p>
-        <p th:text="'Current user' + ${user}">User</p>
+        <p th:text="'Current user' + ${user.firstName} + '' + ${user.lastName}">User</p>
     </div>
     <div class="span2">
         <button th:action="@{logout}" class="btn pull-right">Logout</button>
