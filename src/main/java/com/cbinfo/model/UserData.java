@@ -38,7 +38,7 @@ public class UserData {
     @Column(name = "browser")
     private String browser;
 
-    @Column(name = "operating_ystem")
+    @Column(name = "operating_system")
     private String operatingSystem;
 
     @Column(name = "agent_family")

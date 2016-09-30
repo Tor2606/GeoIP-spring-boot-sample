@@ -31,13 +31,11 @@ public class UserService {
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
-        save(user);
-
-        return;
+        saveUser(user);
     }
 
     @Transactional
-    private void save(User user) {
+    private void saveUser(User user) {
         userRepository.save(user);
     }
 

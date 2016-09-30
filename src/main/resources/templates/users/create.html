@@ -20,8 +20,8 @@
                             <input type="text" id="email" name="email" th:field="*{email}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}"
                                       th:errors="*{email}">Error</span>
-                                <span class="help-block" th:if="${emailNotAvailable} != null"
-                                      th:text="${emailNotAvailable}">Email not available!</span>
+                                <span class="help-block" th:if="${errorMassage} != null"
+                                      th:text="${errorMassage}">Email not available!</span>
                         </div>
                     </div>
                     <div class="control-group">

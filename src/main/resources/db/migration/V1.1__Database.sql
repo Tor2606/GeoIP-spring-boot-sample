@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS user_data (
   user_data_id BIGSERIAL PRIMARY KEY,
   time DATE,
   user_id BIGINT,
+  device_category CHARACTER VARYING(100),
   ip CHARACTER VARYING(45),
   country CHARACTER VARYING(10),
   user_agent CHARACTER VARYING(500),

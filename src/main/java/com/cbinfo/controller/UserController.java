@@ -28,7 +28,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult,HttpServletRequest request,  ModelMap modelMap) {
         if (userService.isEmailRegistered(userForm.getEmail())) {
-            modelMap.addAttribute("emailNotAvailable", "Email is not available!");
+            modelMap.addAttribute("errorMessage", "Email is not available!");
             return CREATE_USER_VIEW;
         }
         if (bindingResult.hasErrors()) {
