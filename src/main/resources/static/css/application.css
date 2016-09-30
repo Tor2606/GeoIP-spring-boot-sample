@@ -1,11 +1,13 @@
-.header{
+.header {
     background: gainsboro;
     height: 50px;
 }
-.footer{
+
+.footer {
     background: grey;
     height: 40px;
 }
-.context{
+
+.context {
     background: white;
 }

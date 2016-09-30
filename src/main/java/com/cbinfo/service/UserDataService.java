@@ -15,12 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +38,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class UserDataService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataService.class);
 
     private static final String LOCALHOST = "localhost";
@@ -134,17 +139,19 @@ public class UserDataService {
         return null;
     }
 
+    @Transactional
     public void saveUserData(UserDataDTO userDataDTO){
         UserData userData = this.createUserData(userDataDTO);
         userDataRepository.save(userData);
         return;
     }
 
+    @Transactional(readOnly = true)
     public List<UserData> getAll(){
         return userDataRepository.findAll();
     }
 
-    private UserData createUserData(UserDataDTO userDataDTO) {
+    protected UserData createUserData(UserDataDTO userDataDTO) {
         UserData userData = new UserData();
         userData.setTime(new Date());
         userData.setAgentFamily(userDataDTO.getAgentFamily());
