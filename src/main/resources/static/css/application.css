@@ -1,10 +1,10 @@
 .header {
-    background: gainsboro;
+    background-color: gainsboro;
     height: 50px;
 }
 
 .footer {
-    background: grey;
+    background-color: grey;
     height: 40px;
 }
 

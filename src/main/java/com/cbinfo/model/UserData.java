@@ -38,14 +38,17 @@ public class UserData {
     @Column(name = "browser")
     private String browser;
 
-    @Column(name = "operatingSystem")
+    @Column(name = "operating_ystem")
     private String operatingSystem;
 
-    @Column(name = "agentFamily")
+    @Column(name = "agent_family")
     private String agentFamily;
 
     @Column(name = "producer")
     private String producer;
+
+    @Column(name ="device_category")
+    private String deviceCategory;
 
     public String getDeviceCategory() {
         return deviceCategory;
@@ -54,8 +57,6 @@ public class UserData {
     public void setDeviceCategory(String deviceCategory) {
         this.deviceCategory = deviceCategory;
     }
-
-    private String deviceCategory;
 
     public String getOperatingSystem() {
         return operatingSystem;
