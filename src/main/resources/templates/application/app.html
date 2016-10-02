@@ -8,40 +8,48 @@
 
 </head>
 <body>
-<header class="row">
-    <div class="span10">
-        <p th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+<header class="header">
+    <div class="span4">
+        <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
             Time
         </p>
-        <p th:text="'Current user' + ${user.firstName} + '' + ${user.lastName}">User</p>
     </div>
-    <div class="span2">
-        <button th:action="@{logout}" class="btn pull-right">Logout</button>
-        <button th:action="@{users/edit}" class="btn pull-right">Edit profile</button>
+    <div class="span2 offset2 pull-right">
+        <!-- Single button -->
+        <div class="btn-group">
+            <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span th:text="${user.email}">User</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a th:href="@{/logout}">Logout</a></li>
+                <li><a th:href="@{/users/editPage}">Edit profile</a></li>
+            </ul>
+        </div>
     </div>
 </header>
-<div class="container row">
-    <div class="row context">
+<div class="container">
+    <div class="context">
         <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
         <h3>Requests info table:</h3>
-        <table class="table table-bordered">
+        <table class="table table-bordered pull-left">
             <thead>
             <tr>
                 <th>Index</th>
                 <th>Time</th>
                 <th>User's email(if available)</th>
                 <th>Country</th>
-                <th>UserAgent</th>
+                <th>Device category</th>
                 <th>Browser</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="userData : ${userDataList}">
                 <td th:text="${userDataStat.count}">...</td>
-                <td data-th-text="${#dates.format(userData.time,'dd MMM yyyy')}">...</td>
+                <td data-th-text="${#dates.format(userData.time,'dd MMM yyyy hh:mm:ss')}">...</td>
                 <td data-th-text="${userData.user.email}">...</td>
                 <td data-th-text="${userData.country}">...</td>
-                <td data-th-text="${userData.userAgent}">...</td>
+                <td data-th-text="${userData.deviceCategory}">...</td>
                 <td data-th-text="${userData.browser}">...</td>
             </tr>
             </tbody>
@@ -50,7 +58,8 @@
 </div>
 
 <footer class="footer navbar-fixed-bottom">
-    <p>By Islabukhin</p>
+
+    <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
 </footer>
 
 

@@ -5,11 +5,11 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserForm {
-    @Email(message = "Please, write your e-mail in valid form")
+    @Email(message = "Please, write your e-mail in valid form!")
     @NotEmpty(message = "You have to write your email!!")
     private String email;
 
-    @Length(min=6, max=20, message = "Please, enter your password (6-20 symbols!)")
+    @Length(min=6, max=20, message = "Please, enter your password (6-20 symbols)!")
     private String password;
 
     private String firstName;

@@ -1,6 +1,7 @@
 package com.cbinfo.service;
 
 import com.cbinfo.dto.UserDataDTO;
+import com.cbinfo.model.User;
 import com.cbinfo.model.UserData;
 import com.cbinfo.repository.UserDataRepository;
 import com.google.common.cache.CacheBuilder;
@@ -161,8 +162,13 @@ public class UserDataService {
         userData.setIp(userDataDTO.getIp());
         userData.setOperatingSystem(userDataDTO.getOperatingSystem());
         userData.setProducer(userDataDTO.getProducer());
-        userData.setUser(userService.findByUserIp(userDataDTO.getIp()));
+        User userWithSameIp = getFirstUserWithSameIp(userDataDTO);
+        userData.setUser(userWithSameIp);
         return userData;
+    }
+
+    private User getFirstUserWithSameIp(UserDataDTO userDataDTO) {
+        return (userService.findByUserIp(userDataDTO.getIp()).size() >= 1) ? userService.findByUserIp(userDataDTO.getIp()).get(0):null;
     }
 
     public class URLWrapper {

@@ -19,7 +19,7 @@ public class UserData {
     private long user_data_id;
 
     @Column(name = "time")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date time;
 
     @ManyToOne

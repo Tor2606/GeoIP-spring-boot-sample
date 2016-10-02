@@ -18,7 +18,7 @@ ALTER TABLE users
 
 CREATE TABLE IF NOT EXISTS user_data (
   user_data_id BIGSERIAL PRIMARY KEY,
-  time DATE,
+  time TIMESTAMP,
   user_id BIGINT,
   device_category CHARACTER VARYING(100),
   ip CHARACTER VARYING(45),

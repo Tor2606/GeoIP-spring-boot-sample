@@ -13,7 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User save(User user);
 
-    User findByUserIp(String userIp);
+    List<User> findByUserIp(String userIp);
 
     User findByEmail(String email);
 }

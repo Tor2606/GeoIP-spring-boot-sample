@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class LoginController {
 
     private static final String LOGIN_VIEW = "login";
-    private static final String REDIRECT_TO_APP_HANDLER = "redirect:application/app";
+    private static final String REDIRECT_TO_APP_HANDLER = "redirect:app";
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getLogin(){

@@ -13,11 +13,11 @@
             <div class="form-body">
                 <h2>Please, fill the form</h2>
                 <p class="text-warning small">Asteriscs * refer to mandatory fields!</p>
-                <form th:action="@{/users}" method="post" th:object="${userForm}">
+                <form th:action="@{/users/edit}" method="post" th:object="${userForm}">
                     <div class="control-group">
                         <label for="email">Email*</label>
                         <div class="controls">
-                            <input type="text" id="email" name="email" th:field="*{email}"/>
+                            <input type="text" id="email" name="email"  th:field="*{email}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}"
                                       th:errors="*{email}">Error</span>
                                 <span class="help-block" th:if="${errorMessage} != null"
@@ -25,9 +25,9 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label for="password">Password*</label>
+                        <label for="password">Change password</label>
                         <div class="controls">
-                            <input type="password" id="password" name="password" th:field="*{password}"/>
+                            <input type="password" id="password" name="password"  th:field="*{password}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('password')}"
                                       th:errors="*{password}">Error</span>
                         </div>
@@ -35,17 +35,17 @@
                     <div class="control-group">
                         <label for="first_name">Name</label>
                         <div class="controls">
-                            <input type="text" id="first_name" name="firstName"/>
+                            <input type="text" id="first_name" name="firstName" th:field="*{firstName}" />
                         </div>
                     </div>
                     <div class="controls-row">
                         <label for="last_name">Second name</label>
                         <div class="controls">
-                            <input type="text" id="last_name" name="lastName"/>
+                            <input type="text" id="last_name" name="lastName" th:field="*{lastName}"/>
 
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-default">Submit change</button>
                 </form>
             </div>
         </div>
