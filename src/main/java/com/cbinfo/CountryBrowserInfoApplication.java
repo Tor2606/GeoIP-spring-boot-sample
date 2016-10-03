@@ -17,4 +17,6 @@ public class CountryBrowserInfoApplication {
 
 		SpringApplication.run(CountryBrowserInfoApplication.class, args);
 	}
+
+
 }
