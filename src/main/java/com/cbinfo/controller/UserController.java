@@ -6,6 +6,7 @@ import com.cbinfo.service.UserService;
 import com.cbinfo.service.UserSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -30,6 +31,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult, HttpServletRequest request, ModelMap modelMap) {
@@ -57,35 +61,32 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, HttpServletRequest request, ModelMap modelMap) {
-        if (userService.isEmailRegistered(userForm.getEmail())) {
-            modelMap.addAttribute("errorMessage", "Email is not available!");
-            return EDIT_USER_VIEW;
-        }
-        if (bindingResult.hasErrors()) {
-            return EDIT_USER_VIEW;
-        }
+    public String postEditUser(UserForm userForm, ModelMap modelMap) {
         try {
             userService.updateCurrentUser(userForm);
         } catch (Exception e) {
             modelMap.addAttribute("errorMessage", e.getMessage());
+            return EDIT_USER_VIEW;
         }
         return REDIRECT_APP;
     }
 
-    private UserForm getCurrentSessionUserToForm() {
+    protected UserForm getCurrentSessionUserToForm() {
         User u = userSessionService.getUser();
+        u = setUserIfNull(u);
+        return userFormSetter(u);
+    }
 
+    protected User setUserIfNull(User u) {
         if(u == null) {
             org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             userSessionService.setUser(userService.findByEmail(principal.getUsername()));
             u = userSessionService.getUser();
         }
-
-        return makeUserFormFromUser(u);
+        return u;
     }
 
-    private UserForm makeUserFormFromUser(User user){
+    protected UserForm userFormSetter(User user){
         UserForm userForm = new UserForm();
         userForm.setEmail(user.getEmail());
         userForm.setPassword(user.getPassword());

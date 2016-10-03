@@ -3,6 +3,7 @@ package com.cbinfo.service;
 import com.cbinfo.dto.form.UserForm;
 import com.cbinfo.model.User;
 import com.cbinfo.repository.UserRepository;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserSessionService userSessionService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void createUser(UserForm userForm, String ip) {
@@ -41,7 +45,7 @@ public class UserService {
     }
 
     @Transactional
-    private void saveUser(User user) {
+    protected void saveUser(User user) {
         userRepository.save(user);
     }
 
@@ -61,6 +65,13 @@ public class UserService {
 
     public void updateCurrentUser(UserForm userForm) throws Exception {
         User userFromDB = findByEmail(getUserPrincipalLogin());
+        emailCheckingOnUpdate(userForm, userFromDB);
+        updateUserFields(userForm, userFromDB);
+        saveUser(userFromDB);
+        userSessionService.setUser(userFromDB);
+    }
+
+    protected void emailCheckingOnUpdate(UserForm userForm, User userFromDB) throws Exception {
         String userFormEmail = userForm.getEmail();
         if (!isBlank(userFormEmail) && !userFromDB.getEmail().equals(userFormEmail)) {
             if (findByEmail(userFormEmail) == null) {
@@ -69,10 +80,7 @@ public class UserService {
                 throw new Exception("User with this email is registered");
             }
         }
-        updateUserFields(userForm, userFromDB);
-        saveUser(userFromDB);
     }
-
 
 
     public static String getUserPrincipalLogin() {
@@ -82,7 +90,7 @@ public class UserService {
         return null;
     }
 
-    private static org.springframework.security.core.userdetails.User getUserPrincipals() {
+    protected static org.springframework.security.core.userdetails.User getUserPrincipals() {
         if (null != SecurityContextHolder.getContext().getAuthentication()) {
             if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String)) {
                 return (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -91,8 +99,8 @@ public class UserService {
         return null;
     }
 
-    private void updateUserFields(UserForm userForm, User userFromDB) {
-        if (null != userForm.getEmail()) {
+    protected void updateUserFields(UserForm userForm, User userFromDB) {
+        if (null != userForm.getPassword()) {
             userFromDB.setPassword(passwordEncoder.encode(userForm.getPassword()));
         }
         if (null != userForm.getFirstName()) {

@@ -108,15 +108,15 @@ public class UserDataService {
         return getCountryFromJSON(data);
     }
 
+    protected boolean checkLocalHost(String ip) throws UnknownHostException {
+        return ip.equals(LOCAL_IP) ? true : false;
+    }
+
     protected String getCountryFromJSON(String data) {
         Gson gson = new GsonBuilder().create();
         UserDataDTO userDataDTOForJson = gson.fromJson(data, UserDataDTO.class);
         //may be inner class than UserDataDTO?
         return userDataDTOForJson.getCountry();
-    }
-
-    protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        return ip.equals(LOCAL_IP) ? true : false;
     }
 
     protected String readDataFromURL(URLWrapper ipInfoURL) throws IOException {
@@ -140,16 +140,16 @@ public class UserDataService {
         return null;
     }
 
+    @Transactional(readOnly = true)
+    public List<UserData> getAll(){
+        return userDataRepository.findAll();
+    }
+
     @Transactional
     public void saveUserData(UserDataDTO userDataDTO){
         UserData userData = this.createUserData(userDataDTO);
         userDataRepository.save(userData);
         return;
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserData> getAll(){
-        return userDataRepository.findAll();
     }
 
     protected UserData createUserData(UserDataDTO userDataDTO) {
@@ -167,7 +167,7 @@ public class UserDataService {
         return userData;
     }
 
-    private User getFirstUserWithSameIp(UserDataDTO userDataDTO) {
+    protected User getFirstUserWithSameIp(UserDataDTO userDataDTO) {
         return (userService.findByUserIp(userDataDTO.getIp()).size() >= 1) ? userService.findByUserIp(userDataDTO.getIp()).get(0):null;
     }
 

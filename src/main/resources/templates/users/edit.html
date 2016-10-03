@@ -12,6 +12,8 @@
         <div class="span6 offset3 text-center form-wrapper">
             <div class="form-body">
                 <h2>Please, fill the form</h2>
+                <p class="text-error help-block" th:if="${errorMessage} != null"
+                      th:text="${errorMessage}">Error</p>
                 <p class="text-warning small">Asteriscs * refer to mandatory fields!</p>
                 <form th:action="@{/users/edit}" method="post" th:object="${userForm}">
                     <div class="control-group">
@@ -20,8 +22,6 @@
                             <input type="text" id="email" name="email"  th:field="*{email}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}"
                                       th:errors="*{email}">Error</span>
-                                <span class="help-block" th:if="${errorMessage} != null"
-                                      th:text="${errorMessage}">Email not available!</span>
                         </div>
                     </div>
                     <div class="control-group">
