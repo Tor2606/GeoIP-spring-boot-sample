@@ -10,7 +10,7 @@ import java.util.List;
  * Created by islabukhin on 19.09.16.
  */
 public interface UserDataRepository extends CrudRepository<UserData, Long>{
-    List<UserData> findByUser(User user);
+    //List<UserData> findByUser(User user);
 
     List<UserData> findAll();
 

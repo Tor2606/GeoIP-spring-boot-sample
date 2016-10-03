@@ -38,6 +38,22 @@ OIDS = FALSE
 ALTER TABLE user_data
   OWNER TO postgres;
 
+CREATE TABLE IF NOT EXISTS requests (
+  request_id BIGSERIAL PRIMARY KEY,
+  time TIMESTAMP,
+  user_id BIGINT,
+  ip CHARACTER VARYING(45),
+  url CHARACTER VARYING(300),
+  CONSTRAINT user_fkey FOREIGN KEY (user_id)
+  REFERENCES users (user_id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+OIDS = FALSE
+);
+ALTER TABLE requests
+  OWNER TO postgres;
+
 CREATE TABLE IF NOT EXISTS persistent_logins
 (
   username  CHARACTER VARYING(64)       NOT NULL,

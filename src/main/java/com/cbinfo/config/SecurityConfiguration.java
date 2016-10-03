@@ -1,6 +1,5 @@
 package com.cbinfo.config;
 
-import com.cbinfo.service.UserDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

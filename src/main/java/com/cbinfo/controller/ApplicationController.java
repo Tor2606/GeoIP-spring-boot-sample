@@ -19,6 +19,7 @@ import java.util.List;
 public class ApplicationController {
 
     private static final String MAIN_PAGE_VIEW = "application/app";
+
     @Autowired
     private UserSessionService userSessionService;
 
@@ -30,14 +31,7 @@ public class ApplicationController {
 
     @ModelAttribute("user")
     public User user() {
-        User u = userSessionService.getUser();
-
-        if(u == null) {
-            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            userSessionService.setUser(userService.findByEmail(principal.getUsername()));
-        }
-
+        userSessionService.setUserIfEmpty();
         return userSessionService.getUser();
     }
 

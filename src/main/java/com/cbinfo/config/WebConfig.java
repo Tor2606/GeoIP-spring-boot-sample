@@ -1,4 +1,4 @@
-package com.cbinfo;
+package com.cbinfo.config;
 
 import com.cbinfo.interceptors.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;

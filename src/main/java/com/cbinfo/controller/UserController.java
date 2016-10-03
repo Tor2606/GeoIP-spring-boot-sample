@@ -32,9 +32,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult, HttpServletRequest request, ModelMap modelMap) {
         if (userService.isEmailRegistered(userForm.getEmail())) {
@@ -50,7 +47,8 @@ public class UserController {
     }
 
     @RequestMapping("/createPage")
-    public String getCreateUser(UserForm userForm) {
+    public String getCreateUser(ModelMap modelMap) {
+        modelMap.put("userForm", new UserForm());
         return CREATE_USER_VIEW;
     }
 

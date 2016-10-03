@@ -11,12 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class CountryBrowserInfoApplication {
+public class CountryBrowserInfoApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(CountryBrowserInfoApplication.class, args);
+		SpringApplication.run(applicationClass, args);
 	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(applicationClass);
+	}
+
+	private static Class<CountryBrowserInfoApplication> applicationClass = CountryBrowserInfoApplication.class;
 
 
 }

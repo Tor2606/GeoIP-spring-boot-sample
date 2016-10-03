@@ -1,8 +1,5 @@
 package com.cbinfo.model;
 
-import com.cbinfo.dto.UserDataDTO;
-import com.cbinfo.service.UserService;
-
 import javax.persistence.*;
 import java.util.Date;
 

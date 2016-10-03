@@ -23,8 +23,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class UserService {
 
-    private static final Log LOGGER = LogFactory.getLog(UserService.class);
-
     @Autowired
     private UserRepository userRepository;
 

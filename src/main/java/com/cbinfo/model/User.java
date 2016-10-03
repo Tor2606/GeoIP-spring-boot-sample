@@ -12,10 +12,10 @@ import java.util.List;
  * Created by islabukhin on 19.09.16.
  */
 @Entity
-@Table(name="users")
-public class User implements UserDetails{
+@Table(name = "users")
+public class User implements UserDetails {
     @Id
-    @Column(name="user_id")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
@@ -37,6 +37,16 @@ public class User implements UserDetails{
     @OneToMany(mappedBy = "user")
     private List<UserData> userData;
 
+    @OneToMany(mappedBy = "user")
+    private List<RequestModel> requestList;
+
+    public List<RequestModel> getRequestList() {
+        return requestList;
+    }
+
+    public void setRequestList(List<RequestModel> requestList) {
+        this.requestList = requestList;
+    }
 
     public List<UserData> getUserData() {
         return userData;
