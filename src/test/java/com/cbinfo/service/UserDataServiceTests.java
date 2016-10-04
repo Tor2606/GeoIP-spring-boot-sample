@@ -65,7 +65,7 @@ public class UserDataServiceTests {
 	public void getDataMethodAndWholeServiceTest() throws Exception {
 		when(countryCashMock.get(any())).thenReturn("CH");
 
-		UserDataDTO actual = userDataService.getData(httpServletRequestMock);
+		UserDataDTO actual = userDataService.getDataAndSave(httpServletRequestMock);
 
 		assertThat(actual.getBrowser(), is("Chrome"));
 		assertThat(actual.getCountry(), is("CH"));

@@ -38,13 +38,13 @@ public class User implements UserDetails {
     private List<UserData> userData;
 
     @OneToMany(mappedBy = "user")
-    private List<RequestModel> requestList;
+    private List<UserRequests> requestList;
 
-    public List<RequestModel> getRequestList() {
+    public List<UserRequests> getRequestList() {
         return requestList;
     }
 
-    public void setRequestList(List<RequestModel> requestList) {
+    public void setRequestList(List<UserRequests> requestList) {
         this.requestList = requestList;
     }
 

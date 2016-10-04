@@ -69,6 +69,9 @@ public class UserController {
         return REDIRECT_APP;
     }
 
+
+    //todo move to service
+    //rename views without "page"
     protected UserForm getCurrentSessionUserToForm() {
         User u = userSessionService.getUser();
         u = setUserIfNull(u);

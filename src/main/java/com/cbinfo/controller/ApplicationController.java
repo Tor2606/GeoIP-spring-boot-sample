@@ -31,7 +31,10 @@ public class ApplicationController {
 
     @ModelAttribute("user")
     public User user() {
-        userSessionService.setUserIfEmpty();
+        if(userSessionService.getUser() == null) {
+            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            userSessionService.setUser(userService.findByEmail(principal.getUsername()));
+        }
         return userSessionService.getUser();
     }
 

@@ -22,8 +22,7 @@ public class CountryBrowserController {
     @RequestMapping("/info")
     @ResponseBody
     public UserDataDTO getCountryBrowserData(HttpServletRequest request) {
-        UserDataDTO result = userDataService.getData(request);
-        userDataService.saveUserData(result);
+        UserDataDTO result = userDataService.getDataAndSave(request);
         return result;
     }
 }

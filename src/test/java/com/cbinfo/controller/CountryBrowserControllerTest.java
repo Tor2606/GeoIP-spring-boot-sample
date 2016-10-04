@@ -47,7 +47,7 @@ public class CountryBrowserControllerTest {
     @Test
     public void getCountryBrowserDataTest() throws Exception {
         UserDataDTO userDataDTO = createUserDataDto();
-        when(userDataService.getData(any())).thenReturn(userDataDTO);
+        when(userDataService.getDataAndSave(any())).thenReturn(userDataDTO);
         mockMvc.perform(get("/info"))
                 .andDo(print())
                 .andExpect(status().isOk())

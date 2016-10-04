@@ -7,8 +7,8 @@ import java.util.Date;
  * Created by islabukhin on 03.10.16.
  */
 @Entity
-@Table(name = "requests")
-public class RequestModel {
+@Table(name = "user_requests")
+public class UserRequests {
 
     @Id
     @Column(name = "request_id")

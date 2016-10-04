@@ -65,7 +65,7 @@ public class UserDataService {
     @Autowired
     private UserService userService;
 
-    public UserDataDTO getData(HttpServletRequest request) {
+    public UserDataDTO getDataAndSave(HttpServletRequest request) {
         UserDataDTO userDataDTO = new UserDataDTO();
         try {
             String ip = request.getRemoteAddr();
@@ -73,7 +73,9 @@ public class UserDataService {
         } catch (ExecutionException e) {
             LOGGER.error(e.getMessage());
         }
-        return setUserDataDTOFields(userDataDTO, request);
+        UserDataDTO result = setUserDataDTOFields(userDataDTO, request);
+        saveUserData(result);
+        return result;
     }
 
     protected UserDataDTO setUserDataDTOFields(UserDataDTO userDataDTO, HttpServletRequest request) {
@@ -109,7 +111,7 @@ public class UserDataService {
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        return ip.equals(LOCAL_IP) ? true : false;
+        return ip.equals(LOCAL_IP);
     }
 
     protected String getCountryFromJSON(String data) {

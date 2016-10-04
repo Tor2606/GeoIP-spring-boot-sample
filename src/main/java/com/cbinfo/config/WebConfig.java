@@ -1,6 +1,6 @@
 package com.cbinfo.config;
 
-import com.cbinfo.interceptors.Interceptor;
+import com.cbinfo.interceptors.UserRequestsHandlerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -9,11 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
-    Interceptor userRequestHandlerInterceptor;
+    UserRequestsHandlerInterceptor userRequestHandlerUserRequestsHandlerInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userRequestHandlerInterceptor);
+        registry.addInterceptor(userRequestHandlerUserRequestsHandlerInterceptor);
     }
 }
 

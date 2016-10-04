@@ -1,8 +1,8 @@
 package com.cbinfo.service;
 
-import com.cbinfo.model.RequestModel;
+import com.cbinfo.model.UserRequests;
 import com.cbinfo.model.User;
-import com.cbinfo.repository.RequestModelRepository;
+import com.cbinfo.repository.UserRequestsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,22 +19,22 @@ public class RequestService {
     private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, ip, url, users email): ";
 
     @Autowired
-    private RequestModelRepository requestModelRepository;
+    private UserRequestsRepository userRequestsRepository;
 
     @Autowired
     private UserSessionService userSessionService;
 
     public void saveHttpServletRequest(HttpServletRequest request) {
-        RequestModel requestModel = new RequestModel();
-        setRequestModelFields(requestModel, request);
-        saveRequestModel(requestModel);
+        UserRequests userRequests = new UserRequests();
+        setRequestModelFields(userRequests, request);
+        saveRequestModel(userRequests);
     }
 
-    private void setRequestModelFields(RequestModel requestModel, HttpServletRequest request) {
-        requestModel.setIp(request.getRemoteAddr());
-        requestModel.setTime(new Date());
-        requestModel.setUrl(request.getRequestURI());
-        requestModel.setUser(userSessionService.getUser());
+    private void setRequestModelFields(UserRequests userRequests, HttpServletRequest request) {
+        userRequests.setIp(request.getRemoteAddr());
+        userRequests.setTime(new Date());
+        userRequests.setUrl(request.getRequestURI());
+        userRequests.setUser(userSessionService.getUser());
     }
 
     public String getLoggingMessage(HttpServletRequest request) {
@@ -47,14 +47,13 @@ public class RequestService {
     }
 
     private String getUserEmail() {
-        userSessionService.setUserIfEmpty();
         User user = userSessionService.getUser();
         if(user == null) return "";
         return user.getEmail();
     }
 
     @Transactional
-    protected void saveRequestModel(RequestModel requestModel){
-        requestModelRepository.save(requestModel);
+    protected void saveRequestModel(UserRequests userRequests){
+        userRequestsRepository.save(userRequests);
     }
 }

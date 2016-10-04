@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-@Scope(value = "session", proxyMode = ScopedProxyMode.DEFAULT)
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserSessionService {
 
     @Autowired
@@ -27,12 +27,4 @@ public class UserSessionService {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public void setUserIfEmpty(){
-        if(user == null) {
-            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            this.setUser(userService.findByEmail(principal.getUsername()));
-        }
-    }
-
 }

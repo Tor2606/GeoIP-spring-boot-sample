@@ -80,7 +80,6 @@ public class UserService {
         }
     }
 
-
     public static String getUserPrincipalLogin() {
         if (null != getUserPrincipals()) {
             return getUserPrincipals().getUsername();

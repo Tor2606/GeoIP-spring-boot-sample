@@ -38,7 +38,7 @@ OIDS = FALSE
 ALTER TABLE user_data
   OWNER TO postgres;
 
-CREATE TABLE IF NOT EXISTS requests (
+CREATE TABLE IF NOT EXISTS user_requests (
   request_id BIGSERIAL PRIMARY KEY,
   time TIMESTAMP,
   user_id BIGINT,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS requests (
 WITH (
 OIDS = FALSE
 );
-ALTER TABLE requests
+ALTER TABLE user_requests
   OWNER TO postgres;
 
 CREATE TABLE IF NOT EXISTS persistent_logins
