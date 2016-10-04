@@ -8,47 +8,34 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserDataServiceTests {
 
-	private String IP_FOR_TESTS = "93.75.87.81";
-	private String USER_AGENT ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.92 Safari/537.36";
-	private String LOCAL_IP = "127.0.0.1";
+	private static final String IP_FOR_TESTS = "93.75.87.81";
+	private static final String USER_AGENT ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.92 Safari/537.36";
+	private static final String LOCAL_IP = "127.0.0.1";
+	private static final String RESULT_TEXT = "result";
+
 	@Mock
 	private HttpServletRequest httpServletRequestMock;
 
 	@Mock
 	private LoadingCache<String, String> countryCashMock;
-
-	@Mock
-	private UserDataService.URLWrapper ipInfoURLMock;
-
-	@Mock
-	private URLConnection urlConnectionMock;
-
-	@Mock
-	private InputStream inputStreamReaderMock;
-
-	@Mock
-	private BufferedReader bufferedReaderMock;
 
 	@InjectMocks
 	private UserDataService userDataService = new UserDataService();
@@ -112,40 +99,11 @@ public class UserDataServiceTests {
 	}
 
 	@Test
-	public void readDataFromURLTest() throws IOException {
-		InputStream stubInputStream = IOUtils.toInputStream("result");
-		when(ipInfoURLMock.openConnection()).thenReturn(urlConnectionMock);
-		when(urlConnectionMock.getInputStream()).thenReturn(stubInputStream);
+	public void readStringFromInputStreamTest() throws IOException {
+		InputStream inputStreamMock = IOUtils.toInputStream(RESULT_TEXT);
+		String actual = userDataService.readStringFromInputStream(inputStreamMock);
 
-		String actual = userDataService.readDataFromURL(ipInfoURLMock);
-
-		assertThat(actual, is("result"));
-
-		verify(ipInfoURLMock, times(1)).openConnection();
-		verify(urlConnectionMock, times(1)).getInputStream();
-	}
-
-	@Test
-	public void readDataFromInputStreamReaderTest() throws IOException {
-		String result = "our string result";
-		InputStream stubInputStream = IOUtils.toInputStream(result);
-		InputStreamReader stubInputStreamReader = new InputStreamReader(stubInputStream);
-
-		String actual = userDataService.readDataFromInputStreamReader(stubInputStreamReader);
-
-		assertThat(actual, is(result));
-	}
-
-	@Test
-	public void readDataFromInputStreamReaderWhenIOExceptionTest() throws IOException {
-		String result = null;
-		InputStream inputStreamMock = Mockito.mock(InputStream.class);
-		when(inputStreamMock.read(any())).thenThrow(new IOException());
-		InputStreamReader stubInputStreamReader = new InputStreamReader(inputStreamMock);
-
-		String actual = userDataService.readDataFromInputStreamReader(stubInputStreamReader);
-
-		assertThat(actual, is(result));
+		assertThat(actual, is(RESULT_TEXT));
 	}
 
 	@Test

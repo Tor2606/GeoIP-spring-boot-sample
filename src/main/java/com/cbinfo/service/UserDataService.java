@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
@@ -98,7 +96,8 @@ public class UserDataService {
         String URLAddress = SERVICE_URL_ADDRESS + ip + "/json";
         String data;
         try {
-            data = readDataFromURL(new URLWrapper(URLAddress));
+            InputStream inputStream = new URL(URLAddress).openStream();
+            data = readStringFromInputStream(inputStream);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             return UNDEFINED_COUNTRY;
@@ -117,34 +116,23 @@ public class UserDataService {
         return userDataDTOForJson.getCountry();
     }
 
-    protected String readDataFromURL(URLWrapper ipInfoURL) throws IOException {
-        URLConnection urlConnection = ipInfoURL.openConnection();
-        InputStreamReader inputStreamReader = new InputStreamReader(urlConnection.getInputStream());
-        return readDataFromInputStreamReader(inputStreamReader);
-    }
-
-    protected String readDataFromInputStreamReader(InputStreamReader inputStreamReader) {
-        try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)){
-            String input;
-            StringBuilder result = new StringBuilder();
-            while ((input = bufferedReader.readLine()) != null) {
-                result.append(input);
-            }
-            return result.toString();
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+    protected String readStringFromInputStream(InputStream inputStream) throws IOException {
+        String result;
+        try {
+            result = IOUtils.toString(inputStream);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
         }
-
-        return null;
+        return result;
     }
 
     @Transactional(readOnly = true)
-    public List<UserData> getAll(){
+    public List<UserData> getAll() {
         return userDataRepository.findAll();
     }
 
     @Transactional
-    public void saveUserData(UserDataDTO userDataDTO){
+    public void saveUserData(UserDataDTO userDataDTO) {
         UserData userData = this.createUserData(userDataDTO);
         userDataRepository.save(userData);
         return;
@@ -166,18 +154,6 @@ public class UserDataService {
     }
 
     protected User getFirstUserWithSameIp(UserDataDTO userDataDTO) {
-        return (userService.findByUserIp(userDataDTO.getIp()).size() >= 1) ? userService.findByUserIp(userDataDTO.getIp()).get(0):null;
-    }
-
-    public class URLWrapper {
-        URL url;
-
-        public URLWrapper(String spec) throws MalformedURLException {
-            url = new URL(spec);
-        }
-
-        public URLConnection openConnection() throws IOException {
-            return url.openConnection();
-        }
+        return (userService.findByUserIp(userDataDTO.getIp()).size() >= 1) ? userService.findByUserIp(userDataDTO.getIp()).get(0) : null;
     }
 }
