@@ -1,6 +1,5 @@
 package com.cbinfo.controller;
 
-
 import com.cbinfo.dto.UserDataDTO;
 import com.cbinfo.service.UserDataService;
 import org.junit.Before;
@@ -23,12 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Created by Igor on 10.08.2016.
- */
-
 @RunWith(MockitoJUnitRunner.class)
-public class CountryBrowserControllerTest {
+public class CountryBrowserControllerTests {
 
     private MockMvc mockMvc;
 
@@ -46,19 +41,19 @@ public class CountryBrowserControllerTest {
 
     @Test
     public void getCountryBrowserDataTest() throws Exception {
-        UserDataDTO userDataDTO = createUserDataDto();
-        when(userDataService.getDataAndSave(any())).thenReturn(userDataDTO);
+        UserDataDTO userDataDTOMock = createUserDataDtoMock();
+        when(userDataService.getDataAndSave(any())).thenReturn(userDataDTOMock);
         mockMvc.perform(get("/info"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.browser", is(userDataDTO.getBrowser())))
-                .andExpect(jsonPath("$.operationalSystem", is(userDataDTO.getOperatingSystem())))
-                .andExpect(jsonPath("$.userAgent", is(userDataDTO.getUserAgent())))
-                .andExpect(jsonPath("$.country", is(userDataDTO.getCountry())));
+                .andExpect(jsonPath("$.browser", is(userDataDTOMock.getBrowser())))
+                .andExpect(jsonPath("$.operatingSystem", is(userDataDTOMock.getOperatingSystem())))
+                .andExpect(jsonPath("$.userAgent", is(userDataDTOMock.getUserAgent())))
+                .andExpect(jsonPath("$.country", is(userDataDTOMock.getCountry())));
     }
 
-    private UserDataDTO createUserDataDto() {
+    private UserDataDTO createUserDataDtoMock() {
         UserDataDTO result = new UserDataDTO();
         result.setBrowser("Chrome");
         result.setOperatingSystem("Linux Mint");
