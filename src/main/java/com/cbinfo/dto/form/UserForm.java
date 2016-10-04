@@ -16,8 +16,6 @@ public class UserForm {
 
     private String lastName;
 
-
-
     public String getFirstName() {
         return firstName;
     }

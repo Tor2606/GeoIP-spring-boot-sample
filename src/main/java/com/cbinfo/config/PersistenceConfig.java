@@ -16,9 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
 
-/**
- * Created by islabukhin on 16.09.16.
- */
 @Configuration
 @EnableTransactionManagement
 public class PersistenceConfig {
@@ -30,7 +27,6 @@ public class PersistenceConfig {
     String username;
     @Value("${spring.datasource.driver}")
     String driver;
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfig.class);
 

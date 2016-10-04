@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by Igor on 29.06.2016.
- */
-
 @Controller
 public class CountryBrowserController {
 

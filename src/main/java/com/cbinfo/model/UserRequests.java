@@ -3,9 +3,6 @@ package com.cbinfo.model;
 import javax.persistence.*;
 import java.util.Date;
 
-/**
- * Created by islabukhin on 03.10.16.
- */
 @Entity
 @Table(name = "user_requests")
 public class UserRequests {

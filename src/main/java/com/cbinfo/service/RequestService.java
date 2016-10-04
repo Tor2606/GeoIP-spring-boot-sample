@@ -1,7 +1,7 @@
 package com.cbinfo.service;
 
-import com.cbinfo.model.UserRequests;
 import com.cbinfo.model.User;
+import com.cbinfo.model.UserRequests;
 import com.cbinfo.repository.UserRequestsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-/**
- * Created by islabukhin on 03.10.16.
- */
 @Service
 public class RequestService {
 

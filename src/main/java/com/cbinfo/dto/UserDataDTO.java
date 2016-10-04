@@ -1,8 +1,5 @@
 package com.cbinfo.dto;
 
-/**
- * Created by Igor on 22.07.2016.
- */
 public class UserDataDTO {
 
     private String ip;

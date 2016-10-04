@@ -5,9 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * Created by islabukhin on 20.09.16.
- */
+
 @Controller
 public class LoginController {
 
@@ -23,6 +21,4 @@ public class LoginController {
         }
         return LOGIN_VIEW;
     }
-
-
 }

@@ -33,10 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-/**
- * Created by Igor on 29.06.2016.
- */
-
 @Service
 public class UserDataService {
 

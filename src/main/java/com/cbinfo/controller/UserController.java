@@ -6,7 +6,6 @@ import com.cbinfo.service.UserService;
 import com.cbinfo.service.UserSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-/**
- * Created by islabukhin on 20.09.16.
- */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -46,15 +42,15 @@ public class UserController {
         return REDIRECT_APP;
     }
 
-    @RequestMapping("/createPage")
+    @RequestMapping("/create")
     public String getCreateUser(ModelMap modelMap) {
         modelMap.put("userForm", new UserForm());
         return CREATE_USER_VIEW;
     }
 
-    @RequestMapping("/editPage")
+    @RequestMapping("/edit")
     public String getEditUser(ModelMap modelMap) {
-        modelMap.put("userForm", getCurrentSessionUserToForm());
+        modelMap.put("userForm", userService.getCurrentSessionUserToForm());
         return EDIT_USER_VIEW;
     }
 
@@ -67,32 +63,5 @@ public class UserController {
             return EDIT_USER_VIEW;
         }
         return REDIRECT_APP;
-    }
-
-
-    //todo move to service
-    //rename views without "page"
-    protected UserForm getCurrentSessionUserToForm() {
-        User u = userSessionService.getUser();
-        u = setUserIfNull(u);
-        return userFormSetter(u);
-    }
-
-    protected User setUserIfNull(User u) {
-        if(u == null) {
-            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            userSessionService.setUser(userService.findByEmail(principal.getUsername()));
-            u = userSessionService.getUser();
-        }
-        return u;
-    }
-
-    protected UserForm userFormSetter(User user){
-        UserForm userForm = new UserForm();
-        userForm.setEmail(user.getEmail());
-        userForm.setPassword(user.getPassword());
-        userForm.setFirstName(user.getFirstName());
-        userForm.setLastName(user.getLastName());
-        return userForm;
     }
 }

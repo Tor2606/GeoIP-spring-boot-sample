@@ -14,10 +14,6 @@ import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 
-/**
- * Created by islabukhin on 30.09.16.
- */
-
 @Service
 @Qualifier("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,15 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-
         User user = userService.findByEmail(email);
-
         if (user == null) {
             throw new UsernameNotFoundException("Wrong username");
         }
-
         Set<GrantedAuthority> roles = newHashSet();
-
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), roles);
     }
 }

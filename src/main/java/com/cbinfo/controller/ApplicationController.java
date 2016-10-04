@@ -18,23 +18,16 @@ import java.util.List;
 @RequestMapping(value = "/app")
 public class ApplicationController {
 
-    private static final String MAIN_PAGE_VIEW = "application/app";
+    private static final String MAIN_VIEW = "application/app";
 
     @Autowired
     private UserSessionService userSessionService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private UserDataService userDataService;
 
     @ModelAttribute("user")
     public User user() {
-        if(userSessionService.getUser() == null) {
-            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            userSessionService.setUser(userService.findByEmail(principal.getUsername()));
-        }
         return userSessionService.getUser();
     }
 
@@ -42,6 +35,6 @@ public class ApplicationController {
     public String getMainPage(ModelMap modelMap){
         List<UserData> resultList = userDataService.getAll();
         modelMap.put("userDataList", resultList);
-        return MAIN_PAGE_VIEW;
+        return MAIN_VIEW;
     }
 }

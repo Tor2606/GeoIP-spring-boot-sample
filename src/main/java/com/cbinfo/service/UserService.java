@@ -17,9 +17,6 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-/**
- * Created by islabukhin on 21.09.16.
- */
 @Service
 public class UserService {
 
@@ -106,5 +103,19 @@ public class UserService {
         if (isNotBlank(userForm.getLastName())) {
             userFromDB.setLastName(userForm.getLastName());
         }
+    }
+
+    public UserForm getCurrentSessionUserToForm() {
+        User u = userSessionService.getUser();
+        return userFormSetter(u);
+    }
+
+    protected UserForm userFormSetter(User user){
+        UserForm userForm = new UserForm();
+        userForm.setEmail(user.getEmail());
+        userForm.setPassword(user.getPassword());
+        userForm.setFirstName(user.getFirstName());
+        userForm.setLastName(user.getLastName());
+        return userForm;
     }
 }

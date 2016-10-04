@@ -22,9 +22,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
-/**
- * Created by islabukhin on 19.09.16.
- */
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
@@ -39,20 +36,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static PasswordEncoder encoder;
 
-    /*all it does is keep Spring
-    Security from evaluating access to resources*/
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resource/**");
     }
 
-    //defines several URL patterns and how they are protected
-    /*it’s necessary
-    to set up some minimal level of
-    authorization to make Spring Security require users to log in*/
-    /*Everything under the /secure/ URL requires the user to have the USER
-    permissions, whereas access to /application/
-    and everything under it requires the ADMIN permission*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/app/**").authenticated();
@@ -81,7 +69,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

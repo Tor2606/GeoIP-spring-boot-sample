@@ -1,6 +1,5 @@
 package com.cbinfo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,9 +7,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by islabukhin on 19.09.16.
- */
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
