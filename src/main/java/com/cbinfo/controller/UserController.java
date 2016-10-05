@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
     private static final String CREATE_USER_VIEW = "users/create";
     private static final String REDIRECT_APP = "redirect:/app";
     private static final String EDIT_USER_VIEW = "users/edit";
-
-    @Autowired
-    private UserSessionService userSessionService;
+    private static final String REDIRECT_LOGIN = "redirect:/login";
 
     @Autowired
     private UserService userService;
@@ -37,9 +37,8 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return CREATE_USER_VIEW;
         }
-        String ip = request.getRemoteAddr();
-        userService.createUser(userForm, ip);
-        return REDIRECT_APP;
+        userService.createUser(userForm, request.getRemoteAddr());
+        return REDIRECT_LOGIN;
     }
 
     @RequestMapping("/create")
@@ -55,7 +54,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String postEditUser(UserForm userForm, ModelMap modelMap) {
+    public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, ModelMap modelMap) {
+        if(notValidFields(bindingResult, userForm)) {
+            return EDIT_USER_VIEW;
+        }
         try {
             userService.updateCurrentUser(userForm);
         } catch (Exception e) {
@@ -63,5 +65,11 @@ public class UserController {
             return EDIT_USER_VIEW;
         }
         return REDIRECT_APP;
+    }
+
+    private boolean notValidFields(BindingResult bindingResult, UserForm userForm) {
+        if(bindingResult.hasErrors()&&isNotBlank(userForm.getPassword())) {
+            return true;}
+        return false;
     }
 }

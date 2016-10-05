@@ -3,14 +3,12 @@ package com.cbinfo.service;
 import com.cbinfo.dto.form.UserForm;
 import com.cbinfo.model.User;
 import com.cbinfo.repository.UserRepository;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -60,13 +58,13 @@ public class UserService {
 
     public void updateCurrentUser(UserForm userForm) throws Exception {
         User userFromDB = findByEmail(getUserPrincipalLogin());
-        emailCheckingOnUpdate(userForm, userFromDB);
+        checkEmailOnUpdating(userForm, userFromDB);
         updateUserFields(userForm, userFromDB);
         saveUser(userFromDB);
         userSessionService.setUser(userFromDB);
     }
 
-    protected void emailCheckingOnUpdate(UserForm userForm, User userFromDB) throws Exception {
+    protected void checkEmailOnUpdating(UserForm userForm, User userFromDB) throws Exception {
         String userFormEmail = userForm.getEmail();
         if (!isBlank(userFormEmail) && !userFromDB.getEmail().equals(userFormEmail)) {
             if (findByEmail(userFormEmail) == null) {
@@ -94,10 +92,10 @@ public class UserService {
     }
 
     protected void updateUserFields(UserForm userForm, User userFromDB) {
-        if (null != userForm.getPassword()) {
+        if (isNotBlank(userForm.getPassword())) {
             userFromDB.setPassword(passwordEncoder.encode(userForm.getPassword()));
         }
-        if (null != userForm.getFirstName()) {
+        if (isNotBlank(userForm.getFirstName())) {
             userFromDB.setFirstName(userForm.getFirstName());
         }
         if (isNotBlank(userForm.getLastName())) {

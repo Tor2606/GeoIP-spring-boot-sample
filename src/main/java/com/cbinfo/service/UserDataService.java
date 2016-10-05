@@ -39,7 +39,7 @@ public class UserDataService {
     private static final String LOCALHOST = "localhost";
     private static final String LOCAL_IP = "127.0.0.1";
     private static final String UNDEFINED_COUNTRY = "undefined";
-    private static final String SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
+    private static final String IPINFO_SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
 
     LoadingCache<String, String> countryCache =
             CacheBuilder.newBuilder()
@@ -61,22 +61,27 @@ public class UserDataService {
 
     public UserDataDTO getDataAndSave(HttpServletRequest request) {
         UserDataDTO userDataDTO = new UserDataDTO();
+        setUserDataDTOCountry(userDataDTO, request);
+        setUserDataDTOFields(userDataDTO, request);
+        saveUserData(userDataDTO);
+        return userDataDTO;
+    }
+
+    protected void setUserDataDTOCountry(UserDataDTO userDataDTO, HttpServletRequest request) {
         try {
             String ip = request.getRemoteAddr();
             userDataDTO.setCountry(countryCache.get(ip));
         } catch (ExecutionException e) {
             LOGGER.error(e.getMessage());
+            userDataDTO.setCountry(UNDEFINED_COUNTRY);
         }
-        UserDataDTO result = setUserDataDTOFields(userDataDTO, request);
-        saveUserData(result);
-        return result;
     }
 
-    protected UserDataDTO setUserDataDTOFields(UserDataDTO userDataDTO, HttpServletRequest request) {
+    protected void setUserDataDTOFields(UserDataDTO userDataDTO, HttpServletRequest request) {
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         String userAgent = request.getHeader("User-Agent");
         if (isBlank(userAgent)) {
-            return userDataDTO;
+            return;
         }
         ReadableUserAgent agent = parser.parse(userAgent);
         userDataDTO.setIp(request.getRemoteAddr());
@@ -86,14 +91,13 @@ public class UserDataService {
         userDataDTO.setProducer(agent.getProducer());
         userDataDTO.setBrowser(agent.getName());
         userDataDTO.setOperatingSystem(agent.getOperatingSystem().getName());
-        return userDataDTO;
     }
 
     protected String getCountry(String ip) throws UnknownHostException {
         if (checkLocalHost(ip)) {
             return LOCALHOST;
         }
-        String URLAddress = SERVICE_URL_ADDRESS + ip + "/json";
+        String URLAddress = getServiceURL(ip);
         String data;
         try {
             InputStream inputStream = new URL(URLAddress).openStream();
@@ -105,6 +109,10 @@ public class UserDataService {
         return getCountryFromJSON(data);
     }
 
+    private String getServiceURL(String ip) {
+        return IPINFO_SERVICE_URL_ADDRESS + ip + "/json";
+    }
+
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
         return ip.equals(LOCAL_IP);
     }
@@ -112,7 +120,6 @@ public class UserDataService {
     protected String getCountryFromJSON(String data) {
         Gson gson = new GsonBuilder().create();
         UserDataDTO userDataDTOForJson = gson.fromJson(data, UserDataDTO.class);
-        //may be inner class than UserDataDTO?
         return userDataDTOForJson.getCountry();
     }
 

@@ -37,9 +37,13 @@ public class RequestService {
     public String getLoggingMessage(HttpServletRequest request) {
         StringBuilder messageBuilder = new StringBuilder(LOGGING_MESSAGE_BEGINNING);
         messageBuilder.append((new Date().toString()));
+        messageBuilder.append(",");
         messageBuilder.append(request.getRemoteAddr());
+        messageBuilder.append(",");
         messageBuilder.append(request.getRequestURI());
+        messageBuilder.append(",");
         messageBuilder.append(getUserEmail());
+        messageBuilder.append(",");
         return messageBuilder.toString();
     }
 

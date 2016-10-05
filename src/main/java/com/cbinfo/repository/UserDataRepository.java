@@ -8,8 +8,5 @@ import java.util.List;
 
 
 public interface UserDataRepository extends CrudRepository<UserData, Long>{
-    //List<UserData> findByUser(User user);
-    //UserData save(UserData userData);
-
     List<UserData> findAll();
 }
