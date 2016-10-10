@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user_requests")
-public class UserRequests {
+public class UserRequest {
 
     @Id
     @Column(name = "request_id")

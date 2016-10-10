@@ -22,7 +22,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserSessionService userSessionService;
+    protected UserSessionService userSessionService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -53,7 +53,7 @@ public class UserService {
     }
 
     public boolean isEmailRegistered(String email) {
-        return findByEmail(email) == null ? Boolean.FALSE : Boolean.TRUE;
+        return findByEmail(email) != null;
     }
 
     public void updateCurrentUser(UserForm userForm) throws Exception {

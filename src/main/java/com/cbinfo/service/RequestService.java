@@ -1,7 +1,7 @@
 package com.cbinfo.service;
 
 import com.cbinfo.model.User;
-import com.cbinfo.model.UserRequests;
+import com.cbinfo.model.UserRequest;
 import com.cbinfo.repository.UserRequestsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,8 @@ import java.util.Date;
 public class RequestService {
 
     private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, ip, url, users email): ";
+    private static final String DELIMITER = ", ";
+
 
     @Autowired
     private UserRequestsRepository userRequestsRepository;
@@ -22,39 +24,38 @@ public class RequestService {
     private UserSessionService userSessionService;
 
     public void saveHttpServletRequest(HttpServletRequest request) {
-        UserRequests userRequests = new UserRequests();
-        setRequestModelFields(userRequests, request);
-        saveRequestModel(userRequests);
+        UserRequest userRequest = new UserRequest();
+        setRequestModelFields(userRequest, request);
+        saveRequestModel(userRequest);
     }
 
-    private void setRequestModelFields(UserRequests userRequests, HttpServletRequest request) {
-        userRequests.setIp(request.getRemoteAddr());
-        userRequests.setTime(new Date());
-        userRequests.setUrl(request.getRequestURI());
-        userRequests.setUser(userSessionService.getUser());
+    protected void setRequestModelFields(UserRequest userRequest, HttpServletRequest request) {
+        userRequest.setIp(request.getRemoteAddr());
+        userRequest.setTime(new Date());
+        userRequest.setUrl(request.getRequestURI());
+        userRequest.setUser(userSessionService.getUser());
     }
 
     public String getLoggingMessage(HttpServletRequest request) {
         StringBuilder messageBuilder = new StringBuilder(LOGGING_MESSAGE_BEGINNING);
         messageBuilder.append((new Date().toString()));
-        messageBuilder.append(",");
+        messageBuilder.append(DELIMITER);
         messageBuilder.append(request.getRemoteAddr());
-        messageBuilder.append(",");
+        messageBuilder.append(DELIMITER);
         messageBuilder.append(request.getRequestURI());
-        messageBuilder.append(",");
+        messageBuilder.append(DELIMITER);
         messageBuilder.append(getUserEmail());
-        messageBuilder.append(",");
         return messageBuilder.toString();
     }
 
-    private String getUserEmail() {
+    protected String getUserEmail() {
         User user = userSessionService.getUser();
         if(user == null) return "";
         return user.getEmail();
     }
 
     @Transactional
-    protected void saveRequestModel(UserRequests userRequests){
-        userRequestsRepository.save(userRequests);
+    protected void saveRequestModel(UserRequest userRequest){
+        userRequestsRepository.save(userRequest);
     }
 }
