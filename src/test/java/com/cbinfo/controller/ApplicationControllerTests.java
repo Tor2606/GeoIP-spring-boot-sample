@@ -14,9 +14,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -45,7 +45,7 @@ public class ApplicationControllerTests {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(applicationController).build();
         userMock = setUserMock();
-        when(userDataService.getAll()).thenReturn(getUserDataListMock());
+        when(userDataService.findAll()).thenReturn(getUserDataListMock());
         when(userSessionService.getUser()).thenReturn(userMock);
     }
 
@@ -61,19 +61,15 @@ public class ApplicationControllerTests {
 
         verify(userSessionService, times(1)).getUser();
         verifyNoMoreInteractions(userSessionService);
-        verify(userDataService, times(1)).getAll();
+        verify(userDataService, times(1)).findAll();
         verifyNoMoreInteractions(userDataService);
     }
 
     private List<UserData> getUserDataListMock(){
-        List<UserData> list = new ArrayList<>();
-        list.add(new UserData());
-        list.add(new UserData());
-        return list;
+        return newArrayList(new UserData(), new UserData());
     }
 
     private User setUserMock() {
-        User user = new User();
-        return user;
+        return new User();
     }
 }

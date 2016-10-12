@@ -3,6 +3,7 @@ package com.cbinfo.service;
 import com.cbinfo.model.User;
 import com.cbinfo.model.UserRequest;
 import com.cbinfo.repository.UserRequestsRepository;
+import com.google.common.base.Joiner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -48,11 +48,10 @@ public class RequestServiceTests {
     @Test
     public void saveHttpServletRequestTest() {
         RequestService spyRequestService = spy(RequestService.class);
-        UserRequest userRequest = new UserRequest();
-        doNothing().when(spyRequestService).setRequestModelFields(any(), (HttpServletRequest) any());
+        doNothing().when(spyRequestService).setRequestModelFields(any(), any());
         doNothing().when(spyRequestService).saveRequestModel(any());
 
-        spyRequestService.saveHttpServletRequest((HttpServletRequest) any());
+        spyRequestService.saveHttpServletRequest(any());
 
         Mockito.verify(spyRequestService, times(1)).setRequestModelFields(any(), any());
         Mockito.verify(spyRequestService, times(1)).saveRequestModel(any());
@@ -97,8 +96,8 @@ public class RequestServiceTests {
     }
 
     private String expectedMessage(String date) {
-        return LOGGING_MESSAGE_BEGINNING + date + DELIMITER
-                + IP_VALUE + DELIMITER + URI_VALUE + DELIMITER + EMAIL_VALUE;
+        return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER)
+                .join(date, IP_VALUE, URI_VALUE, EMAIL_VALUE);
     }
 
     @Test

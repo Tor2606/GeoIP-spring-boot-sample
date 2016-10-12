@@ -14,7 +14,7 @@ public class UserSessionService {
     @Autowired
     private UserService userService;
 
-    private User user;
+    protected User user;
 
     public User getUser() {
         setUserIfNull();

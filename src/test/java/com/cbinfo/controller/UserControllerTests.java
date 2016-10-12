@@ -187,12 +187,12 @@ public class UserControllerTests {
     }
 
     private UserForm getUserForm() {
-        UserForm userForm = new UserForm();
-        userForm.setEmail(EMAIL);
-        userForm.setPassword(PASSWORD);
-        userForm.setFirstName(NAME);
-        userForm.setLastName(LAST_NAME);
-        System.out.println(userForm);
-        return userForm;
+        UserForm result = new UserForm();
+        result.setEmail(EMAIL);
+        result.setPassword(PASSWORD);
+        result.setFirstName(NAME);
+        result.setLastName(LAST_NAME);
+        System.out.println(result);
+        return result;
     }
 }

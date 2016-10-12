@@ -54,7 +54,7 @@ public class UserDataService {
                     });
 
     @Autowired
-    private UserDataRepository userDataRepository;
+    protected UserDataRepository userDataRepository;
 
     @Autowired
     private UserService userService;
@@ -109,7 +109,7 @@ public class UserDataService {
         return getCountryFromJSON(data);
     }
 
-    private String getServiceURL(String ip) {
+    protected String getServiceURL(String ip) {
         return IPINFO_SERVICE_URL_ADDRESS + ip + "/json";
     }
 
@@ -134,15 +134,14 @@ public class UserDataService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserData> getAll() {
-        return userDataRepository.findAll();
+    public List<UserData> findAll() {
+        return (List<UserData>) userDataRepository.findAll();
     }
 
     @Transactional
     public void saveUserData(UserDataDTO userDataDTO) {
         UserData userData = this.createUserData(userDataDTO);
         userDataRepository.save(userData);
-        return;
     }
 
     protected UserData createUserData(UserDataDTO userDataDTO) {

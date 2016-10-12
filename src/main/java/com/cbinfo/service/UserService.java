@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class UserService {
     protected UserSessionService userSessionService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    protected PasswordEncoder passwordEncoder;
 
     public void createUser(UserForm userForm, String ip) {
         User user = new User();
@@ -75,14 +74,14 @@ public class UserService {
         }
     }
 
-    public static String getUserPrincipalLogin() {
+    protected String getUserPrincipalLogin() {
         if (null != getUserPrincipals()) {
             return getUserPrincipals().getUsername();
         }
         return null;
     }
 
-    protected static org.springframework.security.core.userdetails.User getUserPrincipals() {
+    protected org.springframework.security.core.userdetails.User getUserPrincipals() {
         if (null != SecurityContextHolder.getContext().getAuthentication()) {
             if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String)) {
                 return (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -109,11 +108,10 @@ public class UserService {
     }
 
     protected UserForm userFormSetter(User user){
-        UserForm userForm = new UserForm();
-        userForm.setEmail(user.getEmail());
-        userForm.setPassword(user.getPassword());
-        userForm.setFirstName(user.getFirstName());
-        userForm.setLastName(user.getLastName());
-        return userForm;
+        UserForm result = new UserForm();
+        result.setEmail(user.getEmail());
+        result.setFirstName(user.getFirstName());
+        result.setLastName(user.getLastName());
+        return result;
     }
 }

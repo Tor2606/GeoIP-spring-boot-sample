@@ -3,6 +3,7 @@ package com.cbinfo.service;
 import com.cbinfo.model.User;
 import com.cbinfo.model.UserRequest;
 import com.cbinfo.repository.UserRequestsRepository;
+import com.google.common.base.Joiner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,15 +38,8 @@ public class RequestService {
     }
 
     public String getLoggingMessage(HttpServletRequest request) {
-        StringBuilder messageBuilder = new StringBuilder(LOGGING_MESSAGE_BEGINNING);
-        messageBuilder.append((new Date().toString()));
-        messageBuilder.append(DELIMITER);
-        messageBuilder.append(request.getRemoteAddr());
-        messageBuilder.append(DELIMITER);
-        messageBuilder.append(request.getRequestURI());
-        messageBuilder.append(DELIMITER);
-        messageBuilder.append(getUserEmail());
-        return messageBuilder.toString();
+        return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER).join(new Date().toString(), request.getRemoteAddr(),
+                request.getRequestURI(), getUserEmail());
     }
 
     protected String getUserEmail() {

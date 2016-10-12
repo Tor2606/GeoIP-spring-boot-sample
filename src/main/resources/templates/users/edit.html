@@ -11,10 +11,9 @@
     <div class="row">
         <div class="span6 offset3 text-center form-wrapper">
             <div class="form-body">
-                <h2>Please, fill the form</h2>
+                <h2>Please, edit the form</h2>
                 <p class="text-error help-block" th:if="${errorMessage} != null"
                       th:text="${errorMessage}">Error</p>
-                <p class="text-warning small">Asteriscs * refer to mandatory fields!</p>
                 <form th:action="@{/users/edit}" method="post" th:object="${userForm}">
                     <div class="control-group">
                         <label for="email">Email*</label>

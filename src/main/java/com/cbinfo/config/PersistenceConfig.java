@@ -47,8 +47,6 @@ public class PersistenceConfig {
         factory.setDataSource(dataSource);
         factory.setJpaVendorAdapter(jpaVendorAdapter);
         factory.setPackagesToScan("com.cbinfo.model");
-        /*factory.setSharedCacheMode(SharedCacheMode.ENABLE_SELECTIVE);
-        factory.setValidationMode(ValidationMode.NONE);*/
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("hibernate.hbm2ddl.auto", "none");
         jpaProperties.setProperty("hibernate.show_sql", Boolean.FALSE.toString());
@@ -63,19 +61,11 @@ public class PersistenceConfig {
     @Primary
     public DataSource dataSource() {
         LOGGER.info("Connecting to PostgreSQL on localhost");
-
-        /*JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-        return lookup.getDataSource("jdbc/CustomerSupport"); - what about this variant?*/
-
         DataSource ds = new DataSource();
         ds.setUsername(username);
         ds.setPassword(password);
         ds.setUrl(url);
         ds.setDriverClassName(driver);
-/*
-        If true connections will be validated by the idle connection evictor (if any).
-        If the validation fails, the connection is destroyed and removed from the pool
-*/
         ds.setTestWhileIdle(Boolean.TRUE);
         ds.setValidationQuery("SELECT 1");
         ds.setValidationInterval(30);

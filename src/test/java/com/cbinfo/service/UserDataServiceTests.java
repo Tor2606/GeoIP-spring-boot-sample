@@ -1,6 +1,7 @@
 package com.cbinfo.service;
 
 import com.cbinfo.dto.UserDataDTO;
+import com.cbinfo.model.User;
 import com.cbinfo.model.UserData;
 import com.cbinfo.repository.UserDataRepository;
 import com.google.common.cache.LoadingCache;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -18,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static org.hamcrest.CoreMatchers.is;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -35,6 +39,8 @@ public class UserDataServiceTests {
     private static final String RESULT_TEXT = "result";
     private static final String UNDEFINED_COUNTRY = "undefined";
     private static final String COUNTRY = "CH";
+    private static final String URL_ADDRESS = "http://www.ipinfo.io/";
+    private static final String DATA_FROM_URL = "Data";
 
     @Mock
     private HttpServletRequest httpServletRequestMock;
@@ -64,50 +70,91 @@ public class UserDataServiceTests {
 
     @Test
     public void getDataAndSaveTest() throws Exception {
-        UserDataDTO actual = userDataService.getDataAndSave(httpServletRequestMock);
+        UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
+        doNothing().when(spyUserDataService).setUserDataDTOCountry(any(),any());
+        doNothing().when(spyUserDataService).setUserDataDTOFields(any(),any());
+        doNothing().when(spyUserDataService).saveUserData(any());
 
-        assertThat(actual.getBrowser(), is("Chrome"));
-        assertThat(actual.getCountry(), is(COUNTRY));
-        assertThat(actual.getOperatingSystem(), is("Linux"));
-        assertThat(actual.getAgentFamily(), is("Chrome"));
-        assertThat(actual.getDeviceCategory(), is("Personal computer"));
-        assertThat(actual.getProducer(), is("Google Inc."));
-        assertThat(actual.getUserAgent(), is(USER_AGENT));
+        UserDataDTO actual = spyUserDataService.getDataAndSave(httpServletRequestMock);
 
-        verify(countryCashMock, times(1)).get(any());
-        verify(userDataRepositoryMock, times(1)).save((UserData) any());
-        verify(userServiceMock, times(1)).findByUserIp(anyString());
+        assertThat(actual, is(notNullValue()));
+        verify(spyUserDataService, times(1)).setUserDataDTOCountry(any(), any());
+        verify(spyUserDataService, times(1)).setUserDataDTOFields(any(), any());
+        verify(spyUserDataService, times(1)).saveUserData(any());
+        verify(spyUserDataService, times(1)).getDataAndSave(httpServletRequestMock);
+        verifyNoMoreInteractions(spyUserDataService);
     }
 
     @Test
     public void setUserDataDTOCountryTest() throws ExecutionException {
         UserDataDTO actual = new UserDataDTO();
+
         userDataService.setUserDataDTOCountry(actual,httpServletRequestMock);
 
         assertThat(actual.getCountry(), is(COUNTRY));
+        verify(countryCashMock, times(1)).get(IP_FOR_TESTS);
+        verifyNoMoreInteractions(countryCashMock);
     }
 
     @Test
     public void setUserDataDTOCountryWhenCachingThrowsExceptionTest() throws ExecutionException {
         doThrow(new ExecutionException(new Exception())).when(countryCashMock).get(any());
-
         UserDataDTO actual = new UserDataDTO();
+
         userDataService.setUserDataDTOCountry(actual,httpServletRequestMock);
 
         assertThat(actual.getCountry(), is(UNDEFINED_COUNTRY));
-        verify(countryCashMock, times(1)).get(any());
+        verify(countryCashMock, times(1)).get(IP_FOR_TESTS);
+        verifyNoMoreInteractions(countryCashMock);
     }
 
     @Test
     public void getCountryTest() throws IOException {
-        String actual = userDataService.getCountry(IP_FOR_TESTS);
-        assertThat(actual, is("UA"));
+        UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
+        doReturn(false).when(spyUserDataService).checkLocalHost(IP_FOR_TESTS);
+        doReturn(URL_ADDRESS).when(spyUserDataService).getServiceURL(IP_FOR_TESTS);
+        doReturn(DATA_FROM_URL).when(spyUserDataService).readStringFromInputStream(any());
+        doReturn(COUNTRY).when(spyUserDataService).getCountryFromJSON(DATA_FROM_URL);
+
+        String actual = spyUserDataService.getCountry(IP_FOR_TESTS);
+
+        assertThat(actual, is(COUNTRY));
+        verify(spyUserDataService, times(1)).checkLocalHost(IP_FOR_TESTS);
+        verify(spyUserDataService, times(1)).getServiceURL(IP_FOR_TESTS);
+        verify(spyUserDataService, times(1)).readStringFromInputStream(any());
+        verify(spyUserDataService, times(1)).getCountryFromJSON(DATA_FROM_URL);
+        verify(spyUserDataService, times(1)).getCountry(IP_FOR_TESTS);
+        verifyNoMoreInteractions(spyUserDataService);
     }
 
     @Test
-    public void getCountryWhenErrorTest() throws UnknownHostException {
-        String actual = userDataService.getCountry("No ip");
+    public void getCountryTestWhenLocalHost() throws UnknownHostException {
+        UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
+        doReturn(true).when(spyUserDataService).checkLocalHost(LOCAL_IP);
+
+        String actual = spyUserDataService.getCountry(LOCAL_IP);
+
+        assertThat(actual, is("localhost"));
+        verify(spyUserDataService, times(1)).checkLocalHost(LOCAL_IP);
+        verify(spyUserDataService, times(1)).getCountry(LOCAL_IP);
+        verifyNoMoreInteractions(spyUserDataService);
+    }
+
+    @Test
+    public void getCountryWhenErrorTest() throws IOException {
+        UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
+        doReturn(false).when(spyUserDataService).checkLocalHost(IP_FOR_TESTS);
+        doReturn(URL_ADDRESS).when(spyUserDataService).getServiceURL(IP_FOR_TESTS);
+        doThrow(new IOException()).when(spyUserDataService).readStringFromInputStream(any());
+
+        String actual = spyUserDataService.getCountry(IP_FOR_TESTS);
+
         assertThat(actual, is(UNDEFINED_COUNTRY));
+        verify(spyUserDataService, times(1)).checkLocalHost(IP_FOR_TESTS);
+        verify(spyUserDataService, times(1)).getServiceURL(IP_FOR_TESTS);
+        verify(spyUserDataService, times(1)).readStringFromInputStream(any());
+        verify(spyUserDataService, times(1)).getCountry(IP_FOR_TESTS);
+        verifyNoMoreInteractions(spyUserDataService);
     }
 
     @Test
@@ -148,5 +195,68 @@ public class UserDataServiceTests {
     public void checkLocalHostWhenLocalIpTest() throws UnknownHostException {
         Boolean actual = userDataService.checkLocalHost(LOCAL_IP);
         assertThat(actual, is(true));
+    }
+
+
+    @Test
+    public void findAllTest() {
+        List<UserData> expected = newArrayList();
+        when(userDataRepositoryMock.findAll()).thenReturn(expected);
+
+        List<UserData> actual = userDataService.findAll();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void saveUserDataTest() {
+        UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
+        spyUserDataService.userDataRepository = userDataRepositoryMock;
+        UserData userData = new UserData();
+        UserDataDTO userDataDTO = new UserDataDTO();
+        doReturn(userData).when(spyUserDataService).createUserData(userDataDTO);
+        doReturn(userData).when(userDataRepositoryMock).save(userData);
+
+        spyUserDataService.saveUserData(userDataDTO);
+
+        verify(userDataRepositoryMock, times(1)).save(userData);
+        verifyNoMoreInteractions(userDataRepositoryMock);
+        verify(spyUserDataService, times(1)).createUserData(userDataDTO);
+        verify(spyUserDataService, times(1)).saveUserData(userDataDTO);
+        verifyNoMoreInteractions(spyUserDataService);
+    }
+
+    @Test
+    public void getFirstUserWithSameIpWhenThereIsNoUserWithThisIpTest() {
+        List<User> list = newArrayList();
+        when(userServiceMock.findByUserIp(anyString())).thenReturn(list);
+
+        User actual = userDataService.getFirstUserWithSameIp(new UserDataDTO());
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getFirstUserWithSameIpWhenThereIsOneUserWithThisIpTest() {
+        User expected = new User();
+        List<User> list = newArrayList(expected);
+        when(userServiceMock.findByUserIp(anyString())).thenReturn(list);
+
+        User actual = userDataService.getFirstUserWithSameIp(new UserDataDTO());
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void getFirstUserWithSameIpWhenThereIsCoupleUserWithThisIpTest() {
+        // return (userService.findByUserIp(userDataDTO.getIp()).size() >= 1) ? userService.findByUserIp(userDataDTO.getIp()).get(0) : null;
+        User expected = new User();
+        User user = new User();
+        List<User> list = newArrayList(expected, user);
+        when(userServiceMock.findByUserIp(anyString())).thenReturn(list);
+
+        User actual = userDataService.getFirstUserWithSameIp(new UserDataDTO());
+
+        assertThat(actual, is(expected));
     }
 }

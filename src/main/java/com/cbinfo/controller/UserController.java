@@ -1,11 +1,8 @@
 package com.cbinfo.controller;
 
 import com.cbinfo.dto.form.UserForm;
-import com.cbinfo.model.User;
 import com.cbinfo.service.UserService;
-import com.cbinfo.service.UserSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,9 +18,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequestMapping("/users")
 public class UserController {
     private static final String CREATE_USER_VIEW = "users/create";
-    private static final String REDIRECT_APP = "redirect:/app";
+    private static final String REDIRECT = "redirect:";
+    private static final String APP_PGE = "/app";
     private static final String EDIT_USER_VIEW = "users/edit";
-    private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String LOGIN_PAGE = "/login";
 
     @Autowired
     private UserService userService;
@@ -38,7 +36,7 @@ public class UserController {
             return CREATE_USER_VIEW;
         }
         userService.createUser(userForm, request.getRemoteAddr());
-        return REDIRECT_LOGIN;
+        return REDIRECT + LOGIN_PAGE;
     }
 
     @RequestMapping("/create")
@@ -55,7 +53,7 @@ public class UserController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, ModelMap modelMap) {
-        if(notValidFields(bindingResult, userForm)) {
+        if (notValidFields(bindingResult, userForm)) {
             return EDIT_USER_VIEW;
         }
         try {
@@ -64,12 +62,10 @@ public class UserController {
             modelMap.addAttribute("errorMessage", e.getMessage());
             return EDIT_USER_VIEW;
         }
-        return REDIRECT_APP;
+        return REDIRECT + APP_PGE;
     }
 
     private boolean notValidFields(BindingResult bindingResult, UserForm userForm) {
-        if(bindingResult.hasErrors()&&isNotBlank(userForm.getPassword())) {
-            return true;}
-        return false;
+        return bindingResult.hasErrors() && isNotBlank(userForm.getPassword());
     }
 }
