@@ -1,5 +1,6 @@
 package com.cbinfo.config;
 
+import com.cbinfo.listeners.LoginLogoutListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private DataSource dataSource;
     @Autowired
     private UserDetailsService customUserDetailsService;
+    @Autowired
+    private LoginLogoutListener loginLogoutListener;
 
     private static PasswordEncoder encoder;
 
@@ -45,16 +48,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/app/**").authenticated();
         http.formLogin()
-                .loginPage("/login")
+                .loginPage("/")
                 .defaultSuccessUrl("/app")
-                .failureUrl("/login?error")
+                .failureUrl("/?error")
                 .usernameParameter("email").passwordParameter("password")
                 .permitAll()
 
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login").invalidateHttpSession(true)
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .addLogoutHandler(loginLogoutListener)
                 .permitAll()
 
                 .and()

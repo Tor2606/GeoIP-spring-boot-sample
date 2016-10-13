@@ -43,7 +43,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findOneByEmail(email);
     }
 
     @Transactional(readOnly = true)
@@ -55,12 +55,19 @@ public class UserService {
         return findByEmail(email) != null;
     }
 
-    public void updateCurrentUser(UserForm userForm) throws Exception {
+    public void updateCurrentUser(UserForm userForm, String reenteredPassword) throws Exception {
         User userFromDB = findByEmail(getUserPrincipalLogin());
         checkEmailOnUpdating(userForm, userFromDB);
+        checkReenteredPassword(userForm.getPassword(),reenteredPassword);
         updateUserFields(userForm, userFromDB);
         saveUser(userFromDB);
         userSessionService.setUser(userFromDB);
+    }
+
+    public void checkReenteredPassword(String password, String reenteredPassword) throws Exception {
+        if (!password.equals(reenteredPassword)) {
+            throw new Exception("Password and reentered password are different!");
+        }
     }
 
     protected void checkEmailOnUpdating(UserForm userForm, User userFromDB) throws Exception {

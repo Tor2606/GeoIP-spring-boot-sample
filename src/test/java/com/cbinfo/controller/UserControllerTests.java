@@ -137,20 +137,20 @@ public class UserControllerTests {
                 .andExpect(view().name(REDIRECT_APP))
                 .andExpect(redirectedUrl("/app"));
 
-        verify(userService, times(1)).updateCurrentUser(any());
+        verify(userService, times(1)).updateCurrentUser(any(),anyString());
         verifyNoMoreInteractions(userService);
     }
 
     @Test
     public void postEditUserWithExceptionWhenUserUpdatingTest() throws Exception {
-        doThrow(new Exception("Error")).when(userService).updateCurrentUser(any());
+        doThrow(new Exception("Error")).when(userService).updateCurrentUser(any(),anyString());
         mockMvc.perform(post("/users/edit"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(EDIT_USER_VIEW))
                 .andExpect(forwardedUrl(EDIT_USER_VIEW))
                 .andExpect(model().attribute("errorMessage", is("Error")));
 
-        verify(userService, times(1)).updateCurrentUser(any());
+        verify(userService, times(1)).updateCurrentUser(any(),anyString());
         verifyNoMoreInteractions(userService);
     }
 
@@ -165,7 +165,7 @@ public class UserControllerTests {
                 .andExpect(view().name(REDIRECT_APP))
                 .andExpect(redirectedUrl("/app"));
 
-        verify(userService, times(1)).updateCurrentUser(any());
+        verify(userService, times(1)).updateCurrentUser(any(),anyString());
         verifyNoMoreInteractions(userService);
     }
 

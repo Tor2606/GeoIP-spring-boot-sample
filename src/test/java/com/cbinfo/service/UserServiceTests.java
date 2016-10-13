@@ -96,6 +96,7 @@ public class UserServiceTests {
     public void updateCurrentUserTest() throws Exception {
         UserForm userForm = getUserForm();
         User userFromDB = new User();
+        String reenteredPass = "repass";
         UserService spyUserService = Mockito.spy(UserService.class);
         spyUserService.userSessionService = Mockito.mock(UserSessionService.class);
         doReturn(userFromDB).when(spyUserService).findByEmail(anyString());
@@ -104,13 +105,14 @@ public class UserServiceTests {
         doNothing().when(spyUserService).saveUser(userFromDB);
         doNothing().when(spyUserService.userSessionService).setUser(userFromDB);
 
-        spyUserService.updateCurrentUser(userForm);
+        spyUserService.updateCurrentUser(userForm, reenteredPass);
 
         verify(spyUserService, times(1)).findByEmail(anyString());
         verify(spyUserService, times(1)).checkEmailOnUpdating(userForm, userFromDB);
         verify(spyUserService, times(1)).updateUserFields(userForm, userFromDB);
         verify(spyUserService, times(1)).saveUser(userFromDB);
-        verify(spyUserService, times(1)).updateCurrentUser(userForm);
+        verify(spyUserService, times(1)).updateCurrentUser(userForm, reenteredPass);
+        verify(spyUserService, times(1)).checkReenteredPassword(anyString(), reenteredPass);
         //verifyNoMoreInteractions(spyUserService);
 
         verify(spyUserService.userSessionService, times(1)).setUser(userFromDB);

@@ -46,7 +46,7 @@
             <tbody>
             <tr th:each="userData : ${userDataList}">
                 <td th:text="${userDataStat.count}">...</td>
-                <td data-th-text="${#dates.format(userData.time,'dd MMM yyyy hh:mm:ss')}">...</td>
+                <td data-th-text="${#dates.format(userData.time)}">...</td>
                 <td data-th-text="${userData.user.email}">...</td>
                 <td data-th-text="${userData.country}">...</td>
                 <td data-th-text="${userData.deviceCategory}">...</td>

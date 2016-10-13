@@ -14,7 +14,8 @@ OIDS = FALSE
 ALTER TABLE users
   OWNER TO postgres;
 
-
+CREATE INDEX user_email_index
+ON users (email);
 
 CREATE TABLE IF NOT EXISTS user_data (
   user_data_id BIGSERIAL PRIMARY KEY,

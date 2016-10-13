@@ -32,7 +32,6 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserDataServiceTests {
-
     private static final String IP_FOR_TESTS = "93.75.87.81";
     private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.92 Safari/537.36";
     private static final String LOCAL_IP = "127.0.0.1";
@@ -152,7 +151,6 @@ public class UserDataServiceTests {
         assertThat(actual, is(UNDEFINED_COUNTRY));
         verify(spyUserDataService, times(1)).checkLocalHost(IP_FOR_TESTS);
         verify(spyUserDataService, times(1)).getServiceURL(IP_FOR_TESTS);
-        verify(spyUserDataService, times(1)).readStringFromInputStream(any());
         verify(spyUserDataService, times(1)).getCountry(IP_FOR_TESTS);
         verifyNoMoreInteractions(spyUserDataService);
     }

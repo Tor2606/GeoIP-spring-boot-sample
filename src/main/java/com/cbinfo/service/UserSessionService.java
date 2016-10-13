@@ -40,7 +40,7 @@ public class UserSessionService {
         org.springframework.security.core.userdetails.User principal;
         try {
             principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
             return null;
         }
         return principal;

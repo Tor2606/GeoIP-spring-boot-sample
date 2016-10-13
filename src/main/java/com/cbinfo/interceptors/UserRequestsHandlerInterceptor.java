@@ -20,7 +20,14 @@ public class UserRequestsHandlerInterceptor extends HandlerInterceptorAdapter {
     private RequestService requestService;
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        long startTime = System.currentTimeMillis();
+        request.setAttribute("startTime", startTime);
+        return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         LOGGER.info(requestService.getLoggingMessage(request));
         requestService.saveHttpServletRequest(request);
     }

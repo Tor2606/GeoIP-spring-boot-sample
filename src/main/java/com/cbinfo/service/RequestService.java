@@ -14,8 +14,9 @@ import java.util.Date;
 @Service
 public class RequestService {
 
-    private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, ip, url, users email): ";
+    private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, loading page time in millis, ip, url, users email): ";
     private static final String DELIMITER = ", ";
+    private static final String START_TIME = "startTime";
 
 
     @Autowired
@@ -38,13 +39,13 @@ public class RequestService {
     }
 
     public String getLoggingMessage(HttpServletRequest request) {
-        return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER).join(new Date().toString(), request.getRemoteAddr(),
+        return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER).join(new Date().toString(), System.currentTimeMillis() - (long)request.getAttribute(START_TIME), request.getRemoteAddr(),
                 request.getRequestURI(), getUserEmail());
     }
 
     protected String getUserEmail() {
         User user = userSessionService.getUser();
-        if(user == null) return "";
+        if(user == null) return "ANONYMOUS";
         return user.getEmail();
     }
 

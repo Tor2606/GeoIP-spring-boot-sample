@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping(value = "/login")
+@RequestMapping(value = "/")
 public class LoginController {
+
+    //todo /Big refactoring - advertiser template/ 2 types of user(user, admin(2 vkladka:) (dashboard, admin interface())))
 
     @Autowired
     private UserSessionService userSessionService;
@@ -16,7 +18,7 @@ public class LoginController {
     private static final String LOGIN_VIEW = "login/login";
     private static final String REDIRECT_TO_APP_HANDLER = "redirect:app";
 
-    @RequestMapping(value = "")
+    @RequestMapping("")
     public String getLogin() {
         if (userSessionService.getUser() != null) {
             return REDIRECT_TO_APP_HANDLER;
