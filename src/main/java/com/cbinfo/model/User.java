@@ -1,5 +1,6 @@
 package com.cbinfo.model;
 
+import com.cbinfo.model.enums.UserRoles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,6 +36,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<UserRequest> requestList;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
 
     public List<UserRequest> getRequestList() {
         return requestList;
@@ -128,5 +133,13 @@ public class User implements UserDetails {
 
     public void setUserIp(String userIp) {
         this.userIp = userIp;
+    }
+
+    public UserRoles getRole() {
+        return role;
+    }
+
+    public void setRole(UserRoles role) {
+        this.role = role;
     }
 }

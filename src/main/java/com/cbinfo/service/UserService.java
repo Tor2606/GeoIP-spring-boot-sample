@@ -2,6 +2,7 @@ package com.cbinfo.service;
 
 import com.cbinfo.dto.form.UserForm;
 import com.cbinfo.model.User;
+import com.cbinfo.model.enums.UserRoles;
 import com.cbinfo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,11 +34,12 @@ public class UserService {
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setRole(UserRoles.ROLE_USER);
         saveUser(user);
     }
 
     @Transactional
-    protected void saveUser(User user) {
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
@@ -120,5 +122,9 @@ public class UserService {
         result.setFirstName(user.getFirstName());
         result.setLastName(user.getLastName());
         return result;
+    }
+
+    public List<User> findAll() {
+        return (List<User>) userRepository.findAll();
     }
 }

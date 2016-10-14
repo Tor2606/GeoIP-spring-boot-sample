@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Cbinfo app</title>
     <link rel="stylesheet" href="../../static/css/application.css" th:href="@{/css/application.css}"/>
     <!-- Bootstrap -->
-    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
+          media="screen"/>
 
 </head>
 <body>
@@ -17,7 +18,8 @@
     <div class="span2 offset2 pull-right">
         <!-- Single button -->
         <div class="btn-group">
-            <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                 <span th:text="${user.email}">User</span>
                 <span class="caret"></span>
             </button>
@@ -28,32 +30,84 @@
         </div>
     </div>
 </header>
-<div class="container">
-    <div class="context">
-        <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
-        <h3>Requests info table:</h3>
-        <table class="table table-bordered pull-left">
-            <thead>
-            <tr>
-                <th>Index</th>
-                <th>Time</th>
-                <th>User's email(if available)</th>
-                <th>Country</th>
-                <th>Device category</th>
-                <th>Browser</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="userData : ${userDataList}">
-                <td th:text="${userDataStat.count}">...</td>
-                <td data-th-text="${#dates.format(userData.time)}">...</td>
-                <td data-th-text="${userData.user.email}">...</td>
-                <td data-th-text="${userData.country}">...</td>
-                <td data-th-text="${userData.deviceCategory}">...</td>
-                <td data-th-text="${userData.browser}">...</td>
-            </tr>
-            </tbody>
-        </table>
+
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
+        <li><a href="#tab2" data-toggle="tab" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab1">
+            <p>Hi, visitor</p>
+        </div>
+        <div class="tab-pane" id="tab2" sec:authorize="hasRole('ROLE_ADMIN')">
+
+            <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#admin_tab1" data-toggle="tab">Users</a></li>
+                    <li><a href="#admin_tab2" data-toggle="tab">Incoming requests</a></li>
+                </ul>
+                <div class="tab-content container">
+                    <div class="tab-pane active" id="admin_tab1">
+                        <div class="context" >
+                            <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
+                            <h3>Users table:</h3>
+                            <table class="table table-bordered pull-left">
+                                <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Email</th>
+                                    <th>First name</th>
+                                    <th>Last name</th>
+                                    <th>Ip</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${userList}">
+                                    <td th:text="${userStat.count}">...</td>
+                                    <td data-th-text="${user.email}">...</td>
+                                    <td data-th-text="${user.firstName}">...</td>
+                                    <td data-th-text="${user.lastName}">...</td>
+                                    <td data-th-text="${user.userIp}">...</td>
+                                    <td data-th-text="${user.role.name()}">...</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="admin_tab2">
+                        <div class="context">
+                            <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
+                            <h3>Requests info table:</h3>
+                            <table class="table table-bordered pull-left">
+                                <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Time</th>
+                                    <th>User's email(if available)</th>
+                                    <th>Country</th>
+                                    <th>Device category</th>
+                                    <th>Browser</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="userData : ${userDataList}">
+                                    <td th:text="${userDataStat.count}">...</td>
+                                    <td data-th-text="${#dates.format(userData.time)}">...</td>
+                                    <td data-th-text="${userData.user.email}">...</td>
+                                    <td data-th-text="${userData.country}">...</td>
+                                    <td data-th-text="${userData.deviceCategory}">...</td>
+                                    <td data-th-text="${userData.browser}">...</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -61,7 +115,6 @@
 
     <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
 </footer>
-
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
