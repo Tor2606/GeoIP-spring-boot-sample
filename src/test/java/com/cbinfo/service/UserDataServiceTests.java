@@ -54,7 +54,7 @@ public class UserDataServiceTests {
     private UserService userServiceMock;
 
     @InjectMocks
-    private UserDataService userDataService = new UserDataService();
+    private UserDataService userDataService;
 
     @Before
     public void init() throws ExecutionException {

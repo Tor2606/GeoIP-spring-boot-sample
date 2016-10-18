@@ -15,6 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,12 +26,12 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class RequestServiceTests {
 
-    private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, ip, url, users email): ";
+    private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, loading page time in millis, ip, url, users email): ";
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";
     private static final String EMAIL_VALUE = "ip";
     private static final String DELIMITER = ", ";
-
+    private static final String START_TIME = "startTime";
 
     @Mock
     private UserSessionService userSessionService;
@@ -83,21 +85,38 @@ public class RequestServiceTests {
         HttpServletRequest httpServletRequestMock = Mockito.mock(HttpServletRequest.class);
         when(httpServletRequestMock.getRequestURI()).thenReturn(URI_VALUE);
         when(httpServletRequestMock.getRemoteAddr()).thenReturn(IP_VALUE);
+        when(httpServletRequestMock.getAttribute(START_TIME)).thenReturn(System.currentTimeMillis());
         RequestService spyRequestService = Mockito.spy(RequestService.class);
         doReturn(EMAIL_VALUE).when(spyRequestService).getUserEmail();
         String expectedDate = new Date().toString();//
 
         String actual = spyRequestService.getLoggingMessage(httpServletRequestMock);
 
-        assertThat(actual, is(expectedMessage(expectedDate)));
+        System.out.println(actual);
+        assertThat(getBeginning(actual), is(LOGGING_MESSAGE_BEGINNING));
+        assertThat(getDate(actual), is(expectedDate));
         verify(spyRequestService, times(1)).getUserEmail();
         verify(spyRequestService, times(1)).getLoggingMessage(any());
         verifyNoMoreInteractions(spyRequestService);
     }
 
+    private String getDate(String actual) {
+        Pattern pattern = Pattern.compile("...\\s...\\s");
+        Matcher matcher = pattern.matcher(actual);
+        String result = "";
+        while (matcher.find()) {
+            result = actual.substring(matcher.start() + 1, matcher.end());
+        }
+        return result;
+    }
+
+    private String getBeginning(String s) {
+        return s.split(":")[0].concat(": ");
+    }
+
     private String expectedMessage(String date) {
         return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER)
-                .join(date, IP_VALUE, URI_VALUE, EMAIL_VALUE);
+                .join(date, 0L, IP_VALUE, URI_VALUE, EMAIL_VALUE);
     }
 
     @Test

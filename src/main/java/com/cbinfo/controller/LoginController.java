@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/")
 public class LoginController {
 
-    //todo /Big refactoring - advertiser template/ 2 types of user(user, admin(2 vkladka:) (dashboard, admin interface())))
-
     @Autowired
     private UserSessionService userSessionService;
 

@@ -39,7 +39,7 @@ public class LoginControllerTests {
     public void getLoginTestWhenNotLoggedIn() throws Exception {
         when(userSessionService.getUser()).thenReturn(null);
 
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(LOGIN_VIEW))
                 .andExpect(forwardedUrl(LOGIN_VIEW));
@@ -52,7 +52,7 @@ public class LoginControllerTests {
     public void getLoginTestWhenLoggedIn() throws Exception {
         when(userSessionService.getUser()).thenReturn(new User());
 
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(REDIRECT_TO_APP_HANDLER))
                 .andExpect(redirectedUrl("app"));
