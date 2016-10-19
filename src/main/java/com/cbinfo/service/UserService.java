@@ -124,6 +124,7 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public List<User> findAll() {
         return (List<User>) userRepository.findAll();
     }

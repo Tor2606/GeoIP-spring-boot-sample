@@ -70,8 +70,8 @@ public class UserDataServiceTests {
     @Test
     public void getDataAndSaveTest() throws Exception {
         UserDataService spyUserDataService = Mockito.spy(UserDataService.class);
-        doNothing().when(spyUserDataService).setUserDataDTOCountry(any(),any());
-        doNothing().when(spyUserDataService).setUserDataDTOFields(any(),any());
+        doNothing().when(spyUserDataService).setUserDataDTOCountry(any(), any());
+        doNothing().when(spyUserDataService).setUserDataDTOFields(any(), any());
         doNothing().when(spyUserDataService).saveUserData(any());
 
         UserDataDTO actual = spyUserDataService.getDataAndSave(httpServletRequestMock);
@@ -88,7 +88,7 @@ public class UserDataServiceTests {
     public void setUserDataDTOCountryTest() throws ExecutionException {
         UserDataDTO actual = new UserDataDTO();
 
-        userDataService.setUserDataDTOCountry(actual,httpServletRequestMock);
+        userDataService.setUserDataDTOCountry(actual, httpServletRequestMock);
 
         assertThat(actual.getCountry(), is(COUNTRY));
         verify(countryCashMock, times(1)).get(IP_FOR_TESTS);
@@ -100,7 +100,7 @@ public class UserDataServiceTests {
         doThrow(new ExecutionException(new Exception())).when(countryCashMock).get(any());
         UserDataDTO actual = new UserDataDTO();
 
-        userDataService.setUserDataDTOCountry(actual,httpServletRequestMock);
+        userDataService.setUserDataDTOCountry(actual, httpServletRequestMock);
 
         assertThat(actual.getCountry(), is(UNDEFINED_COUNTRY));
         verify(countryCashMock, times(1)).get(IP_FOR_TESTS);
@@ -151,6 +151,7 @@ public class UserDataServiceTests {
         assertThat(actual, is(UNDEFINED_COUNTRY));
         verify(spyUserDataService, times(1)).checkLocalHost(IP_FOR_TESTS);
         verify(spyUserDataService, times(1)).getServiceURL(IP_FOR_TESTS);
+        verify(spyUserDataService, times(1)).readStringFromInputStream(any());
         verify(spyUserDataService, times(1)).getCountry(IP_FOR_TESTS);
         verifyNoMoreInteractions(spyUserDataService);
     }

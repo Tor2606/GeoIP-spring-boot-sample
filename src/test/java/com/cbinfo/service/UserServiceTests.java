@@ -16,6 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -96,10 +99,11 @@ public class UserServiceTests {
     public void updateCurrentUserTest() throws Exception {
         UserForm userForm = getUserForm();
         User userFromDB = new User();
-        String reenteredPass = "repass";
+        String reenteredPass = PASSWORD;
         UserService spyUserService = Mockito.spy(UserService.class);
         spyUserService.userSessionService = Mockito.mock(UserSessionService.class);
-        doReturn(userFromDB).when(spyUserService).findByEmail(anyString());
+        doReturn(USERNAME).when(spyUserService).getUserPrincipalLogin();
+        doReturn(userFromDB).when(spyUserService).findByEmail(USERNAME);
         doNothing().when(spyUserService).checkEmailOnUpdating(userForm, userFromDB);
         doNothing().when(spyUserService).updateUserFields(userForm, userFromDB);
         doNothing().when(spyUserService).saveUser(userFromDB);
@@ -107,13 +111,14 @@ public class UserServiceTests {
 
         spyUserService.updateCurrentUser(userForm, reenteredPass);
 
-        verify(spyUserService, times(1)).findByEmail(anyString());
+        verify(spyUserService, times(1)).findByEmail(USERNAME);
+        verify(spyUserService, times(1)).getUserPrincipalLogin();
         verify(spyUserService, times(1)).checkEmailOnUpdating(userForm, userFromDB);
         verify(spyUserService, times(1)).updateUserFields(userForm, userFromDB);
         verify(spyUserService, times(1)).saveUser(userFromDB);
+        verify(spyUserService, times(1)).checkReenteredPassword(anyString(), anyString());
         verify(spyUserService, times(1)).updateCurrentUser(userForm, reenteredPass);
-        verify(spyUserService, times(1)).checkReenteredPassword(anyString(), reenteredPass);
-        //verifyNoMoreInteractions(spyUserService);
+        verifyNoMoreInteractions(spyUserService);
 
         verify(spyUserService.userSessionService, times(1)).setUser(userFromDB);
         verifyNoMoreInteractions(userSessionService);
@@ -207,7 +212,7 @@ public class UserServiceTests {
     public void getUserPrincipalsOKTest() {
         org.springframework.security.core.userdetails.User userDetailsUserMock =
                 Mockito.mock(org.springframework.security.core.userdetails.User.class);
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetailsUserMock,null);
+        Authentication auth = new UsernamePasswordAuthenticationToken(userDetailsUserMock, null);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         org.springframework.security.core.userdetails.User actual = userService.getUserPrincipals();
@@ -217,7 +222,7 @@ public class UserServiceTests {
 
     @Test
     public void getUserPrincipalsWhenPrincipalsAreInstanceOfStringTest() {
-        Authentication auth = new UsernamePasswordAuthenticationToken("Some String instance",null);
+        Authentication auth = new UsernamePasswordAuthenticationToken("Some String instance", null);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         org.springframework.security.core.userdetails.User actual = userService.getUserPrincipals();
@@ -319,6 +324,52 @@ public class UserServiceTests {
         assertThat(actual.getFirstName(), is(user.getFirstName()));
         assertThat(actual.getLastName(), is(user.getLastName()));
         assertThat(actual.getEmail(), is(user.getEmail()));
+    }
+
+    @Test
+    public void findAllTest() {
+        List list = newArrayList();
+        when(userRepository.findAll()).thenReturn(list);
+
+        List actual = userService.findAll();
+
+        assertThat(actual, is(list));
+        verify(userRepository, times(1)).findAll();
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    public void saveUserTest() {
+        User user = getUser();
+
+        userService.saveUser(user);
+
+        verify(userRepository, times(1)).save(user);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    public void findByEmailTest() {
+        User user = getUser();
+        when(userRepository.findOneByEmail(EMAIL_VALUE)).thenReturn(user);
+
+        User actual = userService.findByEmail(EMAIL_VALUE);
+
+        assertThat(actual, is(user));
+        verify(userRepository, times(1)).findOneByEmail(EMAIL_VALUE);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    public void findByUserIpTest() {
+        List list = newArrayList();
+        when(userRepository.findByUserIp(EMAIL_VALUE)).thenReturn(list);
+
+        List actual = userService.findByUserIp(EMAIL_VALUE);
+
+        assertThat(actual, is(list));
+        verify(userRepository, times(1)).findByUserIp(EMAIL_VALUE);
+        verifyNoMoreInteractions(userRepository);
     }
 
     private UserForm getUserForm() {

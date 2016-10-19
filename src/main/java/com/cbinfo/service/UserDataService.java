@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class UserDataService {
     private static final String LOCAL_IP = "127.0.0.1";
     private static final String UNDEFINED_COUNTRY = "undefined";
     private static final String IPINFO_SERVICE_URL_ADDRESS = "http://www.ipinfo.io/";
+    private static final String LOCAL_IP2 = "0:0:0:0:0:0:0:1";
 
     LoadingCache<String, String> countryCache =
             CacheBuilder.newBuilder()
@@ -114,7 +116,7 @@ public class UserDataService {
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        return ip.equals(LOCAL_IP);
+        return ip.equals(LOCAL_IP)||ip.equals(LOCAL_IP2);
     }
 
     protected String getCountryFromJSON(String data) {

@@ -4,6 +4,7 @@ import com.cbinfo.model.User;
 import com.cbinfo.model.UserRequest;
 import com.cbinfo.repository.UserRequestsRepository;
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,9 +31,11 @@ public class RequestServiceTests {
     private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, loading page time in millis, ip, url, users email): ";
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";
-    private static final String EMAIL_VALUE = "ip";
+    private static final String EMAIL_VALUE = "email";
     private static final String DELIMITER = ", ";
     private static final String START_TIME = "startTime";
+    private static final java.lang.String BASIC_PATTERN = ": ... ... .. ..:..:.. .... ....";
+    private static final String ANONYMOUS = "ANONYMOUS";
 
     @Mock
     private UserSessionService userSessionService;
@@ -91,21 +95,60 @@ public class RequestServiceTests {
         String expectedDate = new Date().toString();//
 
         String actual = spyRequestService.getLoggingMessage(httpServletRequestMock);
-
         System.out.println(actual);
         assertThat(getBeginning(actual), is(LOGGING_MESSAGE_BEGINNING));
         assertThat(getDate(actual), is(expectedDate));
+        assert (actual.contains(IP_VALUE));
+        assert (actual.contains(URI_VALUE));
+        assert (actual.contains(EMAIL_VALUE));
+        assert (getLoadingTime(actual) < 100);
         verify(spyRequestService, times(1)).getUserEmail();
         verify(spyRequestService, times(1)).getLoggingMessage(any());
         verifyNoMoreInteractions(spyRequestService);
     }
 
-    private String getDate(String actual) {
-        Pattern pattern = Pattern.compile("...\\s...\\s");
+    @Test
+    public void getUserEmailTest() {
+        User user = new User();
+        user.setEmail(EMAIL_VALUE);
+        when(userSessionService.getUser()).thenReturn(user);
+
+        String actual = requestService.getUserEmail();
+
+        assertThat(actual, is(EMAIL_VALUE));
+        verify(userSessionService, times(1)).getUser();
+        verifyNoMoreInteractions(userSessionService);
+    }
+
+    @Test
+    public void getUserEmailWhenNullTest() {
+        when(userSessionService.getUser()).thenReturn(null);
+
+        String actual = requestService.getUserEmail();
+
+        assertThat(actual, is(ANONYMOUS));
+        verify(userSessionService, times(1)).getUser();
+        verifyNoMoreInteractions(userSessionService);
+    }
+
+    private int getLoadingTime(String actual) {
+        String s = BASIC_PATTERN + "(, ..?,)";
+        Pattern pattern = Pattern.compile(s);
         Matcher matcher = pattern.matcher(actual);
         String result = "";
         while (matcher.find()) {
-            result = actual.substring(matcher.start() + 1, matcher.end());
+            result = actual.substring(matcher.end() - 3, matcher.end() - 1);
+        }
+        result = StringUtils.deleteWhitespace(result);
+        return Integer.valueOf(result);
+    }
+
+    private String getDate(String actual) {
+        Pattern pattern = Pattern.compile(BASIC_PATTERN);
+        Matcher matcher = pattern.matcher(actual);
+        String result = "";
+        while (matcher.find()) {
+            result = actual.substring(matcher.start() + 2, matcher.end());
         }
         return result;
     }
