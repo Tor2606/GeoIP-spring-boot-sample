@@ -37,6 +37,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<UserRequest> requestList;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRoles role;
@@ -133,6 +137,14 @@ public class User implements UserDetails {
 
     public void setUserIp(String userIp) {
         this.userIp = userIp;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public UserRoles getRole() {
