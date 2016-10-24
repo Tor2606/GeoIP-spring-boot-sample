@@ -18,23 +18,22 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class RequestServiceTests {
-
-    private static final String LOGGING_MESSAGE_BEGINNING = "Incoming request(time, loading page time in millis, ip, url, users email): ";
+    //todo move to prop file (@Value())
+    //todo add deleting users and comp
+    private static final String LOGGING_MESSAGE_BEGINNING ="Incoming request(time, loading page time in millis, ip, url, users email): ";
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";
     private static final String EMAIL_VALUE = "email";
     private static final String DELIMITER = ", ";
     private static final String START_TIME = "startTime";
-    private static final java.lang.String BASIC_PATTERN = ": ... ... .. ..:..:.. .... ....";
+    private static final String BASIC_PATTERN = ": ... ... .. ..:..:.. .... ....";
     private static final String ANONYMOUS = "ANONYMOUS";
 
     @Mock
@@ -95,7 +94,7 @@ public class RequestServiceTests {
         String expectedDate = new Date().toString();//
 
         String actual = spyRequestService.getLoggingMessage(httpServletRequestMock);
-        System.out.println(actual);
+        System.out.println(LOGGING_MESSAGE_BEGINNING);
         assertThat(getBeginning(actual), is(LOGGING_MESSAGE_BEGINNING));
         assertThat(getDate(actual), is(expectedDate));
         assert (actual.contains(IP_VALUE));
@@ -171,4 +170,12 @@ public class RequestServiceTests {
         verify(userRequestsRepository, times(1)).save((UserRequest) any());
         verifyNoMoreInteractions(userRequestsRepository);
     }
+
+    /*@Configuration
+    @PropertySource("classpath:com/cbinfo/testing.properties")
+    public class ConstService {
+        @Value("${constants.loggingMessageBeginning}")
+        protected String loggingMessageBeginning;
+
+    }*/
 }

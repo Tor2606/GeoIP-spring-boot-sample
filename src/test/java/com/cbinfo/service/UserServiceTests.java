@@ -328,12 +328,13 @@ public class UserServiceTests {
 
     @Test
     public void findAllTest() {
-        List list = newArrayList();
+        List<User> list = newArrayList(getUser());
         when(userRepository.findAll()).thenReturn(list);
 
         List actual = userService.findAll();
 
         assertThat(actual, is(list));
+        assertThat(actual.get(0), is(list.get(0)));
         verify(userRepository, times(1)).findAll();
         verifyNoMoreInteractions(userRepository);
     }
@@ -362,12 +363,13 @@ public class UserServiceTests {
 
     @Test
     public void findByUserIpTest() {
-        List list = newArrayList();
+        List<User> list = newArrayList(getUser());
         when(userRepository.findByUserIp(EMAIL_VALUE)).thenReturn(list);
 
         List actual = userService.findByUserIp(EMAIL_VALUE);
 
         assertThat(actual, is(list));
+        assertThat(actual.get(0), is(list.get(0)));
         verify(userRepository, times(1)).findByUserIp(EMAIL_VALUE);
         verifyNoMoreInteractions(userRepository);
     }

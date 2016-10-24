@@ -1,6 +1,7 @@
 package com.cbinfo.controller;
 
 import com.cbinfo.dto.form.UserForm;
+import com.cbinfo.service.CompanyService;
 import com.cbinfo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Controller
@@ -26,10 +26,14 @@ public class UserController {
     private static final String LOGIN_PAGE = "/";
 
     @Autowired
+    private CompanyService companyService;
+
+    @Autowired
     private UserService userService;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult,  @RequestParam("reenteredPassword") String reenteredPassword,HttpServletRequest request, ModelMap modelMap) {
+    public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult,  @RequestParam("reenteredPassword") String reenteredPassword,
+                                 HttpServletRequest request, @RequestParam("newCompanyName") String newCompanyName, ModelMap modelMap) {
         if (userService.isEmailRegistered(userForm.getEmail())) {
             modelMap.addAttribute("errorMessage", "Email is not available!");
             return CREATE_USER_VIEW;
@@ -44,6 +48,8 @@ public class UserController {
             modelMap.addAttribute("errorMessage", e.getMessage());
             return CREATE_USER_VIEW;
         }
+
+        setNewCompany(userForm, newCompanyName);
         userService.createUser(userForm, request.getRemoteAddr());
         return REDIRECT + LOGIN_PAGE;
     }
@@ -51,6 +57,7 @@ public class UserController {
     @RequestMapping("/create")
     public String getCreateUser(ModelMap modelMap) {
         modelMap.put("userForm", new UserForm());
+        modelMap.put("companies", companyService.findAll());
         return CREATE_USER_VIEW;
     }
 
@@ -75,4 +82,11 @@ public class UserController {
         }
         return REDIRECT + APP_PGE;
     }
+
+    private void setNewCompany(@Valid UserForm userForm, @RequestParam("newCompanyName") String newCompanyName) {
+        if(isNotBlank(newCompanyName)){
+            userForm.setCompanyName(newCompanyName);
+        }
+    }
 }
+

@@ -16,6 +16,16 @@ public class UserForm {
 
     private String lastName;
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    private String companyName;
+
     public String getFirstName() {
         return firstName;
     }

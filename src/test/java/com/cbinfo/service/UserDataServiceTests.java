@@ -195,16 +195,16 @@ public class UserDataServiceTests {
         Boolean actual = userDataService.checkLocalHost(LOCAL_IP);
         assertThat(actual, is(true));
     }
-
-
+    
     @Test
     public void findAllTest() {
-        List<UserData> expected = newArrayList();
+        List<UserData> expected = newArrayList(new UserData());
         when(userDataRepositoryMock.findAll()).thenReturn(expected);
 
         List<UserData> actual = userDataService.findAll();
 
         assertThat(actual, is(expected));
+        assertThat(actual.get(0), is(expected.get(0)));
     }
 
     @Test
