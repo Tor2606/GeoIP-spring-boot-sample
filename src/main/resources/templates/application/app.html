@@ -46,6 +46,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#admin_tab1" data-toggle="tab">Users</a></li>
                     <li><a href="#admin_tab2" data-toggle="tab">Incoming requests</a></li>
+                    <li><a href="#admin_tab3" data-toggle="tab">Companies</a></li>
                 </ul>
                 <div class="tab-content container">
                     <div class="tab-pane active" id="admin_tab1">
@@ -64,7 +65,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="user : ${userList}">
+                                <tr th:each="user : ${users}">
                                     <td th:text="${userStat.count}">...</td>
                                     <td data-th-text="${user.email}">...</td>
                                     <td data-th-text="${user.firstName}">...</td>
@@ -99,6 +100,27 @@
                                     <td data-th-text="${userData.country}">...</td>
                                     <td data-th-text="${userData.deviceCategory}">...</td>
                                     <td data-th-text="${userData.browser}">...</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="admin_tab3">
+                        <div class="context">
+                            <h3>Companies table:</h3>
+                            <table class="table table-bordered pull-left">
+                                <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Name</th>
+                                    <th>Users (email)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="company : ${companies}">
+                                    <td th:text="${companyStat.count}">...</td>
+                                    <td data-th-text="${company.name}">...</td>
+                                    <td><span th:each="user : ${company.users}"><span th:text="${user.getEmail()}">...</span></span></td>
                                 </tr>
                                 </tbody>
                             </table>

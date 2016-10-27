@@ -49,7 +49,7 @@ public class UserController {
             return CREATE_USER_VIEW;
         }
 
-        setNewCompany(userForm, newCompanyName);
+        userService.setNewCompanyToUserForm(userForm, newCompanyName);
         userService.createUser(userForm, request.getRemoteAddr());
         return REDIRECT + LOGIN_PAGE;
     }
@@ -64,6 +64,7 @@ public class UserController {
     @RequestMapping("/edit")
     public String getEditUser(ModelMap modelMap) {
         modelMap.put("userForm", userService.getCurrentSessionUserToForm());
+        modelMap.put("companies", companyService.findAll());
         return EDIT_USER_VIEW;
     }
 
@@ -83,10 +84,5 @@ public class UserController {
         return REDIRECT + APP_PGE;
     }
 
-    private void setNewCompany(@Valid UserForm userForm, @RequestParam("newCompanyName") String newCompanyName) {
-        if(isNotBlank(newCompanyName)){
-            userForm.setCompanyName(newCompanyName);
-        }
-    }
 }
 

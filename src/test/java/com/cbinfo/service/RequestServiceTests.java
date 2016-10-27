@@ -27,6 +27,10 @@ import static org.mockito.Mockito.*;
 public class RequestServiceTests {
     //todo move to prop file (@Value())
     //todo add deleting users and comp
+    //// TODO: 24.10.2016  think on regex for Artem
+    //todo don't write request param(name), if it's the same
+    //// TODO: 24.10.2016 pass to service new method for company
+    //todo change findAll in service(through stream, not straight)
     private static final String LOGGING_MESSAGE_BEGINNING ="Incoming request(time, loading page time in millis, ip, url, users email): ";
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";

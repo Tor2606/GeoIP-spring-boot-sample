@@ -51,6 +51,23 @@
 
                         </div>
                     </div>
+                    <div class="controls-group">
+                        <label for="companies">Company</label>
+                        <select id="companies" th:field="*{companyName}">
+                            <option th:each="company : ${companies}"
+                                    th:value="${company}" th:text="${company.name}">Company
+                            </option>
+                        </select>
+                    </div>
+                    <div class="controls-group">
+                        <a class="createNewCompany">No company in the list? Press to create new!</a>
+                    </div>
+                    <div class="control-group hidden" hidden="true">
+                        <label for="company-name">New Company name</label>
+                        <div class="controls">
+                            <input type="text" id="company-name" name="newCompanyName"/>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-default">Submit change</button>
                 </form>
             </div>
@@ -59,7 +76,7 @@
 </div>
 
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}">
-</script>
+<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../../static/js/view-company-form.js" th:src="@{/js/view-company-form.js}"></script>
 </body>
 </html>

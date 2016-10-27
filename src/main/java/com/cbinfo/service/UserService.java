@@ -27,6 +27,9 @@ public class UserService {
     @Autowired
     protected PasswordEncoder passwordEncoder;
 
+    @Autowired
+    protected CompanyService companyService;
+
     public void createUser(UserForm userForm, String ip) {
         User user = new User();
         user.setUserIp(ip);
@@ -35,6 +38,7 @@ public class UserService {
         user.setLastName(userForm.getLastName());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
         user.setRole(UserRoles.ROLE_USER);
+        user.setCompany(companyService.getCompanyByName(userForm.getCompanyName()));
         saveUser(user);
     }
 
@@ -127,5 +131,12 @@ public class UserService {
     @Transactional
     public List<User> findAll() {
         return (List<User>) userRepository.findAll();
+    }
+
+    public void setNewCompanyToUserForm(UserForm userForm, String newCompanyName) {
+        if(isNotBlank(newCompanyName)){
+            companyService.createNewCompany(newCompanyName);
+            userForm.setCompanyName(newCompanyName);
+        }
     }
 }
