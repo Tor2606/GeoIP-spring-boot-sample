@@ -4,7 +4,8 @@
     <title>Create user</title>
     <link rel="stylesheet" href="../../static/css/formPageStyle.css" th:href="@{/css/formPageStyle.css}"/>
     <!-- Bootstrap -->
-    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
+          media="screen"/>
 </head>
 <body>
 
@@ -14,12 +15,12 @@
             <div class="form-body">
                 <h2>Please, edit the form</h2>
                 <p class="text-error help-block" th:if="${errorMessage} != null"
-                      th:text="${errorMessage}">Error</p>
+                   th:text="${errorMessage}">Error</p>
                 <form th:action="@{/users/edit}" method="post" th:object="${userForm}">
                     <div class="control-group">
                         <label for="email">Email*</label>
                         <div class="controls">
-                            <input type="text" id="email" name="email"  th:field="*{email}"/>
+                            <input type="text" id="email" name="email" th:field="*{email}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}"
                                       th:errors="*{email}">Error</span>
                         </div>
@@ -27,7 +28,7 @@
                     <div class="control-group">
                         <label for="password">Change password</label>
                         <div class="controls">
-                            <input type="password" id="password" name="password"  th:field="*{password}"/>
+                            <input type="password" id="password" name="password" th:field="*{password}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('password')}"
                                       th:errors="*{password}">Error</span>
                         </div>
@@ -35,13 +36,13 @@
                     <div class="control-group">
                         <label for="reenteredPassword">Reenter password</label>
                         <div class="controls">
-                            <input type="password" id="reenteredPassword" name="reenteredPassword" />
+                            <input type="password" id="reenteredPassword" name="reenteredPassword"/>
                         </div>
                     </div>
                     <div class="control-group">
                         <label for="first_name">Name</label>
                         <div class="controls">
-                            <input type="text" id="first_name" name="firstName" th:field="*{firstName}" />
+                            <input type="text" id="first_name" name="firstName" th:field="*{firstName}"/>
                         </div>
                     </div>
                     <div class="controls-row">
@@ -55,7 +56,7 @@
                         <label for="companies">Company</label>
                         <select id="companies" th:field="*{companyName}">
                             <option th:each="company : ${companies}"
-                                    th:value="${company.name}" th:text="${company.name}">Company
+                                    th:value="${company}" th:text="${company}">Company
                             </option>
                         </select>
                     </div>

@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -24,14 +27,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
+@SpringApplicationConfiguration
+@TestPropertySource(locations = "com/cbinfo/resources/testing.properties")
 public class RequestServiceTests {
     //todo move to prop file (@Value()), how to pass it to mockito(It's possible to get it in Property class(straight and bad)too)
-    //todo add deleting users and comp
     //// TODO: 24.10.2016  think on regex for Artem
-    //todo don't write request param(name), if it's the same
-    //// TODO: 24.10.2016 pass to service new method for company
     //todo change findAll in service(through stream, not straight)
-    private static final String LOGGING_MESSAGE_BEGINNING ="Incoming request(time, loading page time in millis, ip, url, users email): ";
+
+    @Value(value = "constants.loggingMessageBeginning")
+    private static String loggingMessageBeginning;
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";
     private static final String EMAIL_VALUE = "email";
@@ -39,6 +43,8 @@ public class RequestServiceTests {
     private static final String START_TIME = "startTime";
     private static final String BASIC_PATTERN = ": ... ... .. ..:..:.. .... ....";
     private static final String ANONYMOUS = "ANONYMOUS";
+
+
 
     @Mock
     private UserSessionService userSessionService;
@@ -48,6 +54,10 @@ public class RequestServiceTests {
 
     @InjectMocks
     private RequestService requestService;
+
+    public static String getLoggingMessageBeginning() {
+        return loggingMessageBeginning;
+    }
 
     @Before
     public void init() {
@@ -98,8 +108,8 @@ public class RequestServiceTests {
         String expectedDate = new Date().toString();//
 
         String actual = spyRequestService.getLoggingMessage(httpServletRequestMock);
-        System.out.println(LOGGING_MESSAGE_BEGINNING);
-        assertThat(getBeginning(actual), is(LOGGING_MESSAGE_BEGINNING));
+        System.out.println(loggingMessageBeginning);
+        assertThat(getBeginning(actual), is(loggingMessageBeginning));
         assertThat(getDate(actual), is(expectedDate));
         assert (actual.contains(IP_VALUE));
         assert (actual.contains(URI_VALUE));
@@ -161,7 +171,7 @@ public class RequestServiceTests {
     }
 
     private String expectedMessage(String date) {
-        return LOGGING_MESSAGE_BEGINNING + Joiner.on(DELIMITER)
+        return loggingMessageBeginning + Joiner.on(DELIMITER)
                 .join(date, 0L, IP_VALUE, URI_VALUE, EMAIL_VALUE);
     }
 

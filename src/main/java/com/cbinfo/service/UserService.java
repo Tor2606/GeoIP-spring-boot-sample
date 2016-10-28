@@ -74,7 +74,7 @@ public class UserService {
 
     private void updateUserCompany(UserForm userForm, User userFromDB) {
         String companyNameInForm = userForm.getCompanyName();
-        if (companyNameInForm != userFromDB.getCompany().getName()) {
+        if ((companyNameInForm != userFromDB.getCompany().getName() )|| (userFromDB.getCompany()==null)) {
             Company updatedCompany = companyService.getCompanyByName(companyNameInForm);
             userFromDB.setCompany(updatedCompany);
         }
@@ -135,7 +135,17 @@ public class UserService {
         result.setEmail(user.getEmail());
         result.setFirstName(user.getFirstName());
         result.setLastName(user.getLastName());
+        setCompanyNameToForm(user, result);
         return result;
+    }
+
+    private void setCompanyNameToForm(User user, UserForm userForm) {
+        Company usersCompany = user.getCompany();
+        if (usersCompany != null) {
+            userForm.setCompanyName(usersCompany.getName());
+        }else{
+            userForm.setCompanyName("no company");
+        }
     }
 
     @Transactional
@@ -150,7 +160,7 @@ public class UserService {
         }
     }
 
-    public void delete(String stringUserId){
+    public void delete(String stringUserId) {
         delete(Long.valueOf(stringUserId));
     }
 

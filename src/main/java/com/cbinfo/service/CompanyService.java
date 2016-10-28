@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -40,5 +41,9 @@ public class CompanyService {
     @Transactional
     public void delete(Long companyId){
         companyRepository.delete(companyId);
+    }
+
+    public List<String> findAllNames() {
+        return findAll().stream().map((el)->el.getName()).collect(Collectors.toList());
     }
 }

@@ -9,12 +9,14 @@ public class UserForm {
     @NotEmpty(message = "You have to write your email!!")
     private String email;
 
-    @Length(min=6, max=20, message = "Please, enter your password (6-20 symbols)!")
+    @Length(min = 6, max = 20, message = "Please, enter your password (6-20 symbols)!")
     private String password;
 
     private String firstName;
 
     private String lastName;
+
+    private String companyName;
 
     public String getCompanyName() {
         return companyName;
@@ -24,7 +26,6 @@ public class UserForm {
         this.companyName = companyName;
     }
 
-    private String companyName;
 
     public String getFirstName() {
         return firstName;

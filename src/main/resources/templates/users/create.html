@@ -56,7 +56,7 @@
                         <label for="companies">Company</label>
                         <select id="companies" th:field="*{companyName}">
                             <option th:each="company : ${companies}"
-                                    th:value="${company.name}" th:text="${company.name}">Company
+                                    th:value="${company}" th:text="${company}">Company
                             </option>
                         </select>
                     </div>

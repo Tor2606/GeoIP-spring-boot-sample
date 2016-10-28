@@ -33,8 +33,8 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam("reenteredPassword") String reenteredPassword,
-                                 HttpServletRequest request, @RequestParam("newCompanyName") String newCompanyName, ModelMap modelMap) {
+    public String postCreateUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam String reenteredPassword,
+                                 HttpServletRequest request, @RequestParam String newCompanyName, ModelMap modelMap) {
         if (userService.isEmailRegistered(userForm.getEmail())) {
             modelMap.addAttribute("errorMessage", "Email is not available!");
             return CREATE_USER_VIEW;
@@ -57,20 +57,20 @@ public class UserController {
     @RequestMapping("/create")
     public String getCreateUser(ModelMap modelMap) {
         modelMap.put("userForm", new UserForm());
-        modelMap.put("companies", companyService.findAll());
+        modelMap.put("companies", companyService.findAllNames());
         return CREATE_USER_VIEW;
     }
 
     @RequestMapping("/edit")
     public String getEditUser(ModelMap modelMap) {
         modelMap.put("userForm", userService.getCurrentSessionUserToForm());
-        modelMap.put("companies", companyService.findAll());
+        modelMap.put("companies", companyService.findAllNames());
         return EDIT_USER_VIEW;
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam("reenteredPassword") String reenteredPassword,
-                               @RequestParam("newCompanyName") String newCompanyName, ModelMap modelMap) {
+    public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam String reenteredPassword,
+                               @RequestParam String newCompanyName, ModelMap modelMap) {
         if (bindingResult.hasFieldErrors("email")) {
             return EDIT_USER_VIEW;
         } else if (isNotBlank(userForm.getPassword()) && bindingResult.hasFieldErrors("password")) {
