@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -116,7 +115,7 @@ public class UserDataService {
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        return ip.equals(LOCAL_IP)||ip.equals(LOCAL_IP2);
+        return ip.equals(LOCAL_IP) || ip.equals(LOCAL_IP2);
     }
 
     protected String getCountryFromJSON(String data) {

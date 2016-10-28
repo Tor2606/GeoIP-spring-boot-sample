@@ -1,6 +1,7 @@
 package com.cbinfo.service;
 
 import com.cbinfo.dto.form.UserForm;
+import com.cbinfo.model.Company;
 import com.cbinfo.model.User;
 import com.cbinfo.model.enums.UserRoles;
 import com.cbinfo.repository.UserRepository;
@@ -64,10 +65,19 @@ public class UserService {
     public void updateCurrentUser(UserForm userForm, String reenteredPassword) throws Exception {
         User userFromDB = findByEmail(getUserPrincipalLogin());
         checkEmailOnUpdating(userForm, userFromDB);
-        checkReenteredPassword(userForm.getPassword(),reenteredPassword);
+        checkReenteredPassword(userForm.getPassword(), reenteredPassword);
+        updateUserCompany(userForm, userFromDB);
         updateUserFields(userForm, userFromDB);
         saveUser(userFromDB);
         userSessionService.setUser(userFromDB);
+    }
+
+    private void updateUserCompany(UserForm userForm, User userFromDB) {
+        String companyNameInForm = userForm.getCompanyName();
+        if (companyNameInForm != userFromDB.getCompany().getName()) {
+            Company updatedCompany = companyService.getCompanyByName(companyNameInForm);
+            userFromDB.setCompany(updatedCompany);
+        }
     }
 
     public void checkReenteredPassword(String password, String reenteredPassword) throws Exception {
@@ -120,7 +130,7 @@ public class UserService {
         return userFormSetter(u);
     }
 
-    protected UserForm userFormSetter(User user){
+    protected UserForm userFormSetter(User user) {
         UserForm result = new UserForm();
         result.setEmail(user.getEmail());
         result.setFirstName(user.getFirstName());
@@ -134,9 +144,18 @@ public class UserService {
     }
 
     public void setNewCompanyToUserForm(UserForm userForm, String newCompanyName) {
-        if(isNotBlank(newCompanyName)){
+        if (isNotBlank(newCompanyName)) {
             companyService.createNewCompany(newCompanyName);
             userForm.setCompanyName(newCompanyName);
         }
+    }
+
+    public void delete(String stringUserId){
+        delete(Long.valueOf(stringUserId));
+    }
+
+    @Transactional
+    public void delete(Long userId) {
+        userRepository.delete(userId);
     }
 }

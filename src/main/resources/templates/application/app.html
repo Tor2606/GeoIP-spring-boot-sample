@@ -9,6 +9,24 @@
 
 </head>
 <body>
+
+<div id="modal-from-dom" class="modal hide fade">
+    <div class="modal-header">
+        <a href="#" class="close">&times;</a>
+        <h3>Delete URL</h3>
+    </div>
+    <div class="modal-body">
+        <p>You are about to delete one track url, this procedure is irreversible.</p>
+        <p>Do you want to proceed?</p>
+        <p id="debug-url"></p>
+    </div>
+    <div class="modal-footer">
+        <a href="delete.php?ref=" class="btn danger">Yes</a>
+        <!-- <a href="delete.php?some=param&ref=" class="btn danger">Yes 2</a> -->
+        <a href="#" data-dismiss="modal" class="btn secondary">No</a>
+    </div>
+</div>
+
 <header class="header">
     <div class="span4">
         <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
@@ -50,10 +68,10 @@
                 </ul>
                 <div class="tab-content container">
                     <div class="tab-pane active" id="admin_tab1">
-                        <div class="context" >
+                        <div class="context">
                             <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
                             <h3>Users table:</h3>
-                            <table class="table table-bordered pull-left">
+                            <table class="table table-stripped pull-left">
                                 <thead>
                                 <tr>
                                     <th>Index</th>
@@ -62,16 +80,47 @@
                                     <th>Last name</th>
                                     <th>Ip</th>
                                     <th>Role</th>
+                                    <th>Company</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td th:text="${userStat.count}">...</td>
+                                <tr th:each="user, index : ${users}">
+                                    <td th:text="${index.count}">...</td>
                                     <td data-th-text="${user.email}">...</td>
                                     <td data-th-text="${user.firstName}">...</td>
                                     <td data-th-text="${user.lastName}">...</td>
                                     <td data-th-text="${user.userIp}">...</td>
                                     <td data-th-text="${user.role.name()}">...</td>
+                                    <td th:switch="${user.company}">
+                                        <p th:case="null">No company (was deleted)!</p>
+                                        <p th:case="*" data-th-text="${user.company.name}"></p>
+                                    </td>
+                                    <td>
+                                        <a data-toggle="modal" id="delete-user"
+                                           th:href="${'#deleteUserModal' + index.count}">
+                                            <div class="delete-button"></div>
+                                        </a>
+                                        <div th:id="${'deleteUserModal' + index.count}" class="modal fade"
+                                             style="display: none;">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body text-center">
+                                                        <h3 class="modal-title"><p>Are you sure you want to remove
+                                                            user  <span
+                                                                    th:text="${user.email}"></span>?</p></h3>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a th:href="${'/users/delete/' + user.userId}"
+                                                           class="btn btn-danger">Delete</a>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -108,19 +157,46 @@
                     <div class="tab-pane" id="admin_tab3">
                         <div class="context">
                             <h3>Companies table:</h3>
-                            <table class="table table-bordered pull-left">
+                            <table class="table table-stripped pull-left">
                                 <thead>
                                 <tr>
                                     <th>Index</th>
                                     <th>Name</th>
                                     <th>Users (email)</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="company : ${companies}">
-                                    <td th:text="${companyStat.count}">...</td>
+                                <tr th:each="company,index : ${companies}">
+                                    <td th:text="${index.count}">...</td>
                                     <td data-th-text="${company.name}">...</td>
-                                    <td><span th:each="user : ${company.users}"><span th:text="${user.getEmail()}">...</span></span></td>
+                                    <td><span th:each="user : ${company.users}"><p th:text="${user.getEmail()} + '; '">No users!</p></span>
+                                    </td>
+                                    <td>
+                                        <a data-toggle="modal" id="delete-company"
+                                           th:href="${'#deleteCompanyModal' + index.count}">
+                                            <div class="delete-button"></div>
+                                        </a>
+                                        <div th:id="${'deleteCompanyModal' + index.count}" class="modal fade"
+                                             style="display: none;">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body text-center">
+                                                        <h3 class="modal-title"><p>Are you sure you want to remove
+                                                            company  <span
+                                                                    th:text="${company.name}"></span>?</p></h3>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a th:href="${'/companies/delete/' + company.companyId}"
+                                                           class="btn btn-danger">Delete</a>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

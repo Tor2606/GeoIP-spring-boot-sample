@@ -1,8 +1,6 @@
 package com.cbinfo.controller;
 
-import com.cbinfo.model.Company;
 import com.cbinfo.model.User;
-import com.cbinfo.model.UserData;
 import com.cbinfo.service.CompanyService;
 import com.cbinfo.service.UserDataService;
 import com.cbinfo.service.UserService;
@@ -12,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/app")
@@ -39,13 +35,10 @@ public class ApplicationController {
     }
 
     @RequestMapping("")
-    public String getMainPage(ModelMap modelMap){
-        List<UserData> userDataList = userDataService.findAll();
-        List<User> users = userService.findAll();
-        List<Company> companies = companyService.findAll();
-        modelMap.put("userDataList", userDataList);
-        modelMap.put("users", users);
-        modelMap.put("companies", companies);
+    public String getMainPage(ModelMap modelMap) {
+        modelMap.put("userDataList", userDataService.findAll());
+        modelMap.put("users", userService.findAll());
+        modelMap.put("companies", companyService.findAll());
         return MAIN_VIEW;
     }
 }

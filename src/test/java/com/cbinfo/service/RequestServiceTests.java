@@ -25,7 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class RequestServiceTests {
-    //todo move to prop file (@Value())
+    //todo move to prop file (@Value()), how to pass it to mockito(It's possible to get it in Property class(straight and bad)too)
     //todo add deleting users and comp
     //// TODO: 24.10.2016  think on regex for Artem
     //todo don't write request param(name), if it's the same

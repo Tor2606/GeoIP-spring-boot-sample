@@ -15,8 +15,28 @@ header {
     margin: 20px;
 }
 
-.btn-group{
+.btn-group {
     margin: 10px;
+}
+
+.delete-button {
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background: #ff9785 url(../img/trash_img.png) no-repeat center;
+    background-size: 25px,25px;
+}
+
+.delete-button:hover {
+    background-color: #ff664e;
+}
+
+.delete-button:active {
+    -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
 }
 
 .footer {

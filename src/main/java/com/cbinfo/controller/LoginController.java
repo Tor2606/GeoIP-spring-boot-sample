@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/")
 public class LoginController {
 
+    //todo after regeistration login auto
+
+
     @Autowired
     private UserSessionService userSessionService;
 

@@ -14,18 +14,31 @@ public class CompanyService {
     private CompanyRepository companyRepository;
 
     @Transactional
-    public List<Company> findAll(){
+    public List<Company> findAll() {
         return (List<Company>) companyRepository.findAll();
     }
 
-    @Transactional
     public void createNewCompany(String newCompanyName) {
         Company newCompany = new Company();
         newCompany.setName(newCompanyName);
-        companyRepository.save(newCompany);
+        this.save(newCompany);
+    }
+
+    @Transactional
+    private void save(Company company) {
+        companyRepository.save(company);
     }
 
     public Company getCompanyByName(String companyName) {
         return companyRepository.findOneByName(companyName);
+    }
+
+    public void delete(String companyId) {
+        delete(Long.valueOf(companyId));
+    }
+
+    @Transactional
+    public void delete(Long companyId){
+        companyRepository.delete(companyId);
     }
 }

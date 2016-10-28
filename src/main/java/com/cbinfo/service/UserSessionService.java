@@ -33,7 +33,7 @@ public class UserSessionService {
     }
 
     protected void findAndSetUserFromPrincipal(org.springframework.security.core.userdetails.User principal) {
-        if(principal != null) setUser(userService.findByEmail(principal.getUsername()));
+        if (principal != null) setUser(userService.findByEmail(principal.getUsername()));
     }
 
     protected org.springframework.security.core.userdetails.User getPrincipalFromSecurityContextHolder() {
