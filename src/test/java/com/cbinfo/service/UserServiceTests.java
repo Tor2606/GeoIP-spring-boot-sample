@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -58,11 +59,12 @@ public class UserServiceTests {
     @Test
     public void createUserTest() {
         UserForm userForm = getUserForm();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         UserService spyUserService = Mockito.spy(UserService.class);
         spyUserService.passwordEncoder = passwordEncoder;
         doNothing().when(spyUserService).saveUser(any());
 
-        spyUserService.createUser(userForm, IP_VALUE);
+        spyUserService.createUser(userForm, request);
 
         verify(spyUserService, times(1)).saveUser(any());
         verify(spyUserService, times(1)).createUser(any(), any());

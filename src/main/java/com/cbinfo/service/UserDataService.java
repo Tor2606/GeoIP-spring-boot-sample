@@ -7,6 +7,7 @@ import com.cbinfo.repository.UserDataRepository;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.sf.uadetector.ReadableUserAgent;
@@ -115,7 +116,7 @@ public class UserDataService {
     }
 
     protected boolean checkLocalHost(String ip) throws UnknownHostException {
-        return ip.equals(LOCAL_IP) || ip.equals(LOCAL_IP2);
+        return LOCAL_IP.equals(ip) || LOCAL_IP2.equals(ip);
     }
 
     protected String getCountryFromJSON(String data) {
@@ -136,7 +137,7 @@ public class UserDataService {
 
     @Transactional(readOnly = true)
     public List<UserData> findAll() {
-        return (List<UserData>) userDataRepository.findAll();
+        return Lists.newArrayList(userDataRepository.findAll());
     }
 
     @Transactional

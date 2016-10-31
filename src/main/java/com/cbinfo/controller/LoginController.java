@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/")
 public class LoginController {
 
-    //todo after regeistration login auto
-
-
+    //todo after registration login auto
     @Autowired
     private UserSessionService userSessionService;
 
-    private static final String LOGIN_VIEW = "login/login";
+    private static final String LOGIN_VIEW = "application/login";
     private static final String REDIRECT_TO_APP_HANDLER = "redirect:app";
 
     @RequestMapping("")

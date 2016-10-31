@@ -50,8 +50,8 @@ public class UserController {
             return CREATE_USER_VIEW;
         }
         userService.setNewCompanyToUserForm(userForm, newCompanyName);
-        userService.createUser(userForm, request.getRemoteAddr());
-        return REDIRECT + LOGIN_PAGE;
+        userService.createUser(userForm, request);
+        return REDIRECT + APP_PAGE;
     }
 
     @RequestMapping("/create")

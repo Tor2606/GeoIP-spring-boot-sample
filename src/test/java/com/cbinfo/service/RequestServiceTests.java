@@ -3,7 +3,6 @@ package com.cbinfo.service;
 import com.cbinfo.model.User;
 import com.cbinfo.model.UserRequest;
 import com.cbinfo.repository.UserRequestsRepository;
-import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +12,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.TestPropertySource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.util.Date;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,25 +25,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-@RunWith(MockitoJUnitRunner.class)
-@SpringApplicationConfiguration
-@TestPropertySource(locations = "com/cbinfo/resources/testing.properties")
-public class RequestServiceTests {
-    //todo move to prop file (@Value()), how to pass it to mockito(It's possible to get it in Property class(straight and bad)too)
-    //// TODO: 24.10.2016  think on regex for Artem
-    //todo change findAll in service(through stream, not straight)
 
-    @Value(value = "constants.loggingMessageBeginning")
-    private static String loggingMessageBeginning;
+@RunWith(MockitoJUnitRunner.class)
+public class RequestServiceTests {
+    //// TODO: 24.10.2016  think on regex for Artem
+    private static String propertyFilePath = "src/test/java/com/cbinfo/resources/testing.properties";
+    private static Properties testProperties = getProperties(propertyFilePath);
+
+    private static String loggingMessageBeginning = testProperties.getProperty("loggingMessageBeginning");
+    private static String timePattern = testProperties.getProperty("timePattern");
     private static final String URI_VALUE = "uri";
     private static final String IP_VALUE = "ip";
     private static final String EMAIL_VALUE = "email";
-    private static final String DELIMITER = ", ";
     private static final String START_TIME = "startTime";
-    private static final String BASIC_PATTERN = ": ... ... .. ..:..:.. .... ....";
     private static final String ANONYMOUS = "ANONYMOUS";
-
-
 
     @Mock
     private UserSessionService userSessionService;
@@ -105,10 +99,9 @@ public class RequestServiceTests {
         when(httpServletRequestMock.getAttribute(START_TIME)).thenReturn(System.currentTimeMillis());
         RequestService spyRequestService = Mockito.spy(RequestService.class);
         doReturn(EMAIL_VALUE).when(spyRequestService).getUserEmail();
-        String expectedDate = new Date().toString();//
+        String expectedDate = new Date().toString();
 
         String actual = spyRequestService.getLoggingMessage(httpServletRequestMock);
-        System.out.println(loggingMessageBeginning);
         assertThat(getBeginning(actual), is(loggingMessageBeginning));
         assertThat(getDate(actual), is(expectedDate));
         assert (actual.contains(IP_VALUE));
@@ -144,8 +137,18 @@ public class RequestServiceTests {
         verifyNoMoreInteractions(userSessionService);
     }
 
+    @Test
+    public void saveRequestModelTest() {
+        UserRequest userRequest = new UserRequest();
+
+        requestService.saveRequestModel(userRequest);
+
+        verify(userRequestsRepository, times(1)).save((UserRequest) any());
+        verifyNoMoreInteractions(userRequestsRepository);
+    }
+
     private int getLoadingTime(String actual) {
-        String s = BASIC_PATTERN + "(, ..?,)";
+        String s = timePattern + "(, ..?,)";
         Pattern pattern = Pattern.compile(s);
         Matcher matcher = pattern.matcher(actual);
         String result = "";
@@ -157,39 +160,27 @@ public class RequestServiceTests {
     }
 
     private String getDate(String actual) {
-        Pattern pattern = Pattern.compile(BASIC_PATTERN);
+        Pattern pattern = Pattern.compile(timePattern);
         Matcher matcher = pattern.matcher(actual);
         String result = "";
         while (matcher.find()) {
-            result = actual.substring(matcher.start() + 2, matcher.end());
+            result = actual.substring(matcher.start(), matcher.end());
         }
         return result;
     }
 
     private String getBeginning(String s) {
-        return s.split(":")[0].concat(": ");
+        return s.split(":")[0].concat(":");
     }
 
-    private String expectedMessage(String date) {
-        return loggingMessageBeginning + Joiner.on(DELIMITER)
-                .join(date, 0L, IP_VALUE, URI_VALUE, EMAIL_VALUE);
+    private static Properties getProperties(String propertyFilePath) {
+        Properties properties = new Properties();
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(propertyFilePath));
+            properties.load(inputStream);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        return properties;
     }
-
-    @Test
-    public void saveRequestModelTest() {
-        UserRequest userRequest = new UserRequest();
-
-        requestService.saveRequestModel(userRequest);
-
-        verify(userRequestsRepository, times(1)).save((UserRequest) any());
-        verifyNoMoreInteractions(userRequestsRepository);
-    }
-
-    /*@Configuration
-    @PropertySource("classpath:com/cbinfo/testing.properties")
-    public class ConstService {
-        @Value("${constants.loggingMessageBeginning}")
-        protected String loggingMessageBeginning;
-
-    }*/
 }

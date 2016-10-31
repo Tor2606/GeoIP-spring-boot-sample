@@ -5,12 +5,14 @@ import com.cbinfo.model.Company;
 import com.cbinfo.model.User;
 import com.cbinfo.model.enums.UserRoles;
 import com.cbinfo.repository.UserRepository;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -31,9 +33,12 @@ public class UserService {
     @Autowired
     protected CompanyService companyService;
 
-    public void createUser(UserForm userForm, String ip) {
+    @Autowired
+    protected AuthenticationService authenticationService;
+
+    public void createUser(UserForm userForm, HttpServletRequest request) {
         User user = new User();
-        user.setUserIp(ip);
+        user.setUserIp(request.getRemoteAddr());
         user.setEmail(userForm.getEmail());
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
@@ -41,6 +46,7 @@ public class UserService {
         user.setRole(UserRoles.ROLE_USER);
         user.setCompany(companyService.getCompanyByName(userForm.getCompanyName()));
         saveUser(user);
+        authenticationService.authenticate(user, request);
     }
 
     @Transactional
@@ -74,7 +80,7 @@ public class UserService {
 
     private void updateUserCompany(UserForm userForm, User userFromDB) {
         String companyNameInForm = userForm.getCompanyName();
-        if ((companyNameInForm != userFromDB.getCompany().getName() )|| (userFromDB.getCompany()==null)) {
+        if ((companyNameInForm != userFromDB.getCompany().getName()) || (userFromDB.getCompany() == null)) {
             Company updatedCompany = companyService.getCompanyByName(companyNameInForm);
             userFromDB.setCompany(updatedCompany);
         }
@@ -143,14 +149,14 @@ public class UserService {
         Company usersCompany = user.getCompany();
         if (usersCompany != null) {
             userForm.setCompanyName(usersCompany.getName());
-        }else{
+        } else {
             userForm.setCompanyName("no company");
         }
     }
 
     @Transactional
     public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
+        return Lists.newArrayList(userRepository.findAll());
     }
 
     public void setNewCompanyToUserForm(UserForm userForm, String newCompanyName) {

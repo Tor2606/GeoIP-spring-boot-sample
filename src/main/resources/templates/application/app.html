@@ -163,7 +163,6 @@
                                     <th>Index</th>
                                     <th>Name</th>
                                     <th>Users (email)</th>
-                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -171,31 +170,6 @@
                                     <td th:text="${index.count}">...</td>
                                     <td data-th-text="${company.name}">...</td>
                                     <td><span th:each="user : ${company.users}"><p th:text="${user.getEmail()} + '; '">No users!</p></span>
-                                    </td>
-                                    <td>
-                                        <a data-toggle="modal" id="delete-company"
-                                           th:href="${'#deleteCompanyModal' + index.count}">
-                                            <div class="delete-button"></div>
-                                        </a>
-                                        <div th:id="${'deleteCompanyModal' + index.count}" class="modal fade"
-                                             style="display: none;">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-body text-center">
-                                                        <h3 class="modal-title"><p>Are you sure you want to remove
-                                                            company  <span
-                                                                    th:text="${company.name}"></span>?</p></h3>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a th:href="${'/companies/delete/' + company.companyId}"
-                                                           class="btn btn-danger">Delete</a>
-                                                        <button type="button" class="btn btn-default"
-                                                                data-dismiss="modal">Cancel
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
