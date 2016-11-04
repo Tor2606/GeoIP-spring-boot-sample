@@ -46,7 +46,7 @@ public class UserService {
         user.setRole(UserRoles.ROLE_USER);
         user.setCompany(companyService.getCompanyByName(userForm.getCompanyName()));
         saveUser(user);
-        authenticationService.authenticate(user, request);
+        authenticationService.authenticate(userForm, request);
     }
 
     @Transactional
