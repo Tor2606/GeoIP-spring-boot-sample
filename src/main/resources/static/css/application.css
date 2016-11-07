@@ -29,6 +29,20 @@ header {
     background-size: 25px,25px;
 }
 
+.user-context{
+    margin: 30px;
+}
+
+.create-button{
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background: #18d119 url(../img/edit_icon.png) no-repeat center;
+    background-size: 25px,25px;
+}
+
 .delete-button:hover {
     background-color: #ff664e;
 }

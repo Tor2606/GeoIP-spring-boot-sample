@@ -9,24 +9,6 @@
 
 </head>
 <body>
-
-<div id="modal-from-dom" class="modal hide fade">
-    <div class="modal-header">
-        <a href="#" class="close">&times;</a>
-        <h3>Delete URL</h3>
-    </div>
-    <div class="modal-body">
-        <p>You are about to delete one track url, this procedure is irreversible.</p>
-        <p>Do you want to proceed?</p>
-        <p id="debug-url"></p>
-    </div>
-    <div class="modal-footer">
-        <a href="delete.php?ref=" class="btn danger">Yes</a>
-        <!-- <a href="delete.php?some=param&ref=" class="btn danger">Yes 2</a> -->
-        <a href="#" data-dismiss="modal" class="btn secondary">No</a>
-    </div>
-</div>
-
 <header class="header">
     <div class="span4">
         <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
@@ -56,7 +38,58 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab1">
-            <p>Hi, visitor</p>
+            <div class="context user-context">
+                <a class="btn" sec:authorize="hasRole('ROLE_USER')">Create campaign</a>
+                <h3>Campaigns table</h3>
+                <table class="table table-stripped pull-left">
+                    <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Name</th>
+                        <th>Created</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="campaign, index : ${campaigns}">
+                        <td th:text="${index.count}">...</td>
+                        <td data-th-text="${campaign.name}">...</td>
+                        <td data-th-text="${#dates.format(campaign.created)}">...</td>
+                        <td>
+                            <a th:href="@{/campaigns/create}">
+                                <div class="create-button"></div>
+                            </a>
+                        </td>
+                        <td>
+                            <a data-toggle="modal" id="delete-campaign"
+                               th:href="${'#deleteCampaignModal' + index.count}">
+                                <div class="delete-button"></div>
+                            </a>
+                            <div th:id="${'deleteCampaignModal' + index.count}" class="modal fade"
+                                 style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center">
+                                            <h3 class="modal-title"><p>Are you sure you want to remove
+                                                campaign <span
+                                                        th:text="${campaign.name}"></span>?</p></h3>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a th:href="${'app/campaigns/delete/' + campaign.campaignId}"
+                                               class="btn btn-danger">Delete</a>
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="tab-pane" id="tab2" sec:authorize="hasRole('ROLE_ADMIN')">
 

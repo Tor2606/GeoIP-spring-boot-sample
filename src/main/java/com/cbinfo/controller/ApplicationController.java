@@ -1,10 +1,7 @@
 package com.cbinfo.controller;
 
 import com.cbinfo.model.User;
-import com.cbinfo.service.CompanyService;
-import com.cbinfo.service.UserDataService;
-import com.cbinfo.service.UserService;
-import com.cbinfo.service.UserSessionService;
+import com.cbinfo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,6 +26,9 @@ public class ApplicationController {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private CampaignService campaignService;
+
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
@@ -39,6 +39,7 @@ public class ApplicationController {
         modelMap.put("userDataList", userDataService.findAll());
         modelMap.put("users", userService.findAll());
         modelMap.put("companies", companyService.findAll());
+        modelMap.put("campaigns", campaignService.findAllAvailableCampaigns());
         return MAIN_VIEW;
     }
 }

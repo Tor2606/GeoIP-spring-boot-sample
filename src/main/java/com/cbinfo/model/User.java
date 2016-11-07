@@ -45,6 +45,17 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRoles role;
 
+    @OneToMany(mappedBy = "user")
+    private List<Campaign> campaigns;
+
+    public List<Campaign> getCampaigns() {
+        return campaigns;
+    }
+
+    public void setCampaigns(List<Campaign> campaigns) {
+        this.campaigns = campaigns;
+    }
+
     public List<UserRequest> getRequestList() {
         return requestList;
     }
@@ -153,5 +164,42 @@ public class User implements UserDetails {
 
     public void setRole(UserRoles role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (userId != null ? !userId.equals(user.userId) : user.userId != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (firstName != null ? !firstName.equals(user.firstName) : user.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
+        if (userIp != null ? !userIp.equals(user.userIp) : user.userIp != null) return false;
+        if (userData != null ? !userData.equals(user.userData) : user.userData != null) return false;
+        if (requestList != null ? !requestList.equals(user.requestList) : user.requestList != null) return false;
+        if (company != null ? !company.equals(user.company) : user.company != null) return false;
+        if (role != user.role) return false;
+        return campaigns != null ? campaigns.equals(user.campaigns) : user.campaigns == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId != null ? userId.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (userIp != null ? userIp.hashCode() : 0);
+        result = 31 * result + (userData != null ? userData.hashCode() : 0);
+        result = 31 * result + (requestList != null ? requestList.hashCode() : 0);
+        result = 31 * result + (company != null ? company.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (campaigns != null ? campaigns.hashCode() : 0);
+        return result;
     }
 }
