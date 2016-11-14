@@ -1,227 +1,205 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="appLayout">
 <head>
     <title>Cbinfo app</title>
     <link rel="stylesheet" href="../../static/css/application.css" th:href="@{/css/application.css}"/>
     <!-- Bootstrap -->
     <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
           media="screen"/>
-
 </head>
 <body>
-<header class="header">
-    <div class="span4">
-        <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
-            Time
-        </p>
-    </div>
-    <div class="span2 offset2 pull-right">
-        <!-- Single button -->
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                <span th:text="${user.email}">User</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a th:href="@{/logout}">Logout</a></li>
-                <li><a th:href="@{/users/edit}">Edit profile</a></li>
-            </ul>
-        </div>
-    </div>
-</header>
-
-<div class="tabbable"> <!-- Only required for left/right tabs -->
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
-        <li><a href="#tab2" data-toggle="tab" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a></li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tab1">
-            <div class="context user-context">
-                <a class="btn" sec:authorize="hasRole('ROLE_USER')">Create campaign</a>
-                <h3>Campaigns table</h3>
-                <table class="table table-stripped pull-left">
-                    <thead>
-                    <tr>
-                        <th>Index</th>
-                        <th>Name</th>
-                        <th>Created</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="campaign, index : ${campaigns}">
-                        <td th:text="${index.count}">...</td>
-                        <td data-th-text="${campaign.name}">...</td>
-                        <td data-th-text="${#dates.format(campaign.created)}">...</td>
-                        <td>
-                            <a th:href="@{/campaigns/create}">
-                                <div class="create-button"></div>
-                            </a>
-                        </td>
-                        <td>
-                            <a data-toggle="modal" id="delete-campaign"
-                               th:href="${'#deleteCampaignModal' + index.count}">
-                                <div class="delete-button"></div>
-                            </a>
-                            <div th:id="${'deleteCampaignModal' + index.count}" class="modal fade"
-                                 style="display: none;">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-body text-center">
-                                            <h3 class="modal-title"><p>Are you sure you want to remove
-                                                campaign <span
-                                                        th:text="${campaign.name}"></span>?</p></h3>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a th:href="${'app/campaigns/delete/' + campaign.campaignId}"
-                                               class="btn btn-danger">Delete</a>
-                                            <button type="button" class="btn btn-default"
-                                                    data-dismiss="modal">Cancel
-                                            </button>
+<div layout:fragment="content">
+    <div class="tabbable"> <!-- Only required for left/right tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
+            <li><a href="#tab2" data-toggle="tab" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+                <div class="context user-context">
+                    <a class="btn" th:href="@{app/campaigns/create}" sec:authorize="hasRole('ROLE_USER')">Create
+                        campaign</a>
+                    <div th:if="${param.deleteException}" th:text="${deleteException}" class="alert alert-danger">
+                        Something
+                        is wrong
+                    </div>
+                    <h3>Campaigns table</h3>
+                    <table class="table table-stripped pull-left">
+                        <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Name</th>
+                            <th>Created</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="campaign, index : ${campaigns}">
+                            <td th:text="${index.count}">...</td>
+                            <td data-th-text="${campaign.name}">...</td>
+                            <td data-th-text="${#dates.format(campaign.created)}">...</td>
+                            <td>
+                                <a th:href="@{'/campaigns/'+${campaign.campaignId}}">
+                                    <div class="create-button"></div>
+                                </a>
+                            </td>
+                            <td>
+                                <a data-toggle="modal" id="delete-campaign"
+                                   th:href="${'#deleteCampaignModal' + index.count}">
+                                    <div class="delete-button"></div>
+                                </a>
+                                <div th:id="${'deleteCampaignModal' + index.count}" class="modal fade"
+                                     style="display: none;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center">
+                                                <h3 class="modal-title"><p>Are you sure you want to remove
+                                                    campaign <span
+                                                            th:text="${campaign.name}"></span>?</p></h3>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a th:href="${'app/campaigns/delete/' + campaign.campaignId}"
+                                                   class="btn btn-danger">Delete</a>
+                                                <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="tab-pane" id="tab2" sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="tab-pane" id="tab2" sec:authorize="hasRole('ROLE_ADMIN')">
 
-            <div class="tabbable tabs-left">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#admin_tab1" data-toggle="tab">Users</a></li>
-                    <li><a href="#admin_tab2" data-toggle="tab">Incoming requests</a></li>
-                    <li><a href="#admin_tab3" data-toggle="tab">Companies</a></li>
-                </ul>
-                <div class="tab-content container">
-                    <div class="tab-pane active" id="admin_tab1">
-                        <div class="context">
-                            <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
-                            <h3>Users table:</h3>
-                            <table class="table table-stripped pull-left">
-                                <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    <th>Email</th>
-                                    <th>First name</th>
-                                    <th>Last name</th>
-                                    <th>Ip</th>
-                                    <th>Role</th>
-                                    <th>Company</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="user, index : ${users}">
-                                    <td th:text="${index.count}">...</td>
-                                    <td data-th-text="${user.email}">...</td>
-                                    <td data-th-text="${user.firstName}">...</td>
-                                    <td data-th-text="${user.lastName}">...</td>
-                                    <td data-th-text="${user.userIp}">...</td>
-                                    <td data-th-text="${user.role.name()}">...</td>
-                                    <td th:switch="${user.company}">
-                                        <p th:case="null">No company (was deleted)!</p>
-                                        <p th:case="*" data-th-text="${user.company.name}"></p>
-                                    </td>
-                                    <td>
-                                        <a data-toggle="modal" id="delete-user"
-                                           th:href="${'#deleteUserModal' + index.count}">
-                                            <div class="delete-button"></div>
-                                        </a>
-                                        <div th:id="${'deleteUserModal' + index.count}" class="modal fade"
-                                             style="display: none;">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-body text-center">
-                                                        <h3 class="modal-title"><p>Are you sure you want to remove
-                                                            user  <span
-                                                                    th:text="${user.email}"></span>?</p></h3>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a th:href="${'/users/delete/' + user.userId}"
-                                                           class="btn btn-danger">Delete</a>
-                                                        <button type="button" class="btn btn-default"
-                                                                data-dismiss="modal">Cancel
-                                                        </button>
+                <div class="tabbable tabs-left">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#admin_tab1" data-toggle="tab">Users</a></li>
+                        <li><a href="#admin_tab2" data-toggle="tab">Incoming requests</a></li>
+                        <li><a href="#admin_tab3" data-toggle="tab">Companies</a></li>
+                    </ul>
+                    <div class="tab-content container">
+                        <div class="tab-pane active" id="admin_tab1">
+                            <div class="context">
+                                <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
+                                <h3>Users table:</h3>
+                                <table class="table table-stripped pull-left">
+                                    <thead>
+                                    <tr>
+                                        <th>Index</th>
+                                        <th>Email</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Ip</th>
+                                        <th>Role</th>
+                                        <th>Company</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user, index : ${users}">
+                                        <td th:text="${index.count}">...</td>
+                                        <td data-th-text="${user.email}">...</td>
+                                        <td data-th-text="${user.firstName}">...</td>
+                                        <td data-th-text="${user.lastName}">...</td>
+                                        <td data-th-text="${user.userIp}">...</td>
+                                        <td data-th-text="${user.role.name()}">...</td>
+                                        <td th:switch="${user.company}">
+                                            <p th:case="null">No company (was deleted)!</p>
+                                            <p th:case="*" data-th-text="${user.company.name}"></p>
+                                        </td>
+                                        <td>
+                                            <a data-toggle="modal" id="delete-user"
+                                               th:href="${'#deleteUserModal' + index.count}">
+                                                <div class="delete-button"></div>
+                                            </a>
+                                            <div th:id="${'deleteUserModal' + index.count}" class="modal fade"
+                                                 style="display: none;">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body text-center">
+                                                            <h3 class="modal-title"><p>Are you sure you want to remove
+                                                                user  <span
+                                                                        th:text="${user.email}"></span>?</p></h3>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a th:href="${'/users/delete/' + user.userId}"
+                                                               class="btn btn-danger">Delete</a>
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-dismiss="modal">Cancel
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane" id="admin_tab2">
-                        <div class="context">
-                            <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
-                            <h3>Requests info table:</h3>
-                            <table class="table table-bordered pull-left">
-                                <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    <th>Time</th>
-                                    <th>User's email(if available)</th>
-                                    <th>Country</th>
-                                    <th>Device category</th>
-                                    <th>Browser</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="userData : ${userDataList}">
-                                    <td th:text="${userDataStat.count}">...</td>
-                                    <td data-th-text="${#dates.format(userData.time)}">...</td>
-                                    <td data-th-text="${userData.user.email}">...</td>
-                                    <td data-th-text="${userData.country}">...</td>
-                                    <td data-th-text="${userData.deviceCategory}">...</td>
-                                    <td data-th-text="${userData.browser}">...</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="tab-pane" id="admin_tab2">
+                            <div class="context">
+                                <div th:if="${param.error}" class="alert alert-danger">Something is wrong</div>
+                                <h3>Requests info table:</h3>
+                                <table class="table table-bordered pull-left">
+                                    <thead>
+                                    <tr>
+                                        <th>Index</th>
+                                        <th>Time</th>
+                                        <th>User's email(if available)</th>
+                                        <th>Country</th>
+                                        <th>Device category</th>
+                                        <th>Browser</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="userData : ${userDataList}">
+                                        <td th:text="${userDataStat.count}">...</td>
+                                        <td data-th-text="${#dates.format(userData.time)}">...</td>
+                                        <td data-th-text="${userData.user.email}">...</td>
+                                        <td data-th-text="${userData.country}">...</td>
+                                        <td data-th-text="${userData.deviceCategory}">...</td>
+                                        <td data-th-text="${userData.browser}">...</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane" id="admin_tab3">
-                        <div class="context">
-                            <h3>Companies table:</h3>
-                            <table class="table table-stripped pull-left">
-                                <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    <th>Name</th>
-                                    <th>Users (email)</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="company,index : ${companies}">
-                                    <td th:text="${index.count}">...</td>
-                                    <td data-th-text="${company.name}">...</td>
-                                    <td><span th:each="user : ${company.users}"><p th:text="${user.getEmail()} + '; '">No users!</p></span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="tab-pane" id="admin_tab3">
+                            <div class="context">
+                                <h3>Companies table:</h3>
+                                <table class="table table-stripped pull-left">
+                                    <thead>
+                                    <tr>
+                                        <th>Index</th>
+                                        <th>Name</th>
+                                        <th>Users (email)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="company,index : ${companies}">
+                                        <td th:text="${index.count}">...</td>
+                                        <td data-th-text="${company.name}">...</td>
+                                        <td><span th:each="user : ${company.users}"><p
+                                                th:text="${user.getEmail()} + '; '">No users!</p></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 </div>
-
-<footer class="footer navbar-fixed-bottom">
-
-    <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
-</footer>
-
-<script src="http://code.jquery.com/jquery.js"></script>
-<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

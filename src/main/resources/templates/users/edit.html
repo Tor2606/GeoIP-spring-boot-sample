@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="formPageLayout">
 <head>
-    <title>Create user</title>
-    <link rel="stylesheet" href="../../static/css/formPageStyle.css" th:href="@{/css/formPageStyle.css}"/>
+    <title>Edit user</title>
+    <link rel="stylesheet" href="../static/css/formPageStyle.css" th:href="@{/css/formPageStyle.css}"/>
     <!-- Bootstrap -->
-    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
-          media="screen"/>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
 </head>
 <body>
-
 <div class="container">
     <div class="row">
         <div class="span6 offset3 text-center form-wrapper">

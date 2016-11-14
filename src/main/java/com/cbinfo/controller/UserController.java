@@ -24,7 +24,6 @@ public class UserController {
     private static final String REDIRECT = "redirect:";
     private static final String APP_PAGE = "/app";
     private static final String EDIT_USER_VIEW = "users/edit";
-    private static final String LOGIN_PAGE = "/";
 
     @Autowired
     private CompanyService companyService;

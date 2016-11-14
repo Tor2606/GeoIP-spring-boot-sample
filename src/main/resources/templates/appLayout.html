@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>cbinfo</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="span4">
+        <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+            Time
+        </p>
+    </div>
+    <div class="span2 offset2 pull-right">
+        <!-- Single button -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                <span th:text="${user.email}">User</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a th:href="@{/logout}">Logout</a></li>
+                <li><a th:href="@{/users/edit}">Edit profile</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<div layout:fragment="content">
+    Content
+</div>
+
+<footer class="footer navbar-fixed-bottom">
+    <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
+</footer>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>
