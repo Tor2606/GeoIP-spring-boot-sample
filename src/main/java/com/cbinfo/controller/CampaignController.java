@@ -1,17 +1,21 @@
 package com.cbinfo.controller;
 
+import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
 import com.cbinfo.model.User;
 import com.cbinfo.service.CampaignService;
+import com.cbinfo.service.FlightService;
 import com.cbinfo.service.UserSessionService;
+import com.cbinfo.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping(value = "/app/campaigns")
@@ -19,12 +23,17 @@ public class CampaignController {
     private static final String REDIRECT = "redirect:";
     private static final String APP_PAGE = "/app";
     private static final String EDIT_CAMPAIGN_PAGE = "/app/campaigns/";
+    private static final String CREATE_CAMPAIGN_START_PAGE = "/app/campaigns/create/start";
+    private static final String CREATE_CAMPAIGN_FLIGHT_PAGE = "/app/campaigns/create/flight";
+    private static final String CREATE_CAMPAIGN_FINISH_PAGE = "/app/campaigns/create/finish";
 
     private static final String APP_VIEW = "application/app";
     private static final String EDIT_FLIGHT_VIEW = "/campaigns/editCampaignFlights";
-    private static final String CREATE_FLIGHT_VIEW = "/campaigns/createFlight";
+    private static final String CREATE_FLIGHT_VIEW = "/campaigns/createAndSaveFlight";
     private static final String EDIT_CAMPAIGN_VIEW = "campaigns/editCampaign";
-    private static final String CREATE_CAMPAIGN_VIEW = "campaigns/creation/createCampaign";
+    private static final String CREATE_CAMPAIGN_START_VIEW = "campaigns/creation/createCampaign";
+    private static final String CREATE_CAMPAIGN_FLIGHT_VIEW = "campaigns/creation/createFlightOnCampaignCreation";
+    private static final String CREATE_CAMPAIGN_FINISH_VIEW = "campaigns/creation/createCampaignFinish";
 
     @Autowired
     private CampaignService campaignService;
@@ -32,39 +41,89 @@ public class CampaignController {
     @Autowired
     private UserSessionService userSessionService;
 
+    @Autowired
+    private WebsiteService websiteService;
+
+    @Autowired
+    private FlightService flightService;
+
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateCampaign(String campaignName, ModelMap modelMap) {
-        Campaign campaign;
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public String getCreateCampaign() {
+        return REDIRECT + CREATE_CAMPAIGN_START_PAGE;
+    }
+
+    @RequestMapping(value = "/create/start", method = RequestMethod.GET)
+    public String getCreateCampaignStart(ModelMap model) {
+        model.putIfAbsent("campaign", new CampaignCreationDTO());
+        return CREATE_CAMPAIGN_START_VIEW;
+    }
+
+    @RequestMapping(value = "/create/start", method = RequestMethod.POST)
+    public String postCreateCampaignStart(CampaignCreationDTO campaignCreationDTO, ModelMap modelMap, RedirectAttributes redirectAttributes) {
         try {
-            campaign = campaignService.createCampaign(campaignName);
+            campaignService.checkIfNotExist(campaignCreationDTO.getName());
         } catch (Exception e) {
             modelMap.put("error", e.getMessage());
-            return CREATE_CAMPAIGN_VIEW;
+            return CREATE_CAMPAIGN_START_VIEW;
+        }
+        redirectAttributes.addFlashAttribute("campaign", campaignCreationDTO);
+        return REDIRECT + CREATE_CAMPAIGN_FLIGHT_PAGE;
+    }
+
+    @RequestMapping(value = "/create/flight", method = RequestMethod.GET)
+    public String getCreateCampaignFlight(ModelMap modelMap) {
+        if (modelMap.get("campaign") == null) {
+            return REDIRECT + CREATE_CAMPAIGN_START_PAGE;
+        }
+        modelMap.put("websites", websiteService.findAll());
+        return CREATE_CAMPAIGN_FLIGHT_VIEW;
+    }
+
+    @RequestMapping(value = "/create/flight", method = RequestMethod.POST)
+    public String postCreateCampaignFlight(@Valid CampaignCreationDTO campaignCreationDTO, BindingResult bindingResult, ModelMap modelMap,
+                                           RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            modelMap.addAttribute("error", "Empty Name!");
+            return CREATE_CAMPAIGN_FLIGHT_VIEW;
+        }
+        redirectAttributes.addFlashAttribute("campaign", campaignCreationDTO);
+        return REDIRECT + CREATE_CAMPAIGN_FINISH_PAGE;
+    }
+
+    @RequestMapping(value = "/create/finish", method = RequestMethod.GET)
+    public String getCreateCampaignFinish(ModelMap modelMap) {
+        return CREATE_CAMPAIGN_FINISH_VIEW;
+    }
+
+    @RequestMapping(value = "create", method = RequestMethod.POST)
+    public String postCreateCampaignFinish(CampaignCreationDTO campaignCreationDTO, ModelMap modelMap) {
+        Campaign campaign = null;
+        try {
+            campaign = campaignService.saveCampaignDTO(campaignCreationDTO);
+        } catch (Exception e) {
+            modelMap.put("campaign", campaignCreationDTO);
+            modelMap.put("error", e.getMessage());
+            return CREATE_CAMPAIGN_FINISH_VIEW;
         }
         return REDIRECT + EDIT_CAMPAIGN_PAGE + campaign.getCampaignId();
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String getCreateCampaign(){
-        return CREATE_CAMPAIGN_VIEW;
-    }
-
     @RequestMapping(value = "/{campaignId}", method = RequestMethod.GET)
-    public String getCampaignFlights(@PathVariable String campaignId, ModelMap modelMap){
+    public String getCampaignFlights(@PathVariable String campaignId, ModelMap modelMap) {
         modelMap.put("campaign", campaignService.findOne(campaignId));
         return EDIT_CAMPAIGN_VIEW;
     }
 
     @RequestMapping(value = "/{campaignId}/delete", method = RequestMethod.GET)
-    public String deleteCampaign(@PathVariable String campaignId,  ModelMap modelMap){
-        try{
+    public String deleteCampaign(@PathVariable String campaignId, ModelMap modelMap) {
+        try {
             campaignService.deleteCampaign(campaignId);
-        }catch (Exception e){
+        } catch (Exception e) {
             modelMap.put("exception", "Exception on deleting");
             return APP_VIEW;
         }
@@ -72,17 +131,17 @@ public class CampaignController {
     }
 
     @RequestMapping(value = "/{campaignId}/flights/create", method = RequestMethod.GET)
-    public String getCreateFlight(@PathVariable String campaignId, ModelMap modelMap){
+    public String getCreateFlight(@PathVariable String campaignId, ModelMap modelMap) {
         modelMap.put("campaign", campaignService.findOne(campaignId));
         return CREATE_FLIGHT_VIEW;
     }
 
     @RequestMapping(value = "/{campaignId}/flights", method = RequestMethod.POST)
-    public String postCreateFlight(@PathVariable String campaignId, FlightForm flightForm, ModelMap modelMap){
-        try{
-            campaignService.createFlight(flightForm, campaignId);
-        }catch (Exception e){
-            modelMap.put("Error", e.getMessage());
+    public String postCreateFlight(@PathVariable String campaignId, FlightForm flightForm, ModelMap modelMap) {
+        try {
+            flightService.createAndSaveFlight(flightForm, campaignId);
+        } catch (Exception e) {
+            modelMap.put("error", e.getMessage());
             return CREATE_FLIGHT_VIEW;
         }
         return REDIRECT + EDIT_CAMPAIGN_PAGE + campaignId;

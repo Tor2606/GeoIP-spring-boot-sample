@@ -1,19 +1,18 @@
 package com.cbinfo.dto.form;
 
-import com.cbinfo.model.Website;
 import org.hibernate.validator.constraints.NotEmpty;
-
-import java.util.Date;
 
 public class FlightForm {
     @NotEmpty(message = "Empty name!")
     private String name;
 
-    private Date starDate;
+    private String startDate;
 
-    private Date endDate;
+    private String endDate;
 
-    private Website website;
+    private String websiteName;
+
+    private String campaignName;
 
     public String getName() {
         return name;
@@ -23,27 +22,35 @@ public class FlightForm {
         this.name = name;
     }
 
-    public Date getStarDate() {
-        return starDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setStarDate(Date starDate) {
-        this.starDate = starDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public Website getWebsite() {
-        return website;
+    public String getWebsiteName() {
+        return websiteName;
     }
 
-    public void setWebsite(Website website) {
-        this.website = website;
+    public void setWebsiteName(String websiteName) {
+        this.websiteName = websiteName;
+    }
+
+    public String getCampaignName() {
+        return campaignName;
+    }
+
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
     }
 }

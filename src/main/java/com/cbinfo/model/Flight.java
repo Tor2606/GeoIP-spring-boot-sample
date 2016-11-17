@@ -2,7 +2,7 @@ package com.cbinfo.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "flights")
@@ -12,8 +12,8 @@ public class Flight {
     @Column(name = "flight_id")
     private long flightId;
 
-    @Column
-    private String name;
+    @Column(name = "flight_name")
+    private String flightName;
 
     @Column(name = "start_date")
     private Date startDate;
@@ -26,7 +26,7 @@ public class Flight {
     private Campaign campaign;
 
     @ManyToMany(mappedBy = "flights")
-    private Set<Website> websites;
+    private List<Website> websites;
 
     public long getFlightId() {
         return flightId;
@@ -36,12 +36,12 @@ public class Flight {
         this.flightId = flightId;
     }
 
-    public String getName() {
-        return name;
+    public String getFlightName() {
+        return flightName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFlightName(String flightName) {
+        this.flightName = flightName;
     }
 
     public Date getStartDate() {
@@ -68,11 +68,11 @@ public class Flight {
         this.campaign = campaign;
     }
 
-    public Set<Website> getWebsites() {
+    public List<Website> getWebsites() {
         return websites;
     }
 
-    public void setWebsites(Set<Website> websites) {
+    public void setWebsites(List<Website> websites) {
         this.websites = websites;
     }
 }

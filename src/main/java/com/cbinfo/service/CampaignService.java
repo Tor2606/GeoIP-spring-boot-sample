@@ -1,5 +1,6 @@
 package com.cbinfo.service;
 
+import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
 import com.cbinfo.model.User;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,33 +20,43 @@ import static com.google.common.collect.Lists.newArrayList;
 public class CampaignService {
 
     private static final String USER_ROLE = "ROLE_USER";
+
     @Autowired
     protected UserSessionService userSessionService;
 
     @Autowired
     protected CampaignRepository campaignRepository;
 
-    public Campaign createCampaign(String campaignName) throws Exception {
-        checkIfNotExist(campaignName);
-        Campaign campaign = new Campaign();
-        setCampaignFieldsOnCreation(campaign, campaignName);
-        return saveCampaign(campaign);
-    }
+    @Autowired
+    protected WebsiteService websiteService;
 
-    private void checkIfNotExist(String campaignName) throws Exception {
-        if (campaignRepository.findOneByName(campaignName) != null)
+    @Autowired
+    protected FlightService flightService;
+
+    public void checkIfNotExist(String campaignName) throws Exception {
+        if (campaignRepository.findOneByCampaignName(campaignName) != null)
             throw new Exception("Campaign with such name all ready exists!");
     }
 
-    @Transactional
-    private Campaign saveCampaign(Campaign campaign) {
-        return campaignRepository.save(campaign);
+    public Campaign saveCampaignDTO(CampaignCreationDTO campaignCreationDTO) throws ParseException {
+        Campaign campaign = toCampaign(campaignCreationDTO);
+        campaign = saveCampaign(campaign);
+        flightService.createAndSaveFlight(campaignCreationDTO, campaign.getCampaignId());
+        return campaign;
     }
 
-    private void setCampaignFieldsOnCreation(Campaign campaign, String campaignName) {
-        campaign.setName(campaignName);
-        campaign.setCreated(new Date());
+    private Campaign toCampaign(CampaignCreationDTO campaignCreationDTO) throws ParseException {
+        Campaign campaign = new Campaign();
         campaign.setUser(userSessionService.getUser());
+        campaign.setCampaignName(campaignCreationDTO.getName());
+        campaign.setCreated(new Date());
+        return campaign;
+    }
+
+
+    @Transactional
+    public Campaign saveCampaign(Campaign campaign) {
+        return campaignRepository.save(campaign);
     }
 
     public List<Campaign> findAllAvailableCampaigns() {
@@ -75,11 +87,15 @@ public class CampaignService {
     }
 
     @Transactional
-    private Campaign findOne(Long campaignId) {
+    public Campaign findOne(Long campaignId) {
         return campaignRepository.findOne(campaignId);
     }
 
     public void createFlight(FlightForm flightForm, String campaignId) {
 
+    }
+
+    public Campaign findOneByName(String campaignName) {
+        return campaignRepository.findOneByCampaignName(campaignName);
     }
 }

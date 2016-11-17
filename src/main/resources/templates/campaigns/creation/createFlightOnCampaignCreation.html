@@ -13,7 +13,7 @@
     <div class="tab-content">
         <div class="tabbable tabs-left">
             <ul class="nav nav-tabs">
-                <li><a th:href="@{/app/campaigns/create}" data-toggle="tab">Set name</a></li>
+                <li><a th:href="@{/app/campaigns/create/start}" >Set Name</a></li>
                 <li class="active"><a href="#create_campaign_tab2" data-toggle="tab">Create flight</a></li>
                 <li><a th:href="@{/app/campaigns/create/finish}" data-toggle="tab">Finish</a></li>
             </ul>
@@ -21,43 +21,49 @@
                 <div class="tab-pane active" id="#create_campaign_tab2">
                     <div class="context">
                         <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
-                        <h3>Create flight:</h3>
-                        <form class="form" th:action="@{/app/campaigns/create/flight}" method="post">
+                        <h3 th:text="'Campaign ' + ${campaign.name} +', flight creation!' ">Campaign ,create flight</h3>
+                        <form class="form" th:action="@{/app/campaigns/create/flight}" th:object="${campaign}"
+                              method="post">
+                            <input type="hidden" th:field="*{name}" th:value="${campaign.name}"/>
                             <div class="control-group">
-                                <label for="flight-name" class="control-label">Enter name:</label>
+                                <label for="flight-flightName" class="control-label">Enter flightName:</label>
                                 <div class="controls">
-                                    <input type="text" id="flight-name" name="name"
-                                           placeholder="Name"
+                                    <input type="text" id="flight-flightName"
+                                           th:field="*{flightName}" th:value="*{flightName}"
                                            tabindex="1"/>
                                 </div>
                             </div>
-                            <div class="control-group">
-                                <label for="campaign-name" class="control-label">Choose start date:</label>
-                                <div class="controls">
-                                    <input type="text" id="campaign-name" name="name"
-                                           placeholder="Name"
+                            <div class="control-group" >
+                                <label for="flightStartDate" class="control-label">Choose start date:</label>
+                                <div class="controls date" id="flightStartDate">
+                                    <input type="text" class="form-control" th:field="*{flightStartDate}" th:value="*{flightStartDate}"
                                            tabindex="2"/>
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="control-group">
-                                <label for="campaign-name" class="control-label">Choose end date</label>
-                                <div class="controls">
-                                    <input type="text" id="campaign-name" name="name"
-                                           placeholder="Name"
+                            <div class="control-group" >
+                                <label for="flightEndDate" class="control-label">Choose end date:</label>
+                                <div class="controls date" id="flightEndDate">
+                                    <input type="text" class="form-control" th:field="*{flightEndDate}" th:value="*{flightEndDate}"
                                            tabindex="3"/>
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="controls-group">
                                 <label for="companies">Website</label>
-                                <select id="companies" th:field="*{website}">
+                                <select id="companies" th:field="*{flightWebsiteName}">
                                     <option th:each="website : ${websites}"
-                                            th:value="${website}" th:text="${website.name}">Company
+                                            th:value="${website.websiteName}" th:text="${website.websiteName}">Company
                                     </option>
                                 </select>
                             </div>
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn btn-primary btn-large" tabindex="4">Next</button>
+                                    <button type="submit" class="btn btn-primary btn-large" tabindex="5">Next</button>
                                 </div>
                             </div>
                         </form>

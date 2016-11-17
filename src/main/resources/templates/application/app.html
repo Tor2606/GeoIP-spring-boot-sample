@@ -18,7 +18,7 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab1">
                 <div class="context user-context">
-                    <a class="btn" th:href="@{app/campaigns/create}" sec:authorize="hasRole('ROLE_USER')">Create
+                    <a class="btn" th:href="@{app/campaigns/create}">Create
                         campaign</a>
                     <div th:if="${param.deleteException}" th:text="${deleteException}" class="alert alert-danger">
                         Something
@@ -38,7 +38,7 @@
                         <tbody>
                         <tr th:each="campaign, index : ${campaigns}">
                             <td th:text="${index.count}">...</td>
-                            <td data-th-text="${campaign.name}">...</td>
+                            <td data-th-text="${campaign.campaignName}">...</td>
                             <td data-th-text="${#dates.format(campaign.created)}">...</td>
                             <td>
                                 <a th:href="@{'/campaigns/'+${campaign.campaignId}}">
@@ -57,7 +57,7 @@
                                             <div class="modal-body text-center">
                                                 <h3 class="modal-title"><p>Are you sure you want to remove
                                                     campaign <span
-                                                            th:text="${campaign.name}"></span>?</p></h3>
+                                                            th:text="${campaign.campaignName}"></span>?</p></h3>
                                             </div>
                                             <div class="modal-footer">
                                                 <a th:href="${'app/campaigns/delete/' + campaign.campaignId}"
@@ -93,8 +93,8 @@
                                     <tr>
                                         <th>Index</th>
                                         <th>Email</th>
-                                        <th>First name</th>
-                                        <th>Last name</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
                                         <th>Ip</th>
                                         <th>Role</th>
                                         <th>Company</th>

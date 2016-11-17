@@ -13,7 +13,7 @@
 <div layout:fragment="content">
     <div class="tabbable tabs-left">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#create_campaign_tab1" data-toggle="tab">Set name</a></li>
+            <li class="active"><a href="#create_campaign_tab1" data-toggle="tab">Set Name</a></li>
             <li><a th:href="@{/app/campaigns/create/flight}" data-toggle="tab">Create flight</a></li>
             <li><a th:href="@{/app/campaigns/create/finish}" data-toggle="tab">Finish</a></li>
         </ul>
@@ -22,19 +22,19 @@
                 <div class="context">
                     <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
                     <h3>Create campaign:</h3>
-                    <form class="form" th:action="@{/app/campaigns}" method="post">
+                    <form class="form" th:action="@{/app/campaigns/create/start}" th:object="${campaign}" method="post">
                         <div class="control-group">
-                            <label for="campaign-name" class="control-label">Enter name:</label>
+                            <label for="campaign-Name" class="control-label">Enter Name:</label>
                             <div class="controls">
-                                <input type="text" id="campaign-name" name="name"
-                                       placeholder="Name"
-                                       tabindex="1"/>
+                                <input type="text" id="campaign-Name"
+                                       th:value="*{name}" th:field="*{name}"
+                                       th:text="*{name}"/>
                             </div>
 
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <button type="submit" class="btn btn-primary btn-large" tabindex="2">Next</button>
+                                <button type="submit" class="btn btn-primary btn-large">Next</button>
                             </div>
                         </div>
                     </form>

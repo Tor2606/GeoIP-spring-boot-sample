@@ -45,8 +45,8 @@ public class UserRequestsHandlerInterceptor extends HandlerInterceptorAdapter {
     }
 
     private void updateUsersIP(HttpServletRequest request, User user) {
-        if(user !=null){
-            if(isNotBlank(user.getUserIp()) || (!user.getUserIp().equals(request.getRemoteAddr()))){
+        if (user != null) {
+            if (isNotBlank(user.getUserIp()) || (!user.getUserIp().equals(request.getRemoteAddr()))) {
                 user.setUserIp(request.getRemoteAddr());
                 userService.saveUser(user);
             }

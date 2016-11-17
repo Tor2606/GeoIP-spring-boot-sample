@@ -5,7 +5,7 @@ package com.cbinfo.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "campaigns")
@@ -15,14 +15,14 @@ public class Campaign {
     @Column(name = "campaign_id")
     private long campaignId;
 
-    @Column
-    private String name;
+    @Column(name = "campaign_name")
+    private String campaignName;
 
     @Column
     private Date created;
 
     @OneToMany(mappedBy = "campaign")
-    private Set<Flight> flights;
+    private List<Flight> flights;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -36,12 +36,12 @@ public class Campaign {
         this.campaignId = campaignId;
     }
 
-    public String getName() {
-        return name;
+    public String getCampaignName() {
+        return campaignName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCampaignName(String name) {
+        this.campaignName = name;
     }
 
     public User getUser() {
@@ -60,11 +60,11 @@ public class Campaign {
         this.created = created;
     }
 
-    public Set<Flight> getFlights() {
+    public List<Flight> getFlights() {
         return flights;
     }
 
-    public void setFlights(Set<Flight> flights) {
+    public void setFlights(List<Flight> flights) {
         this.flights = flights;
     }
 }

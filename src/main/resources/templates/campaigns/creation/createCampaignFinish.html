@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="appLayout">
+>
+<head>
+    <title>Cbinfo app</title>
+    <link rel="stylesheet" href="../../../static/css/application.css" th:href="@{/css/application.css}"/>
+    <!-- Bootstrap -->
+    <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
+          media="screen"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="tabbable tabs-left">
+        <ul class="nav nav-tabs">
+            <li><a th:href="@{/app/campaigns/create/start}" data-toggle="tab">Set Name</a></li>
+            <li><a th:href="@{/app/campaigns/create/flight}" data-toggle="tab">Create flight</a></li>
+            <li class="active"><a href="#create_campaign_tab3" data-toggle="tab">Finish</a></li>
+        </ul>
+        <div class="tab-content container">
+            <div class="tab-pane active" id="create_campaign_tab3">
+                <div class="context">
+                    <div th:if="${error}!=null" class="alert alert-danger" th:text="${error}">Error</div>
+                    <h3>Your campaign:</h3>
+                    <ul th:object="${campaign}">
+                        <li class="text-success" th:text="'Name: ' + *{name} ">Name</li>
+                        <li class="text-success" th:text="'Flight name: ' + *{flightName}">Website Name</li>
+                        <li class="text-success" th:text="'Flight startDate: ' + *{flightStartDate}">Flight start</li>
+                        <li class="text-success" th:text="'Flight endDate: ' + *{flightEndDate}">Flight end</li>
+                        <li class="text-success" th:text="'Flight website name: ' + *{flightWebsiteName}">Flight website
+                            name
+                        </li>
+                    </ul>
+                    <form class="form" th:action="@{/app/campaigns/create}" th:object="${campaign}" method="post">
+                        <input type="hidden" th:field="*{name}" th:value="*{name}"/>
+                        <input type="hidden" th:field="*{flightName}" th:value="*{flightName}"/>
+                        <input type="hidden" th:field="*{flightStartDate}" th:value="*{flightStartDate}"/>
+                        <input type="hidden" th:field="*{flightEndDate}" th:value="*{flightEndDate}"/>
+                        <input type="hidden" th:field="*{flightWebsiteName}" th:value="*{flightWebsiteName}"/>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn btn-primary btn-large" tabindex="1">Finish creation!
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

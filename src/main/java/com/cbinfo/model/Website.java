@@ -12,8 +12,8 @@ public class Website {
     @Column(name = "website_id")
     private long websiteId;
 
-    @Column
-    private String name;
+    @Column(name = "website_name")
+    private String websiteName;
 
     @ManyToMany
     private Set<Flight> flights;
@@ -26,12 +26,12 @@ public class Website {
         this.websiteId = websiteId;
     }
 
-    public String getName() {
-        return name;
+    public String getWebsiteName() {
+        return websiteName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setWebsiteName(String websiteName) {
+        this.websiteName = websiteName;
     }
 
     public Set<Flight> getFlights() {

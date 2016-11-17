@@ -12,7 +12,7 @@ public class Company {
     @Column(name = "company_id")
     private long companyId;
 
-    @Column(name = "name")
+    @Column(name = "company_name")
     private String name;
 
     @OneToMany(mappedBy = "company")
