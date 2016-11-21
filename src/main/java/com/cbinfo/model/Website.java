@@ -7,6 +7,8 @@ import java.util.Set;
 @Table(name = "websites")
 public class Website {
 
+    // TODO: 22.11.2016 write manually join table
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "website_id")

@@ -121,6 +121,7 @@ public class CampaignController {
     @RequestMapping(value = "/{campaignId}", method = RequestMethod.GET)
     public String getCampaignFlights(@PathVariable String campaignId, ModelMap modelMap) {
         modelMap.put("campaign", campaignService.findOneDTO(campaignId));
+        modelMap.put("campaignId", campaignId);
         return EDIT_CAMPAIGN_VIEW;
     }
 
@@ -166,6 +167,7 @@ public class CampaignController {
     @RequestMapping(value = "/{campaignId}/flights/{flightId}", method = RequestMethod.GET)
     public String getEditFlight(@PathVariable String campaignId, @PathVariable String flightId, ModelMap modelMap) {
         modelMap.put("flight", flightService.findOne(flightId));
+        modelMap.put("campaignId", campaignId);
         modelMap.put("websites", websiteService.findAll().stream().map(Website::getWebsiteName).collect(toList()));
         return EDIT_FLIGHT_VIEW;
     }
@@ -176,8 +178,10 @@ public class CampaignController {
         try{
             flightService.updateFlight(flightForm, flightId, campaignId);
         }catch (Exception e){
+            modelMap.put("error", e.getMessage());
             return EDIT_FLIGHT_VIEW;
         }
         return REDIRECT + EDIT_CAMPAIGN_PAGE + campaignId;
     }
+    // TODO: 22.11.2016 new front-end
 }
