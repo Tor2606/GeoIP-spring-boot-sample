@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class WebsiteService {
     @Autowired
     private WebsiteRepository websiteRepository;
 
     @Transactional
-    public Iterable<Website> findAll(){
+    public List<Website> findAll(){
         return Lists.newArrayList(websiteRepository.findAll());
     }
 

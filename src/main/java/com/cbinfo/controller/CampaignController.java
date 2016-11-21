@@ -1,9 +1,11 @@
 package com.cbinfo.controller;
 
 import com.cbinfo.dto.CampaignCreationDTO;
+import com.cbinfo.dto.CampaignDTO;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
 import com.cbinfo.model.User;
+import com.cbinfo.model.Website;
 import com.cbinfo.service.CampaignService;
 import com.cbinfo.service.FlightService;
 import com.cbinfo.service.UserSessionService;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequestMapping(value = "/app/campaigns")
@@ -96,27 +100,39 @@ public class CampaignController {
     }
 
     @RequestMapping(value = "/create/finish", method = RequestMethod.GET)
-    public String getCreateCampaignFinish(ModelMap modelMap) {
+    public String getCreateCampaignFinish() {
         return CREATE_CAMPAIGN_FINISH_VIEW;
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String postCreateCampaignFinish(CampaignCreationDTO campaignCreationDTO, ModelMap modelMap) {
-        Campaign campaign = null;
+        Campaign campaign;
         try {
-            campaign = campaignService.saveCampaignDTO(campaignCreationDTO);
+            campaign = campaignService.saveCampaignCreationDTO(campaignCreationDTO);
         } catch (Exception e) {
             modelMap.put("campaign", campaignCreationDTO);
             modelMap.put("error", e.getMessage());
             return CREATE_CAMPAIGN_FINISH_VIEW;
         }
+
         return REDIRECT + EDIT_CAMPAIGN_PAGE + campaign.getCampaignId();
     }
 
     @RequestMapping(value = "/{campaignId}", method = RequestMethod.GET)
     public String getCampaignFlights(@PathVariable String campaignId, ModelMap modelMap) {
-        modelMap.put("campaign", campaignService.findOne(campaignId));
+        modelMap.put("campaign", campaignService.findOneDTO(campaignId));
         return EDIT_CAMPAIGN_VIEW;
+    }
+
+    @RequestMapping(value = "/{campaignId}", method = RequestMethod.POST)
+    public String getCampaignFlights(@PathVariable String campaignId, @RequestParam(name = "campaign") CampaignDTO campaignDTO, ModelMap modelMap) {
+        try {
+            campaignService.updateCampaignName(campaignId, campaignDTO);
+        } catch (Exception e) {
+            modelMap.put("error", e.getMessage());
+            return EDIT_CAMPAIGN_VIEW;
+        }
+        return REDIRECT + APP_PAGE;
     }
 
     @RequestMapping(value = "/{campaignId}/delete", method = RequestMethod.GET)
@@ -132,7 +148,7 @@ public class CampaignController {
 
     @RequestMapping(value = "/{campaignId}/flights/create", method = RequestMethod.GET)
     public String getCreateFlight(@PathVariable String campaignId, ModelMap modelMap) {
-        modelMap.put("campaign", campaignService.findOne(campaignId));
+        modelMap.put("campaignId", campaignId);
         return CREATE_FLIGHT_VIEW;
     }
 
@@ -143,6 +159,24 @@ public class CampaignController {
         } catch (Exception e) {
             modelMap.put("error", e.getMessage());
             return CREATE_FLIGHT_VIEW;
+        }
+        return REDIRECT + EDIT_CAMPAIGN_PAGE + campaignId;
+    }
+
+    @RequestMapping(value = "/{campaignId}/flights/{flightId}", method = RequestMethod.GET)
+    public String getEditFlight(@PathVariable String campaignId, @PathVariable String flightId, ModelMap modelMap) {
+        modelMap.put("flight", flightService.findOne(flightId));
+        modelMap.put("websites", websiteService.findAll().stream().map(Website::getWebsiteName).collect(toList()));
+        return EDIT_FLIGHT_VIEW;
+    }
+
+    @RequestMapping(value = "/{campaignId}/flights/{flightId}", method = RequestMethod.POST)
+    public String postEditFlight(@PathVariable String campaignId, @PathVariable String flightId,
+                                 FlightForm flightForm, ModelMap modelMap){
+        try{
+            flightService.updateFlight(flightForm, flightId, campaignId);
+        }catch (Exception e){
+            return EDIT_FLIGHT_VIEW;
         }
         return REDIRECT + EDIT_CAMPAIGN_PAGE + campaignId;
     }

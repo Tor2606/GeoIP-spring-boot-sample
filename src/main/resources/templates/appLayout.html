@@ -6,10 +6,18 @@
 <body>
 
 <header class="header">
-    <div class="span4">
-        <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
-            Time
-        </p>
+    <div class="span6">
+        <div class="span2 pull-left">
+            <a id="home"
+               th:href="@{/app}">
+                <div class="home-button"></div>
+            </a>
+        </div>
+        <div class="span3">
+            <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+                Time
+            </p>
+        </div>
     </div>
     <div class="span2 offset2 pull-right">
         <!-- Single button -->

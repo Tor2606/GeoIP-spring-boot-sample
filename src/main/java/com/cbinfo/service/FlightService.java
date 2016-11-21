@@ -12,6 +12,7 @@ import java.text.ParseException;
 
 import static com.cbinfo.utils.myDateUtil.toDate;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class FlightService {
@@ -54,11 +55,39 @@ public class FlightService {
 
     private Flight toFlight(FlightForm flightForm, long campaignId) throws ParseException {
         Flight flight = new Flight();
-        flight.setWebsites(newArrayList(websiteService.findOneByName(flightForm.getName())));
+        flight.setWebsites(newArrayList());
         flight.setCampaign(campaignService.findOne(campaignId));
-        flight.setFlightName(flightForm.getName());
-        flight.setStartDate(toDate(flightForm.getStartDate()));
-        flight.setEndDate(toDate(flightForm.getEndDate()));
+        fillFlightFromDTO(flightForm, flight);
         return flight;
+    }
+
+    public Flight findOne(String flightId) {
+        return findOne(Long.valueOf(flightId));
+    }
+
+    @Transactional
+    private Flight findOne(long flightId) {
+        return flightRepository.findOne(flightId);
+    }
+
+    public void updateFlight(FlightForm flightForm, String flightId, String campaignId) throws ParseException {
+        Flight flight = findOne(flightId);
+        fillFlightFromDTO(flightForm, flight);
+        saveFlight(flight);
+    }
+
+    private void fillFlightFromDTO(FlightForm flightForm, Flight flight) throws ParseException {
+        if (isNotBlank(flightForm.getName())) {
+            flight.setFlightName(flightForm.getName());
+        }
+        if (isNotBlank(flightForm.getStartDate())) {
+            flight.setStartDate(toDate(flightForm.getStartDate()));
+        }
+        if (isNotBlank(flightForm.getEndDate())) {
+            flight.setEndDate(toDate(flightForm.getEndDate()));
+        }
+        if (isNotBlank(flightForm.getWebsiteName())) {
+            flight.getWebsites().add(websiteService.findOneByName(flightForm.getWebsiteName()));
+        }
     }
 }
