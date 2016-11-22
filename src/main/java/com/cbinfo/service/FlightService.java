@@ -2,20 +2,28 @@ package com.cbinfo.service;
 
 import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.form.FlightForm;
+import com.cbinfo.model.Campaign;
 import com.cbinfo.model.Flight;
+import com.cbinfo.model.Website;
 import com.cbinfo.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static com.cbinfo.utils.myDateUtil.toDate;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class FlightService {
+
+    private static final String DATE_FORMAT_TEMPLATE = "dd/mm/yy";
 
     @Autowired
     protected CampaignService campaignService;
@@ -49,7 +57,8 @@ public class FlightService {
         result.setName(form.getName());
         result.setStartDate(form.getFlightStartDate());
         result.setEndDate(form.getFlightEndDate());
-        result.setWebsiteName(form.getFlightWebsiteName());
+        result.setWebsiteNames(newArrayList());
+        result.getWebsiteNames().add(form.getFlightWebsiteName());
         return result;
     }
 
@@ -86,8 +95,30 @@ public class FlightService {
         if (isNotBlank(flightForm.getEndDate())) {
             flight.setEndDate(toDate(flightForm.getEndDate()));
         }
-        if (isNotBlank(flightForm.getWebsiteName())) {
-            flight.getWebsites().add(websiteService.findOneByName(flightForm.getWebsiteName()));
-        }
+        List<Website> flightWebsiteList = flight.getWebsites();
+        flightForm.getWebsiteNames().stream().filter(wn -> checkIfWebsiteIsNotPresent(wn, flightWebsiteList)).forEach(name ->flightWebsiteList.add(websiteService.findOneByName(name)));
+    }
+
+    private boolean checkIfWebsiteIsNotPresent(String websiteName, List<Website> flightWebsiteList) {
+        List<String> websiteNameList = flightWebsiteList.stream().map(Website::getWebsiteName).collect(toList());
+        return !websiteNameList.contains(websiteName);
+    }
+
+    public List<FlightForm> getCampaignFLightsToDTO(Campaign campaign) {
+        List<FlightForm> result = newArrayList();
+        campaign.getFlights().stream().forEach(f->result.add(toFlightForm(f)));
+        return  result;
+    }
+
+    private FlightForm toFlightForm(Flight flight) {
+        FlightForm result = new FlightForm();
+        result.setFlightId(flight.getFlightId());
+        result.setName(flight.getFlightName());
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_TEMPLATE);
+        result.setStartDate(dateFormat.format(flight.getStartDate()));
+        result.setEndDate(dateFormat.format(flight.getEndDate()));
+        result.setWebsiteNames(newArrayList());
+        flight.getWebsites().stream().map(Website::getWebsiteName).forEach(name -> result.getWebsiteNames().add(name));
+        return result;
     }
 }

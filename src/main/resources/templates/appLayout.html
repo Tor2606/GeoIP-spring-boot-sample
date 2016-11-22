@@ -2,36 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>cbinfo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 <body>
 
-<header class="header">
-    <div class="span6">
-        <div class="span2 pull-left">
-            <a id="home"
-               th:href="@{/app}">
-                <div class="home-button"></div>
-            </a>
+<header class="page-header">
+    <div class="row">
+
+        <div class="span6">
+            <div class="span2 pull-left">
+                <a id="home"
+                   th:href="@{/app}">
+                    <div class="home-button"></div>
+                </a>
+            </div>
+            <div class="span3">
+                <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+                    Time
+                </p>
+            </div>
         </div>
-        <div class="span3">
-            <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
-                Time
-            </p>
-        </div>
-    </div>
-    <div class="span2 offset2 pull-right">
-        <!-- Single button -->
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-                <span th:text="${user.email}">User</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a th:href="@{/logout}">Logout</a></li>
-                <li><a th:href="@{/users/edit}">Edit profile</a></li>
-            </ul>
+        <div class="span2 offset2 pull-right">
+            <!-- Single button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <span th:text="${user.email}">User</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/logout}">Logout</a></li>
+                    <li><a th:href="@{/users/edit}">Edit profile</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </header>
@@ -44,7 +48,6 @@
     <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
 </footer>
 
-<script src="http://code.jquery.com/jquery.js"></script>
-<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
 </body>
 </html>

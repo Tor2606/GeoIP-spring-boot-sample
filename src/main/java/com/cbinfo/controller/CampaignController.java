@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -32,11 +35,11 @@ public class CampaignController {
     private static final String CREATE_CAMPAIGN_FINISH_PAGE = "/app/campaigns/create/finish";
 
     private static final String APP_VIEW = "application/app";
-    private static final String EDIT_FLIGHT_VIEW = "/campaigns/editCampaignFlights";
-    private static final String CREATE_FLIGHT_VIEW = "/campaigns/createAndSaveFlight";
+    private static final String EDIT_FLIGHT_VIEW = "/campaigns/flight/editFlight";
+    private static final String CREATE_FLIGHT_VIEW = "/campaigns/flight/createFlight";
     private static final String EDIT_CAMPAIGN_VIEW = "campaigns/editCampaign";
     private static final String CREATE_CAMPAIGN_START_VIEW = "campaigns/creation/createCampaign";
-    private static final String CREATE_CAMPAIGN_FLIGHT_VIEW = "campaigns/creation/createFlightOnCampaignCreation";
+    private static final String CREATE_CAMPAIGN_FLIGHT_VIEW = "campaigns/creation/createCampaignCreateFlight";
     private static final String CREATE_CAMPAIGN_FINISH_VIEW = "campaigns/creation/createCampaignFinish";
 
     @Autowired
@@ -111,7 +114,7 @@ public class CampaignController {
             campaign = campaignService.saveCampaignCreationDTO(campaignCreationDTO);
         } catch (Exception e) {
             modelMap.put("campaign", campaignCreationDTO);
-            modelMap.put("error", e.getMessage());
+            modelMap.put("error", "Error! " + e.getMessage());
             return CREATE_CAMPAIGN_FINISH_VIEW;
         }
 
@@ -119,21 +122,26 @@ public class CampaignController {
     }
 
     @RequestMapping(value = "/{campaignId}", method = RequestMethod.GET)
-    public String getCampaignFlights(@PathVariable String campaignId, ModelMap modelMap) {
+    public String getEditCampaign(@PathVariable String campaignId, ModelMap modelMap) {
         modelMap.put("campaign", campaignService.findOneDTO(campaignId));
+        modelMap.put("flights", campaignService.getCampaignsFlights(campaignId));
         modelMap.put("campaignId", campaignId);
         return EDIT_CAMPAIGN_VIEW;
     }
 
+
     @RequestMapping(value = "/{campaignId}", method = RequestMethod.POST)
-    public String getCampaignFlights(@PathVariable String campaignId, @RequestParam(name = "campaign") CampaignDTO campaignDTO, ModelMap modelMap) {
+    public String postEditCampaign(@PathVariable String campaignId, CampaignDTO campaign, ModelMap modelMap) {
         try {
-            campaignService.updateCampaignName(campaignId, campaignDTO);
+            campaignService.updateCampaignName(campaignId, campaign);
         } catch (Exception e) {
-            modelMap.put("error", e.getMessage());
+            modelMap.put("campaign", campaignService.findOneDTO(campaignId));
+            modelMap.put("flights", campaignService.getCampaignsFlights(campaignId));
+            modelMap.put("campaignId", campaignId);
+            modelMap.put("error", "Error! Message: " + e.getMessage());
             return EDIT_CAMPAIGN_VIEW;
         }
-        return REDIRECT + APP_PAGE;
+        return REDIRECT + EDIT_CAMPAIGN_PAGE + campaignId;
     }
 
     @RequestMapping(value = "/{campaignId}/delete", method = RequestMethod.GET)
@@ -174,10 +182,10 @@ public class CampaignController {
 
     @RequestMapping(value = "/{campaignId}/flights/{flightId}", method = RequestMethod.POST)
     public String postEditFlight(@PathVariable String campaignId, @PathVariable String flightId,
-                                 FlightForm flightForm, ModelMap modelMap){
-        try{
+                                 FlightForm flightForm, ModelMap modelMap) {
+        try {
             flightService.updateFlight(flightForm, flightId, campaignId);
-        }catch (Exception e){
+        } catch (Exception e) {
             modelMap.put("error", e.getMessage());
             return EDIT_FLIGHT_VIEW;
         }

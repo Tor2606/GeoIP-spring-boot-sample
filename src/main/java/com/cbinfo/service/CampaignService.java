@@ -4,7 +4,6 @@ import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.CampaignDTO;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
-import com.cbinfo.model.Flight;
 import com.cbinfo.model.User;
 import com.cbinfo.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
@@ -26,6 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class CampaignService {
 
     private static final String USER_ROLE = "ROLE_USER";
+    private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/mm/yyyy HH:mm:ss";
 
     @Autowired
     protected UserSessionService userSessionService;
@@ -95,10 +94,14 @@ public class CampaignService {
     private CampaignDTO toDTO(Campaign campaign) {
         CampaignDTO result = new CampaignDTO();
         result.setCampaignName(campaign.getCampaignName());
-        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat(CAMPAIGN_CREATION_TIME_TEMPLATE);
         result.setCreated(dateFormat.format(campaign.getCreated()));
-        result.setFlightNames(campaign.getFlights().stream().map(Flight::getFlightName).collect(toList()));
         return result;
+    }
+
+    public List<FlightForm> getCampaignsFlights(String campaignId){
+        Campaign campaign = findOne(Long.valueOf(campaignId));
+        return flightService.getCampaignFLightsToDTO(campaign);
     }
 
     @Transactional
@@ -106,16 +109,12 @@ public class CampaignService {
         return campaignRepository.findOne(campaignId);
     }
 
-    public void createFlight(FlightForm flightForm, String campaignId) {
-
-    }
-
     public Campaign findOneByName(String campaignName) {
         return campaignRepository.findOneByCampaignName(campaignName);
     }
 
     public void updateCampaignName(String campaignId, CampaignDTO campaignDTO) throws Exception {
-        Campaign campaign = findOneByName(campaignId);
+        Campaign campaign = findOne(Long.valueOf(campaignId));
         if (isNotBlank(campaignDTO.getCampaignName())) {
             if (checkIfCampaignWithSuchNameExist(campaignDTO)) {
                 throw new Exception("Campaign with such name allready exist!");

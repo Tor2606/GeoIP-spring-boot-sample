@@ -18,6 +18,11 @@ public class Website {
     private String websiteName;
 
     @ManyToMany
+    @JoinTable(
+            name = "websites_flights",
+            joinColumns = @JoinColumn(name = "website_id"),
+            inverseJoinColumns = @JoinColumn(name = "flight_id"))
+
     private Set<Flight> flights;
 
     public long getWebsiteId() {
