@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class CampaignService {
 
     private static final String USER_ROLE = "ROLE_USER";
-    private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/mm/yyyy HH:mm:ss";
+    private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/MM/yyyy HH:mm:ss";
 
     @Autowired
     protected UserSessionService userSessionService;

@@ -51,7 +51,7 @@
                 <td th:text="${flight.startDate}">...</td>
                 <td th:text="${flight.endDate}">...</td>
                 <td>
-                    <a th:href="@{'app/campaigns/' + ${campaignId} + '/flights/' + ${flight.flightId}}">
+                    <a th:href="@{'/app/campaigns/' + ${campaignId} + '/flights/' + ${flight.flightId}}">
                         <div class="create-button"></div>
                     </a>
                 </td>
@@ -71,7 +71,7 @@
                                                 th:text="${flight.name}"></span>?</p></h3>
                                 </div>
                                 <div class="modal-footer">
-                                    <a th:href="@{'app/campaigns/' + ${campaignId} + '/flights/' + ${flight.flightId} + '/delete'}"
+                                    <a th:href="@{'/app/campaigns/' + ${campaignId} + '/flights/' + ${flight.flightId} + '/delete'}"
                                        class="btn btn-danger">Delete</a>
                                     <button type="button" class="btn btn-default"
                                             data-dismiss="modal">Cancel

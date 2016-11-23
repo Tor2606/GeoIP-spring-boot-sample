@@ -15,8 +15,9 @@
 <body>
 <div layout:fragment="content">
     <ul class="nav nav-pills">
-        <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
-        <li><a href="#tab2" data-toggle="tab" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a></li>
+        <li class="active"><a href="#tab1" data-toggle="tab">Campaigns</a></li>
+        <li><a href="#tab2" data-toggle="tab" >Websites</a></li>
+        <li><a href="#tab3" data-toggle="tab" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab1">
@@ -78,7 +79,66 @@
                 </table>
             </div>
         </div>
-        <div class="tab-pane" id="tab2" sec:authorize="hasRole('ROLE_ADMIN')">
+
+        <div class="tab-pane" id="tab2">
+            <div class="context user-context">
+                <a class="btn btn-info left" th:href="@{app/websites/create}">Create
+                    website</a>
+                <div th:if="${param.deleteException}" th:text="${deleteException}" class="alert alert-danger">
+                    Something
+                    is wrong
+                </div>
+                <h3>Websites table</h3>
+                <table class="table table-stripped pull-left">
+                    <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Name</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="website, index : ${websites}">
+                        <td th:text="${index.count}">...</td>
+                        <td data-th-text="${website.websiteName}">...</td>
+                        <td>
+                            <a th:href="@{'app/campaigns/'+${website.websiteId}}">
+                                <div class="create-button"></div>
+                            </a>
+                        </td>
+                        <td>
+                            <a data-toggle="modal" id="delete-website"
+                               th:href="${'#deleteWebsiteModal' + index.count}">
+                                <div class="delete-button"></div>
+                            </a>
+                            <div th:id="${'deleteWebsiteModal' + index.count}" class="modal fade"
+                                 style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center">
+                                            <h3 class="modal-title"><p>Are you sure you want to remove
+                                                website <span
+                                                        th:text="${website.websiteName}"></span>?</p></h3>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a th:href="${'app/websites/' + website.websiteId +'/delete'}"
+                                               class="btn btn-danger">Delete</a>
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tab3" sec:authorize="hasRole('ROLE_ADMIN')">
             <div class="container">
                 <ul class="nav nav-tabs nav-justified">
                     <li class="active"><a href="#admin_tab1" data-toggle="tab">Users</a></li>

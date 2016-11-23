@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class FlightService {
 
-    private static final String DATE_FORMAT_TEMPLATE = "dd/mm/yy";
+    private static final String DATE_FORMAT_TEMPLATE = "dd/MM/yy";
 
     @Autowired
     protected CampaignService campaignService;

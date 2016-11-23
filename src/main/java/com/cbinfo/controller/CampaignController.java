@@ -5,7 +5,6 @@ import com.cbinfo.dto.CampaignDTO;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
 import com.cbinfo.model.User;
-import com.cbinfo.model.Website;
 import com.cbinfo.service.CampaignService;
 import com.cbinfo.service.FlightService;
 import com.cbinfo.service.UserSessionService;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-
-import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequestMapping(value = "/app/campaigns")
@@ -176,7 +173,7 @@ public class CampaignController {
     public String getEditFlight(@PathVariable String campaignId, @PathVariable String flightId, ModelMap modelMap) {
         modelMap.put("flight", flightService.findOne(flightId));
         modelMap.put("campaignId", campaignId);
-        modelMap.put("websites", websiteService.findAll().stream().map(Website::getWebsiteName).collect(toList()));
+        modelMap.put("websites", websiteService.findAllNames());
         return EDIT_FLIGHT_VIEW;
     }
 

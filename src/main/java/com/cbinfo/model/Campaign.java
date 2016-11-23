@@ -1,8 +1,5 @@
 package com.cbinfo.model;
 
-
-// TODO: 07.11.2016 Create new campaign, it's creation and edit page
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
