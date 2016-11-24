@@ -1,23 +1,28 @@
 package com.cbinfo.dto.form;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
-import java.util.List;
-
 public class FlightForm {
 
     private Long flightId;
 
-    @NotEmpty(message = "Empty name!")
     private String name;
 
     private String startDate;
 
     private String endDate;
 
-    private List<String> websiteNames;
+    private String websiteName;
 
     private String campaignName;
+
+    private String type;
+
+    public FlightForm() {
+        this.campaignName = "";
+        this.name = "";
+        this.startDate = "";
+        this.endDate = "";
+        this.websiteName = "";
+    }
 
     public Long getFlightId() {
         return flightId;
@@ -51,12 +56,12 @@ public class FlightForm {
         this.endDate = endDate;
     }
 
-    public List<String> getWebsiteNames() {
-        return websiteNames;
+    public String getWebsiteName() {
+        return websiteName;
     }
 
-    public void setWebsiteNames(List<String> websiteNames) {
-        this.websiteNames = websiteNames;
+    public void setWebsiteName(String websiteName) {
+        this.websiteName = websiteName;
     }
 
     public String getCampaignName() {
@@ -65,5 +70,13 @@ public class FlightForm {
 
     public void setCampaignName(String campaignName) {
         this.campaignName = campaignName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

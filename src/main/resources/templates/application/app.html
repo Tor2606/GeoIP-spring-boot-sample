@@ -23,8 +23,16 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab1">
                 <div class="context user-context">
-                    <a class="btn btn-info left" th:href="@{app/campaigns/create}">Create
-                        campaign</a>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a class="btn btn-info " th:href="@{app/campaigns/create}">Create
+                                campaign</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a class="btn btn-info " th:href="@{app/flights/create}">Create
+                                flight</a>
+                        </div>
+                    </div>
                     <div th:if="${param.deleteException}" th:text="${deleteException}" class="alert alert-danger">
                         Something
                         is wrong
@@ -43,10 +51,14 @@
                         <tbody>
                         <tr th:each="campaign, index : ${campaigns}">
                             <td th:text="${index.count}">...</td>
-                            <td data-th-text="${campaign.campaignName}">...</td>
-                            <td data-th-text="${#dates.format(campaign.created, 'dd MMM yyyy HH:mm')}">...</td>
                             <td>
                                 <a th:href="@{'app/campaigns/'+${campaign.campaignId}}">
+                                    <span data-th-text="${campaign.campaignName}"></span>
+                                </a>
+                            </td>
+                            <td data-th-text="${#dates.format(campaign.created, 'dd MMM yyyy HH:mm')}">...</td>
+                            <td>
+                                <a th:href="@{'app/campaigns/'+${campaign.campaignId} + 'edit'}">
                                     <div class="create-button"></div>
                                 </a>
                             </td>

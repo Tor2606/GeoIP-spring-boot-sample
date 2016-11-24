@@ -22,7 +22,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class CampaignService {
-
+    // TODO: 24.11.2016 guava -> check argument
+    // TODO: 24.11.2016 change names to more informative (findOne->findCampaign)
+    //todo refactor methods()
+    //todo repair tests
     private static final String USER_ROLE = "ROLE_USER";
     private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/MM/yyyy HH:mm:ss";
 
