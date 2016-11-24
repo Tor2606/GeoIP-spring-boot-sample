@@ -70,6 +70,10 @@ public class FlightService {
         return flight;
     }
 
+    public FlightForm findOneForm(String flightId){
+        return toFlightForm(findOne(flightId));
+    }
+
     public Flight findOne(String flightId) {
         return findOne(Long.valueOf(flightId));
     }

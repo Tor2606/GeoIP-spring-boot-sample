@@ -159,7 +159,12 @@ public class CampaignController {
     }
 
     @RequestMapping(value = "/{campaignId}/flights", method = RequestMethod.POST)
-    public String postCreateFlight(@PathVariable String campaignId, FlightForm flightForm, ModelMap modelMap) {
+    public String postCreateFlight(@PathVariable String campaignId,@Valid FlightForm flightForm, BindingResult bindingResult, ModelMap modelMap) {
+        if(bindingResult.hasErrors()){
+            modelMap.put("error", "Name can't be null!");
+            return CREATE_FLIGHT_VIEW;
+        }
+
         try {
             flightService.createAndSaveFlight(flightForm, campaignId);
         } catch (Exception e) {
@@ -171,9 +176,10 @@ public class CampaignController {
 
     @RequestMapping(value = "/{campaignId}/flights/{flightId}", method = RequestMethod.GET)
     public String getEditFlight(@PathVariable String campaignId, @PathVariable String flightId, ModelMap modelMap) {
-        modelMap.put("flight", flightService.findOne(flightId));
+        modelMap.put("flightForm", flightService.findOneForm(flightId));
         modelMap.put("campaignId", campaignId);
-        modelMap.put("websites", websiteService.findAllNames());
+        modelMap.put("flightId", flightId);
+        modelMap.put("websiteNames", websiteService.findAllNames());
         return EDIT_FLIGHT_VIEW;
     }
 
