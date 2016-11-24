@@ -27,6 +27,9 @@ public class ApplicationController {
     private CompanyService companyService;
 
     @Autowired
+    private WebsiteService websiteService;
+
+    @Autowired
     private CampaignService campaignService;
 
     @ModelAttribute("user")
@@ -39,7 +42,8 @@ public class ApplicationController {
         modelMap.put("userDataList", userDataService.findAll());
         modelMap.put("users", userService.findAll());
         modelMap.put("companies", companyService.findAll());
-        modelMap.put("campaigns", campaignService.findAllAvailableCampaigns());
+        modelMap.put("campaigns", campaignService.findAllCurrentUserCampaigns());
+        modelMap.put("websites", websiteService.findAll());
         return MAIN_VIEW;
     }
 }

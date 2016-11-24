@@ -64,7 +64,7 @@ public class CampaignService {
         return campaignRepository.save(campaign);
     }
 
-    public List<Campaign> findAllAvailableCampaigns() {
+    public List<Campaign> findAllCurrentUserCampaigns() {
         List<Campaign> result = findAll();
         User user = userSessionService.getUser();
         if (user.getRole().name().equals(USER_ROLE)) {
