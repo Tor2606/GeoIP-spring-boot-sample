@@ -15,15 +15,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 @Service
 public class CampaignService {
     // TODO: 24.11.2016 guava -> check argument
-    // TODO: 24.11.2016 change names to more informative (findOne->findCampaign)
+    // TODO: 24.11.2016 change names to more informative (findCampaign->findCampaign)
     //todo refactor methods()
     //todo repair tests
     private static final String USER_ROLE = "ROLE_USER";
@@ -129,5 +131,21 @@ public class CampaignService {
 
     private boolean checkIfCampaignWithSuchNameExist(CampaignDTO campaignDTO) {
         return campaignRepository.findOneByCampaignName(campaignDTO.getCampaignName()) != null;
+    }
+
+
+    public List<String> getAllCampaignsNames() {
+        return findAll().stream().map(Campaign::getCampaignName).collect(toList());
+    }
+
+    public void createCampaign(CampaignDTO campaignDTO) {
+
+    }
+
+    public void updateCampaignName(CampaignDTO campaignDTO) {
+
+    }
+
+    public Campaign findCampaign(String campaignId) {
     }
 }

@@ -16,13 +16,12 @@
     <div class="user-context">
         <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
         <h3>Create campaign:</h3>
-        <form th:action="@{/app/campaigns}" th:object="${campaign}" method="post">
+        <form th:action="@{/app/campaigns}" th:object="${campaignDTO}" method="post">
             <div class="form-group">
                 <label for="campaign-Name" class="control-label">Enter Name:</label>
                 <div class="controls">
                     <input type="text" id="campaign-Name"
-                           th:value="*{name}" th:field="*{name}"
-                           th:text="*{name}"/>
+                           name="campaignName"/>
                 </div>
             </div>
             <div class="form-group">

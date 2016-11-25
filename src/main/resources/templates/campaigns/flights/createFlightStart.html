@@ -20,13 +20,13 @@
             <li class="active"><a href="#create_flight_tab1" data-toggle="tab">Set flight campaign</a></li>
             <li>
                 <div th:switch="${flightId}">
-                    <a th:case="null" th:href="@{/app/flights/create/main}">Fill flight</a>
+                    <a th:case="null" class="text-muted">Fill flight</a>
                     <a th:case="*" th:href="@{/app/flights/create/main(flightId=${flightId})}">Fill flight</a>
                 </div>
             </li>
             <li>
                 <div th:switch="${flightId}">
-                    <a th:case="null"><span class="text-muted">Finish creation</span></a>
+                    <a th:case="null" class="text-muted">Finish creation</a>
                     <a th:case="*" th:href="@{/app/flights/create/finish(flightId=${flightId})}">Finish creation</a>
                 </div>
             </li>

@@ -23,7 +23,7 @@ public class WebsiteService {
         return Lists.newArrayList(websiteRepository.findAll());
     }
 
-    public List<String> findAllNames() {
+    public List<String> getAllWebsiteNames() {
         return findAll().stream().map(Website::getWebsiteName).collect(toList());
     }
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="appLayout">
+>
+<head>
+    <title>Cbinfo app</title>
+    <link rel="stylesheet" href="../../../static/css/application.css" th:href="@{/css/application.css}"/>
+    <!-- Bootstrap -->
+    <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
+          media="screen"/>
+    <link href="../../../static/css/bootstrap-responsive.min.css" th:href="@{/css/bootstrap-responsive.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="tabbable tabs-left">
+        <ul class="nav nav-tabs">
+            <li><a th:href="@{/app/flights/create/start(flightId=${flightId})}">Set flight campaign</a></li>
+            <li><a th:href="@{/app/flights/create/main(flightId=${flightId})}">Fill flight</a></li>
+            <li class="active"><a href="#create_flight_tab3" data-toggle="tab">Finish creation</a></li>
+        </ul>
+        <div class="tab-content container">
+            <div class="tab-pane active" id="create_flight_tab3">
+                <div th:if="${error}!=null" class="alert alert-danger" th:text="${error}">Error</div>
+                <h3>Your flight:</h3>
+                <ul class="list-unstyled col-md-7" th:object="${flightForm}">
+                    <li class="list-group-item" th:text="'Name: ' + *{name} ">Name</li>
+                    <li class="list-group-item" th:text="'Campaign name: ' + *{campaignName}">Campaign Name</li>
+                    <li class="list-group-item" th:text="'Website: ' + *{websiteName}">Website Name</li>
+                    <li class="list-group-item" th:text="'Flight start date : ' + *{flightStartDate}">Flight start</li>
+                    <li class="list-group-item" th:text="'Flight end date: ' + *{flightEndDate}">Flight end</li>
+                    <li class="list-group-item" th:text="'Flight type: ' + *{type}">Flight type</li>
+                    <li class="list-group-item" th:text="'Quantity (' + *{type} + ') : ' + *{quantity}">Quantity</li>
+                </ul>
+                <a class="btn btn-info" th:href="@{'app/flights/create/finish/' + ${flightId}}" th:method="post">Finish
+                    creation</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

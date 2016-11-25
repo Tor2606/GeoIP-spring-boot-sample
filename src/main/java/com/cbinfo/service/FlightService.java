@@ -38,8 +38,13 @@ public class FlightService {
         createAndSaveFlight(toFlightForm(creationDTO), campaignId);
     }
 
-    public void createAndSaveFlight(FlightForm flightForm, String campaignId) throws ParseException {
-        createAndSaveFlight(flightForm, Long.valueOf(campaignId));
+    public long createFlight(FlightForm flightForm) throws ParseException {
+        long flightId = saveFlightForm(flightForm);
+        return flightId;
+    }
+
+    private long saveFlightForm(FlightForm flightForm) {
+        return 0;
     }
 
     @Transactional
@@ -124,5 +129,13 @@ public class FlightService {
         result.setWebsiteNames(newArrayList());
         flight.getWebsites().stream().map(Website::getWebsiteName).forEach(name -> result.getWebsiteNames().add(name));
         return result;
+    }
+
+    public void updateFlight(FlightForm flightForm) {
+
+    }
+
+    public List<FlightForm> findFlightFormsByCampaign(String campaignId) {
+        return null;
     }
 }

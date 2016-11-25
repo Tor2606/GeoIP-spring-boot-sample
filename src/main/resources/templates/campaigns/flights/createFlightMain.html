@@ -19,7 +19,7 @@
         <ul class=" nav nav-tabs">
             <li>
                 <div th:switch="${flightId}">
-                    <a th:case="null" th:href="@{/app/flights/create/start}">Fill flight</a>
+                    <a th:case="null" th:href="@{/app/flights/create/start}">Set flight campaign</a>
                     <a th:case="*" th:href="@{/app/flights/create/start(flightId=${flightId})}">Set flight campaign</a>
                 </div>
             </li>
@@ -48,9 +48,6 @@
                                         <input type="text" class="form-control" id="datepicker1"
                                                th:field="*{flightStartDate}"
                                                th:value="*{flightStartDate}"/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -59,6 +56,8 @@
                                     $("#datepicker1").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
                                 });
                             </script>
+                            </div>
+                        <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label for="datepicker2" class="control-label">Choose end date:</label>
@@ -66,9 +65,6 @@
                                         <input type="text" class="form-control" id="datepicker2"
                                                th:field="*{flightEndDate}"
                                                th:value="*{flightEndDate}"/>
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
                                     </div>
                                 </div>
                             </div>

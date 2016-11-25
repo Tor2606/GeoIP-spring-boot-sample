@@ -2,6 +2,8 @@ package com.cbinfo.dto;
 
 public class CampaignDTO {
 
+    private String campaignId;
+
     private String campaignName;
 
     private String created;
@@ -20,5 +22,13 @@ public class CampaignDTO {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public String getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(String campaignId) {
+        this.campaignId = campaignId;
     }
 }
