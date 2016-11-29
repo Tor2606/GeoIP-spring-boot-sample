@@ -18,27 +18,21 @@
     <div class="tab-content">
         <ul class=" nav nav-tabs">
             <li>
-                <div th:switch="${flightId}">
-                    <a th:case="null" th:href="@{/app/flights/create/start}">Set flight campaign</a>
-                    <a th:case="*" th:href="@{/app/flights/create/start(flightId=${flightId})}">Set flight campaign</a>
-                </div>
+                <a th:href="@{/app/flights/create/start(flightId=${flightForm.flightId})}">Set flight campaign</a>
             </li>
             <li class="active"><a href="#create_flight_tab2" data-toggle="tab">Fill flight</a></li>
             <li>
-                <div th:switch="${flightId}">
-                    <a th:case="null"><span class="text-muted">Finish creation</span></a>
-                    <a th:case="*" th:href="@{/app/flights/create/finish(flightId=${flightId})}">Finish creation</a>
-                </div>
+                <a th:href="@{/app/flights/create/finish(flightId=${flightForm.flightId})}">Finish creation</a>
             </li>
         </ul>
         <div class="tab-content container">
             <div class="tab-pane active" id="#create_flight_tab2">
                 <div class="context">
-                    <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
+                    <div th:if="${error} !=null" class="alert alert-danger" th:text="${error}">Error</div>
                     <h3>Fill flight form</h3>
                     <form class="form" th:action="@{/app/flights/create/main}" th:object="${flightForm}"
                           method="post">
-                        <input th:if="${flightId} != null" type="hidden" th:field="*{flightId}" th:value="${flightId}"/>
+                        <input th:if="*{flightId} != null" type="hidden" th:field="*{flightId}" th:value="${flightId}"/>
 
                         <div class="row">
                             <div class="col-md-5">
@@ -46,8 +40,8 @@
                                     <label for="datepicker1" class="control-label">Choose start date:</label>
                                     <div class="input-group date">
                                         <input type="text" class="form-control" id="datepicker1"
-                                               th:field="*{flightStartDate}"
-                                               th:value="*{flightStartDate}"/>
+                                               th:field="*{startDate}"
+                                               th:value="*{startDate}"/>
                                     </div>
                                 </div>
                             </div>
@@ -56,15 +50,15 @@
                                     $("#datepicker1").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
                                 });
                             </script>
-                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label for="datepicker2" class="control-label">Choose end date:</label>
                                     <div class="input-group date">
                                         <input type="text" class="form-control" id="datepicker2"
-                                               th:field="*{flightEndDate}"
-                                               th:value="*{flightEndDate}"/>
+                                               th:field="*{endDate}"
+                                               th:value="*{endDate}"/>
                                     </div>
                                 </div>
                             </div>
@@ -79,8 +73,8 @@
                             <label for="type">Choose type (impression/clicks):</label>
                             <div class="input-group">
                                 <select id="type" th:field="*{type}">
-                                    <option th:each="type : ${flightTypes}"
-                                            th:value="*{type}" th:text="${type}">Type
+                                    <option th:each="type : ${types}"
+                                            th:value="${type}" th:text="${type}">Type
                                     </option>
                                 </select>
                             </div>
@@ -102,7 +96,7 @@
                             <div class="input-group">
                                 <select id="websites" th:field="*{websiteName}">
                                     <option th:each="websiteName : ${websiteNames}"
-                                            th:value="*{websiteName}" th:text="${websiteName}">Company
+                                            th:value="${websiteName}" th:text="${websiteName}">Company
                                     </option>
                                 </select>
                             </div>

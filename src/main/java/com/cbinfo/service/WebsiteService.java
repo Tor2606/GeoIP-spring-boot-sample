@@ -28,18 +28,13 @@ public class WebsiteService {
     }
 
     @Transactional
-    public Website findOneByName(String websiteName) {
+    public Website findWebsiteByName(String websiteName) {
         return websiteRepository.findOneByWebsiteName(websiteName);
     }
 
-
-    public Website findOne(String websiteId) {
-        return findOne(Long.valueOf(websiteId));
-    }
-
     @Transactional
-    private Website findOne(Long websiteId) {
-        return websiteRepository.findOne(websiteId);
+    private Website findWebsite(String websiteId) {
+        return websiteRepository.findOne(Long.valueOf(websiteId));
     }
 
     public void editWebsite(String websiteId, WebsiteForm websiteForm) throws Exception {
@@ -64,16 +59,16 @@ public class WebsiteService {
     }
 
     private boolean checkIfNameAlreadyExist(String name) {
-        return websiteRepository.findOneByWebsiteName(name) == null ? false : true;
+        return websiteRepository.findOneByWebsiteName(name) != null;
     }
 
-    public WebsiteForm findOneForm(String websiteId) {
-        Website website = findOne(websiteId);
-        return toForm(website);
+    public WebsiteForm findWebsiteForm(String websiteId) {
+        Website website = findWebsite(websiteId);
+        return websiteToWebsiteForm(website);
 
     }
 
-    private WebsiteForm toForm(Website website) {
+    private WebsiteForm websiteToWebsiteForm(Website website) {
         WebsiteForm result = new WebsiteForm();
         result.setName(website.getWebsiteName());
         return result;
@@ -88,12 +83,8 @@ public class WebsiteService {
         saveWebsite(website);
     }
 
-    public void deleteWebsite(String websiteId) {
-        deleteWebsite(Long.valueOf(websiteId));
-    }
-
     @Transactional
-    private void deleteWebsite(Long websiteId) {
-        websiteRepository.delete(websiteId);
+    public void deleteWebsite(String websiteId) {
+        websiteRepository.delete(Long.valueOf(websiteId));
     }
 }

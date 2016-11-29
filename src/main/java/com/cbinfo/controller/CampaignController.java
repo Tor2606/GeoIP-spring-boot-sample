@@ -13,16 +13,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.text.ParseException;
+
 @Controller
 @RequestMapping(value = "/app/campaigns")
 public class CampaignController {
     private static final String REDIRECT = "redirect:";
     private static final String APP_PAGE = "/app";
+    private static final String CAMPAIGNS_LIST_PAGE = "/app/campaigns/";
+
 
     private static final String APP_VIEW = "application/app";
     private static final String EDIT_CAMPAIGN_VIEW = "campaigns/editCampaign";
     private static final String CREATE_CAMPAIGN_VIEW = "campaigns/createCampaign";
-    private static final String CAMPAIGN_FLIGHT_LIST = "campaign/flights/flightList";
+    private static final String CAMPAIGN_FLIGHT_LIST = "campaigns/flights/flightList";
 
     @Autowired
     private CampaignService campaignService;
@@ -44,12 +48,11 @@ public class CampaignController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateCampaignStart(CampaignDTO campaignDTO, ModelMap modelMap) {
+    public String postCreateCampaign(CampaignDTO campaignDTO, ModelMap modelMap) {
         try {
-            campaignService.checkIfNotExist(campaignDTO.getCampaignName());
             campaignService.createCampaign(campaignDTO);
         } catch (Exception e) {
-            modelMap.put("error", e.getMessage());
+            modelMap.put("error", "Error:" + e.getMessage());
             return CREATE_CAMPAIGN_VIEW;
         }
         return REDIRECT + APP_PAGE;
@@ -57,7 +60,7 @@ public class CampaignController {
 
     @RequestMapping(value = "/{campaignId}/edit", method = RequestMethod.GET)
     public String getEditCampaign(@PathVariable String campaignId, ModelMap modelMap) {
-        modelMap.put("campaign", campaignService.findOneDTO(campaignId));
+        modelMap.put("campaignDTO", campaignService.findCampaignDTO(campaignId));
         return EDIT_CAMPAIGN_VIEW;
     }
 
@@ -90,5 +93,11 @@ public class CampaignController {
         modelMap.put("campaignName", campaignService.findCampaign(campaignId).getCampaignName());
         modelMap.put("flights", flightService.findFlightFormsByCampaign(campaignId));
         return CAMPAIGN_FLIGHT_LIST;
+    }
+
+    @RequestMapping(value = "/{campaignId}/flights/{flightId}/delete")
+    public String deleteFlight(@PathVariable(value = "campaignId") String campaignId, @PathVariable(value = "flightId") String flightId, ModelMap modelMap) throws ParseException {
+        flightService.deleteFlight(flightId);
+        return REDIRECT + CAMPAIGNS_LIST_PAGE + campaignId;
     }
 }

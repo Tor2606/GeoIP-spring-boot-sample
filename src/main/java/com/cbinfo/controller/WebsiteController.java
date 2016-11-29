@@ -53,7 +53,7 @@ public class WebsiteController {
 
     @RequestMapping(value = "/{websiteId}")
     public String getEditWebsite(@PathVariable String websiteId, ModelMap modelMap){
-        modelMap.put("websiteForm", websiteService.findOneForm(websiteId));
+        modelMap.put("websiteForm", websiteService.findWebsiteForm(websiteId));
         modelMap.put("websiteId", websiteId);
         return EDIT_WEBSITE_VIEW;
     }

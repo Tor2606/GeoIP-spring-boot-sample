@@ -1,8 +1,9 @@
 package com.cbinfo.model;
 
+import com.cbinfo.model.enums.FlightTypes;
+
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "flights")
@@ -25,8 +26,16 @@ public class Flight {
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 
-    @ManyToMany(mappedBy = "flights")
-    private List<Website> websites;
+    @ManyToOne
+    @JoinColumn(name = "website_id")
+    private Website website;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private FlightTypes flightType;
+
+
+    private Integer quantity;
 
     public long getFlightId() {
         return flightId;
@@ -68,11 +77,27 @@ public class Flight {
         this.campaign = campaign;
     }
 
-    public List<Website> getWebsites() {
-        return websites;
+    public Website getWebsite() {
+        return website;
     }
 
-    public void setWebsites(List<Website> websites) {
-        this.websites = websites;
+    public void setWebsite(Website website) {
+        this.website = website;
+    }
+
+    public FlightTypes getFlightType() {
+        return flightType;
+    }
+
+    public void setFlightType(FlightTypes flightType) {
+        this.flightType = flightType;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

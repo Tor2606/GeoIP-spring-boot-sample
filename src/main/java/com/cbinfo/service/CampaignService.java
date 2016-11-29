@@ -1,8 +1,6 @@
 package com.cbinfo.service;
 
-import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.CampaignDTO;
-import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Campaign;
 import com.cbinfo.model.User;
 import com.cbinfo.repository.CampaignRepository;
@@ -11,22 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 @Service
 public class CampaignService {
-    // TODO: 24.11.2016 guava -> check argument
-    // TODO: 24.11.2016 change names to more informative (findCampaign->findCampaign)
-    //todo refactor methods()
     //todo repair tests
     private static final String USER_ROLE = "ROLE_USER";
     private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/MM/yyyy HH:mm:ss";
@@ -43,29 +36,12 @@ public class CampaignService {
     @Autowired
     protected FlightService flightService;
 
-    public void checkIfNotExist(String campaignName) throws Exception {
-        if (campaignRepository.findOneByCampaignName(campaignName) != null)
-            throw new Exception("Campaign with such name all ready exists!");
+    private void checkIfNotExist(String campaignName) throws Exception {
+        checkArgument(campaignRepository.findOneByCampaignName(campaignName) == null, "Campaign with such name all ready exists!");
     }
-
-    public Campaign saveCampaignCreationDTO(CampaignCreationDTO campaignCreationDTO) throws ParseException {
-        Campaign campaign = toCampaign(campaignCreationDTO);
-        campaign = saveCampaign(campaign);
-        flightService.createAndSaveFlight(campaignCreationDTO, campaign.getCampaignId());
-        return campaign;
-    }
-
-    private Campaign toCampaign(CampaignCreationDTO campaignCreationDTO) throws ParseException {
-        Campaign campaign = new Campaign();
-        campaign.setUser(userSessionService.getUser());
-        campaign.setCampaignName(campaignCreationDTO.getName());
-        campaign.setCreated(new Date());
-        return campaign;
-    }
-
 
     @Transactional
-    public Campaign saveCampaign(Campaign campaign) {
+    private Campaign saveCampaign(Campaign campaign) {
         return campaignRepository.save(campaign);
     }
 
@@ -73,79 +49,64 @@ public class CampaignService {
         List<Campaign> result = findAll();
         User user = userSessionService.getUser();
         if (user.getRole().name().equals(USER_ROLE)) {
-            result.stream().filter((campaign) -> campaign.getUser().equals(user));
+           result = result.stream().filter((campaign) -> campaign.getUser().equals(user)).collect(toList());
         }
         return result;
     }
 
     @Transactional
-    public List<Campaign> findAll() {
+    private List<Campaign> findAll() {
         return newArrayList(campaignRepository.findAll());
     }
 
-    public void deleteCampaign(String campaignId) {
-        deleteCampaign(Long.valueOf(campaignId));
-    }
-
     @Transactional
-    private void deleteCampaign(Long campaignId) {
-        campaignRepository.delete(campaignId);
+    public void deleteCampaign(String campaignId) {
+        campaignRepository.delete(Long.valueOf(campaignId));
     }
 
-    public CampaignDTO findOneDTO(String campaignId) {
-        return toDTO(findOne(Long.valueOf(campaignId)));
+    public CampaignDTO findCampaignDTO(String campaignId) {
+        return campaignToDTO(findCampaign(Long.valueOf(campaignId)));
     }
 
-    private CampaignDTO toDTO(Campaign campaign) {
+    private CampaignDTO campaignToDTO(Campaign campaign) {
         CampaignDTO result = new CampaignDTO();
+        result.setCampaignId(String.valueOf(campaign.getCampaignId()));
         result.setCampaignName(campaign.getCampaignName());
         DateFormat dateFormat = new SimpleDateFormat(CAMPAIGN_CREATION_TIME_TEMPLATE);
         result.setCreated(dateFormat.format(campaign.getCreated()));
         return result;
     }
 
-    public List<FlightForm> getCampaignsFlights(String campaignId){
-        Campaign campaign = findOne(Long.valueOf(campaignId));
-        return flightService.getCampaignFLightsToDTO(campaign);
-    }
-
     @Transactional
-    public Campaign findOne(Long campaignId) {
+    private Campaign findCampaign(Long campaignId) {
         return campaignRepository.findOne(campaignId);
     }
 
-    public Campaign findOneByName(String campaignName) {
-        return campaignRepository.findOneByCampaignName(campaignName);
+    public List<String> findAllCampaignsNames() {
+        return findAllCurrentUserCampaigns().stream().map(Campaign::getCampaignName).collect(toList());
     }
 
-    public void updateCampaignName(String campaignId, CampaignDTO campaignDTO) throws Exception {
-        Campaign campaign = findOne(Long.valueOf(campaignId));
-        if (isNotBlank(campaignDTO.getCampaignName())) {
-            if (checkIfCampaignWithSuchNameExist(campaignDTO)) {
-                throw new Exception("Campaign with such name allready exist!");
-            }
-            campaign.setCampaignName(campaignDTO.getCampaignName());
-            campaignRepository.save(campaign);
-        }
+    public void createCampaign(CampaignDTO campaignDTO) throws Exception {
+        checkIfNotExist(campaignDTO.getCampaignName());
+        Campaign campaign = new Campaign();
+        campaign.setCreated(new Date());
+        campaign.setCampaignName(campaignDTO.getCampaignName());
+        campaign.setUser(userSessionService.getUser());
+        saveCampaign(campaign);
     }
 
-    private boolean checkIfCampaignWithSuchNameExist(CampaignDTO campaignDTO) {
-        return campaignRepository.findOneByCampaignName(campaignDTO.getCampaignName()) != null;
-    }
-
-
-    public List<String> getAllCampaignsNames() {
-        return findAll().stream().map(Campaign::getCampaignName).collect(toList());
-    }
-
-    public void createCampaign(CampaignDTO campaignDTO) {
-
-    }
-
-    public void updateCampaignName(CampaignDTO campaignDTO) {
-
+    public void updateCampaignName(CampaignDTO campaignDTO) throws Exception {
+        checkIfNotExist(campaignDTO.getCampaignName());
+        Campaign campaign = findCampaign(campaignDTO.getCampaignId());
+        campaign.setCampaignName(campaignDTO.getCampaignName());
+        saveCampaign(campaign);
     }
 
     public Campaign findCampaign(String campaignId) {
+        return findCampaign(Long.valueOf(campaignId));
+    }
+
+    public Campaign findCampaignByName(String campaignName) {
+        return campaignRepository.findOneByCampaignName(campaignName);
     }
 }

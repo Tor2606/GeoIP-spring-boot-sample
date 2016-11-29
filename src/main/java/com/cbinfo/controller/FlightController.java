@@ -1,8 +1,8 @@
 package com.cbinfo.controller;
 
-import com.cbinfo.dto.enums.FlightTypeEnum;
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.User;
+import com.cbinfo.model.enums.FlightTypes;
 import com.cbinfo.service.CampaignService;
 import com.cbinfo.service.FlightService;
 import com.cbinfo.service.UserSessionService;
@@ -12,7 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Controller
 @RequestMapping(value = "/app/flights")
@@ -22,7 +23,6 @@ public class FlightController {
     private static final String CREATE_FLIGHT_START_PAGE = "/app/flights/create/start";
     private static final String CREATE_FLIGHT_MAIN_PAGE = "/app/flights/create/main";
     private static final String CREATE_FLIGHT_FINISH_PAGE = "/app/flights/create/finish";
-;
 
     private static final String CREATE_FLIGHT_START_VIEW = "campaigns/flights/createFlightStart";
     private static final String CREATE_FLIGHT_MAIN_VIEW = "campaigns/flights/createFlightMain";
@@ -49,51 +49,58 @@ public class FlightController {
 
     @RequestMapping(value = "/create/start")
     public String getCreateFlightStart(@RequestParam(value = "flightId", required = false) String flightId, ModelMap modelMap) {
-        modelMap.put("campaignNames", campaignService.getAllCampaignsNames());
+        modelMap.put("campaignNames", campaignService.findAllCampaignsNames());
         if (flightId == null) {
             modelMap.put("flightForm", new FlightForm());
             return CREATE_FLIGHT_START_VIEW;
         }
-        modelMap.put("flightForm", flightService.findOneForm(flightId));
+        modelMap.put("flightForm", flightService.findFlightForm(flightId));
         modelMap.put("flightId", flightId);
         return CREATE_FLIGHT_START_VIEW;
     }
 
     @RequestMapping(value = "/create/start", method = RequestMethod.POST)
-    public String postCreateFlightStart(FlightForm flightForm, ModelMap modelMap) throws ParseException {
-        if (checkIdEqualsZero(flightForm)) {
+    public String postCreateFlightStart(FlightForm flightForm, ModelMap modelMap) {
+        if (isBlank(flightForm.getFlightId())) {
             long flightId;
             try {
                 flightId = flightService.createFlight(flightForm);
             } catch (Exception e) {
+                modelMap.put("campaignNames", campaignService.findAllCampaignsNames());
                 modelMap.put("error", "Error:" + e.getMessage());
                 return CREATE_FLIGHT_START_VIEW;
             }
             return REDIRECT + CREATE_FLIGHT_MAIN_PAGE + FLIGHT_ID_PARAM + flightId;
         }
-        flightService.updateFlight(flightForm);
+        try {
+            flightService.updateFlight(flightForm);
+        } catch (Exception e) {
+            modelMap.put("campaignNames", campaignService.findAllCampaignsNames());
+            modelMap.put("error", "Error:" + e.getMessage());
+            return CREATE_FLIGHT_START_VIEW;
+        }
         return REDIRECT + CREATE_FLIGHT_MAIN_PAGE + FLIGHT_ID_PARAM + flightForm.getFlightId();
     }
 
     @RequestMapping(value = "/create/main")
-    public String getCreateFlightMain(@RequestParam(value = "flightId", required = false) String flightId, ModelMap modelMap) throws ParseException {
-        if (flightId==null) {
+    public String getCreateFlightMain(@RequestParam(value = "flightId", required = false) String flightId, ModelMap modelMap) {
+        if (isBlank(flightId)) {
             return REDIRECT + CREATE_FLIGHT_START_PAGE;
         }
-        modelMap.put("types", FlightTypeEnum.values());
+        modelMap.put("types", newArrayList(FlightTypes.values()));
         modelMap.put("websiteNames", websiteService.getAllWebsiteNames());
-        modelMap.put("flightForm", flightService.findOneForm(flightId));
+        modelMap.put("flightForm", flightService.findFlightForm(flightId));
         return CREATE_FLIGHT_MAIN_VIEW;
     }
 
     @RequestMapping(value = "/create/main", method = RequestMethod.POST)
-    public String postCreateFlightMain(FlightForm flightForm, ModelMap modelMap) throws ParseException {
-        if (checkIdEqualsZero(flightForm)) {
+    public String postCreateFlightMain(FlightForm flightForm, ModelMap modelMap) {
+        if (isBlank(flightForm.getFlightId())) {
             return REDIRECT + CREATE_FLIGHT_START_PAGE;
         }
-        try{
+        try {
             flightService.updateFlight(flightForm);
-        }catch (Exception e){
+        } catch (Exception e) {
             modelMap.put("error", "Error:" + e.getMessage());
             return CREATE_FLIGHT_MAIN_VIEW;
         }
@@ -101,44 +108,37 @@ public class FlightController {
     }
 
     @RequestMapping(value = "/create/finish")
-    public String getCreateFlightFinish(@RequestParam(value = "flightId", required = false) String flightId, ModelMap modelMap) throws ParseException {
-        if (flightId==null) {
+    public String getCreateFlightFinish(@RequestParam(value = "flightId", required = false) String flightId, ModelMap modelMap) {
+        if (isBlank(flightId)) {
             return REDIRECT + CREATE_FLIGHT_START_PAGE;
         }
-        modelMap.put("flightForm", flightService.findOneForm(flightId));
+        modelMap.put("flightForm", flightService.findFlightForm(flightId));
         return CREATE_FLIGHT_FINISH_VIEW;
     }
 
-    @RequestMapping(value = "/create/finish", method = RequestMethod.POST)
-    public String postCreateFlightFinish(FlightForm flightForm, ModelMap modelMap) throws ParseException {
-        if (checkIdEqualsZero(flightForm)) {
-            return REDIRECT + CREATE_FLIGHT_START_PAGE;
-        }
+    @RequestMapping(value = "/create/accept")
+    public String postCreateFlightFinish() {
         return REDIRECT + APP_PAGE;
     }
 
     @RequestMapping(value = "/{flightId}/edit")
-    public String getEditFlight(@PathVariable(value = "flightId") String flightId, ModelMap modelMap) throws ParseException {
-        modelMap.put("types", FlightTypeEnum.values());
+    public String getEditFlight(@PathVariable(value = "flightId") String flightId, ModelMap modelMap) {
+        modelMap.put("types", FlightTypes.values());
         modelMap.put("flightId", flightId);
         modelMap.put("websiteNames", websiteService.getAllWebsiteNames());
-        modelMap.put("campaignNames", campaignService.getAllCampaignsNames());
-        modelMap.put("flightForm", flightService.findOneForm(flightId));
+        modelMap.put("campaignNames", campaignService.findAllCampaignsNames());
+        modelMap.put("flightForm", flightService.findFlightForm(flightId));
         return EDIT_FLIGHT_VIEW;
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String postEditFlight(FlightForm flightForm, ModelMap modelMap) throws ParseException {
-        try{
+    public String postEditFlight(FlightForm flightForm, ModelMap modelMap) {
+        try {
             flightService.updateFlight(flightForm);
-        }catch (Exception e){
+        } catch (Exception e) {
             modelMap.put("error", "Error:" + e.getMessage());
             return EDIT_FLIGHT_VIEW;
         }
         return REDIRECT + APP_PAGE;
-    }
-
-    private boolean checkIdEqualsZero(FlightForm flightForm) {
-        return flightForm.getFlightId().equals(0L);
     }
 }

@@ -1,29 +1,23 @@
 package com.cbinfo.service;
 
-import com.cbinfo.dto.CampaignCreationDTO;
 import com.cbinfo.dto.form.FlightForm;
-import com.cbinfo.model.Campaign;
 import com.cbinfo.model.Flight;
-import com.cbinfo.model.Website;
+import com.cbinfo.model.enums.FlightTypes;
 import com.cbinfo.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static com.cbinfo.utils.myDateUtil.dateToString;
 import static com.cbinfo.utils.myDateUtil.toDate;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class FlightService {
-
-    private static final String DATE_FORMAT_TEMPLATE = "dd/MM/yy";
 
     @Autowired
     protected CampaignService campaignService;
@@ -34,64 +28,33 @@ public class FlightService {
     @Autowired
     protected WebsiteService websiteService;
 
-    public void createAndSaveFlight(CampaignCreationDTO creationDTO, long campaignId) throws ParseException {
-        createAndSaveFlight(toFlightForm(creationDTO), campaignId);
-    }
-
     public long createFlight(FlightForm flightForm) throws ParseException {
-        long flightId = saveFlightForm(flightForm);
-        return flightId;
-    }
-
-    private long saveFlightForm(FlightForm flightForm) {
-        return 0;
-    }
-
-    @Transactional
-    private void saveFlight(Flight flight) {
-        flightRepository.save(flight);
-    }
-
-    private void createAndSaveFlight(FlightForm flightForm, long campaignId) throws ParseException {
-        Flight flight = toFlight(flightForm, campaignId);
+        Flight flight = flightFormToFlight(flightForm);
+        flight.setFlightName(constructFlightName(flight));
         saveFlight(flight);
+        flight.setFlightName(constructFlightName(flight));
+        flight = saveFlight(flight);
+        return flight.getFlightId();
     }
 
-    private FlightForm toFlightForm(CampaignCreationDTO form) {
-        FlightForm result = new FlightForm();
-        result.setName(form.getName());
-        result.setStartDate(form.getFlightStartDate());
-        result.setEndDate(form.getFlightEndDate());
-        result.setWebsiteNames(newArrayList());
-        result.getWebsiteNames().add(form.getFlightWebsiteName());
+    private Flight flightFormToFlight(FlightForm flightForm) throws ParseException {
+        Flight result = new Flight();
+        fillFlightFromDTO(flightForm, result);
         return result;
     }
 
-    private Flight toFlight(FlightForm flightForm, long campaignId) throws ParseException {
-        Flight flight = new Flight();
-        flight.setWebsites(newArrayList());
-        flight.setCampaign(campaignService.findOne(campaignId));
-        fillFlightFromDTO(flightForm, flight);
-        return flight;
+    @Transactional
+    private Flight saveFlight(Flight flight) {
+        return flightRepository.save(flight);
     }
 
-    public FlightForm findOneForm(String flightId){
-        return toFlightForm(findOne(flightId));
-    }
-
-    public Flight findOne(String flightId) {
-        return findOne(Long.valueOf(flightId));
+    public FlightForm findFlightForm(String flightId) {
+        return flightToFlightForm(findFlight(flightId));
     }
 
     @Transactional
-    private Flight findOne(long flightId) {
-        return flightRepository.findOne(flightId);
-    }
-
-    public void updateFlight(FlightForm flightForm, String flightId, String campaignId) throws ParseException {
-        Flight flight = findOne(flightId);
-        fillFlightFromDTO(flightForm, flight);
-        saveFlight(flight);
+    private Flight findFlight(String flightId) {
+        return flightRepository.findOne(Long.valueOf(flightId));
     }
 
     private void fillFlightFromDTO(FlightForm flightForm, Flight flight) throws ParseException {
@@ -104,38 +67,67 @@ public class FlightService {
         if (isNotBlank(flightForm.getEndDate())) {
             flight.setEndDate(toDate(flightForm.getEndDate()));
         }
-        List<Website> flightWebsiteList = flight.getWebsites();
-        flightForm.getWebsiteNames().stream().filter(wn -> checkIfWebsiteIsNotPresent(wn, flightWebsiteList)).forEach(name ->flightWebsiteList.add(websiteService.findOneByName(name)));
+        if (isNotBlank(flightForm.getWebsiteName())) {
+            flight.setWebsite(websiteService.findWebsiteByName(flightForm.getWebsiteName()));
+        }
+        if (isNotBlank(flightForm.getCampaignName())) {
+            flight.setCampaign(campaignService.findCampaignByName(flightForm.getCampaignName()));
+        }
+        if (isNotBlank(flightForm.getType())) {
+            flight.setFlightType(FlightTypes.valueOf(flightForm.getType()));
+        }
+        if (flightForm.getQuantity()!= 0) {
+            flight.setQuantity(flightForm.getQuantity());
+        }
     }
 
-    private boolean checkIfWebsiteIsNotPresent(String websiteName, List<Website> flightWebsiteList) {
-        List<String> websiteNameList = flightWebsiteList.stream().map(Website::getWebsiteName).collect(toList());
-        return !websiteNameList.contains(websiteName);
+    private String constructFlightName(Flight flight) {
+        StringBuilder resultBuilder = new StringBuilder("flight_");
+        if (flight.getFlightId() != 0L) resultBuilder.append(flight.getFlightId()).append("_");
+        resultBuilder.append(flight.getCampaign().getCampaignName());
+        if (isNotNull(flight.getStartDate())) resultBuilder.append("_").append(dateToString(flight.getStartDate()));
+        if (isNotNull(flight.getEndDate())) resultBuilder.append("_").append(dateToString(flight.getEndDate()));
+        if (isNotNull(flight.getWebsite())) resultBuilder.append("_").append(flight.getWebsite().getWebsiteName());
+        if (isNotNull(flight.getFlightType())) resultBuilder.append("_").append(flight.getFlightType().name());
+        return resultBuilder.toString();
     }
 
-    public List<FlightForm> getCampaignFLightsToDTO(Campaign campaign) {
-        List<FlightForm> result = newArrayList();
-        campaign.getFlights().stream().forEach(f->result.add(toFlightForm(f)));
-        return  result;
-    }
-
-    private FlightForm toFlightForm(Flight flight) {
+    private FlightForm flightToFlightForm(Flight flight) {
         FlightForm result = new FlightForm();
-        result.setFlightId(flight.getFlightId());
+        result.setFlightId(String.valueOf(flight.getFlightId()));
+        result.setCampaignName(flight.getCampaign().getCampaignName());
         result.setName(flight.getFlightName());
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_TEMPLATE);
-        result.setStartDate(dateFormat.format(flight.getStartDate()));
-        result.setEndDate(dateFormat.format(flight.getEndDate()));
-        result.setWebsiteNames(newArrayList());
-        flight.getWebsites().stream().map(Website::getWebsiteName).forEach(name -> result.getWebsiteNames().add(name));
+        if (isNotNull(flight.getStartDate())) result.setStartDate(dateToString(flight.getStartDate()));
+        if (isNotNull(flight.getEndDate())) result.setEndDate(dateToString(flight.getEndDate()));
+        if (isNotNull(flight.getWebsite())) result.setWebsiteName(flight.getWebsite().getWebsiteName());
+        if (isNotNull(flight.getFlightType())) result.setType(flight.getFlightType().name());
+        if (isNotNull(flight.getQuantity())) result.setQuantity(flight.getQuantity());
         return result;
     }
 
-    public void updateFlight(FlightForm flightForm) {
+    private <T> boolean isNotNull(T object) {
+        return object != null;
+    }
 
+    public void updateFlight(FlightForm flightForm) throws ParseException {
+        Flight flight = findFlight(flightForm.getFlightId());
+        fillFlightFromDTO(flightForm, flight);
+        flight.setFlightName(constructFlightName(flight));
+        saveFlight(flight);
     }
 
     public List<FlightForm> findFlightFormsByCampaign(String campaignId) {
-        return null;
+        List<Flight> flights = findFlightsByCampaignId(Long.valueOf(campaignId));
+        return flights.stream().map(this::flightToFlightForm).collect(toList());
+    }
+
+    @Transactional
+    private List<Flight> findFlightsByCampaignId(Long campaignId) {
+        return flightRepository.findByCampaignId(campaignId);
+    }
+
+    @Transactional
+    public void deleteFlight(String flightId) {
+        flightRepository.delete(Long.valueOf(flightId));
     }
 }

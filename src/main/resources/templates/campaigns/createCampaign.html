@@ -14,7 +14,7 @@
 <body>
 <div layout:fragment="content">
     <div class="user-context">
-        <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
+        <div th:if="${error} !=null" class="alert alert-danger" th:text="${error}">Error</div>
         <h3>Create campaign:</h3>
         <form th:action="@{/app/campaigns}" th:object="${campaignDTO}" method="post">
             <div class="form-group">

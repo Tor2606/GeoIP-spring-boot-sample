@@ -18,32 +18,27 @@
     <div class="tab-content">
         <ul class=" nav nav-tabs">
             <li class="active"><a href="#create_flight_tab1" data-toggle="tab">Set flight campaign</a></li>
-            <li>
-                <div th:switch="${flightId}">
-                    <a th:case="null" class="text-muted">Fill flight</a>
-                    <a th:case="*" th:href="@{/app/flights/create/main(flightId=${flightId})}">Fill flight</a>
-                </div>
+            <li th:if="${flightId} != null">
+                <a th:href="@{/app/flights/create/main(flightId=${flightForm.flightId})}">Fill flight</a>
             </li>
-            <li>
-                <div th:switch="${flightId}">
-                    <a th:case="null" class="text-muted">Finish creation</a>
-                    <a th:case="*" th:href="@{/app/flights/create/finish(flightId=${flightId})}">Finish creation</a>
-                </div>
+            <li th:if="${flightId} != null">
+                <a th:href="@{/app/flights/create/finish(flightId=${flightForm.flightId})}">Finish creation</a>
             </li>
         </ul>
         <div class="tab-content container">
             <div class="tab-pane active" id="#create_flight_tab1">
                 <div class="context">
-                    <div th:if="${param.error}" class="alert alert-danger" th:text="${error}">Error</div>
+                    <div th:if="${error} !=null" class="alert alert-danger" th:text="${error}">Error</div>
                     <h3>Flight creation start page!</h3>
                     <form class="form" th:action="@{/app/flights/create/start}" th:object="${flightForm}"
                           method="post">
+                        <input th:if="${flightId} != null" type="hidden" th:field="*{flightId}" th:value="${flightId}"/>
                         <div class="form-group">
-                            <label for="companies">Choose campaign:</label>
+                            <label for="campaigns">Choose campaign:</label>
                             <div class="input-group">
-                                <select id="companies" th:field="*{campaignName}">
-                                    <option th:case="null" th:each="campaignName : ${campaignNames}"
-                                            value="flightCampaignName" th:text="${campaignName}">
+                                <select id="campaigns" th:field="*{campaignName}">
+                                    <option th:each="campaignName : ${campaignNames}"
+                                            th:value="${campaignName}" th:text="${campaignName}">
                                         Campaign
                                     </option>
                                 </select>
@@ -60,8 +55,5 @@
         </div>
     </div>
 </div>
-
-</div>
-
 </body>
 </html>

@@ -19,16 +19,16 @@
         <div class="context user-context">
             <div class="row">
                 <div class="col-md-2">
-                    <a class="btn btn-info " th:href="@{app/campaigns/create}">Create
+                    <a class="btn btn-info " th:href="@{/app/campaigns/create}">Create
                         campaign</a>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-info " th:href="@{app/flights/create}">Create
+                    <a class="btn btn-info " th:href="@{/app/flights/create/start}">Create
                         flight</a>
                 </div>
             </div>
 
-            <h3 th:text="'Flights table of'+ ${campaignName} +' campaign:' ">Flights table of :</h3>
+            <h3 th:text="'Flights table of '+ ${campaignName} +' campaign:' ">Flights table of :</h3>
             <table class="table table-stripped pull-left container">
                 <thead>
                 <tr>
@@ -36,7 +36,7 @@
                     <th>Name</th>
                     <th>Start date</th>
                     <th>End date</th>
-                    <th>Impressions/clicks<th>
+                    <th>Impressions/clicks</th>
                     <th>Quantity</th>
                     <th></th>
                     <th></th>
@@ -48,10 +48,10 @@
                     <td data-th-text="${flight.name}">...</td>
                     <td th:text="${flight.startDate}">...</td>
                     <td th:text="${flight.endDate}">...</td>
-                    <td th:text="${flight.flightType}">...</td>
+                    <td th:text="${flight.type}">...</td>
                     <td th:text="${flight.quantity}">...</td>
                     <td>
-                        <a th:href="@{'/app/campaigns/' + ${campaignId} + '/flights/' + ${flight.flightId}}">
+                        <a th:href="@{'/app/flights/' + ${flight.flightId}} + '/edit'">
                             <div class="create-button"></div>
                         </a>
                     </td>

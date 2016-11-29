@@ -16,7 +16,7 @@
 <div layout:fragment="content">
     <div class="container">
         <div class="form-body">
-            <h2 th:text="'Edit campaign '+ ${campaignDTO.campaignName} + ', created on ' + ${campaignDTO.created} + ':'">Edit
+            <h2 th:text="'Edit campaign '+ ${campaignDTO.campaignName} + ', created on ' + ${campaignDTO.created}">Edit
                 campaign:</h2>
             <p class="text-warning help-block" th:if="${error} != null"
                th:text="${error}">Error</p>

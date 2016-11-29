@@ -2,7 +2,7 @@ package com.cbinfo.dto.form;
 
 public class FlightForm {
 
-    private Long flightId;
+    private String flightId;
 
     private String name;
 
@@ -16,19 +16,23 @@ public class FlightForm {
 
     private String type;
 
+    private int quantity;
+
     public FlightForm() {
+        this.flightId = "";
         this.campaignName = "";
         this.name = "";
         this.startDate = "";
         this.endDate = "";
         this.websiteName = "";
+        this.type = "";
     }
 
-    public Long getFlightId() {
+    public String getFlightId() {
         return flightId;
     }
 
-    public void setFlightId(Long flightId) {
+    public void setFlightId(String flightId) {
         this.flightId = flightId;
     }
 
@@ -78,5 +82,13 @@ public class FlightForm {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

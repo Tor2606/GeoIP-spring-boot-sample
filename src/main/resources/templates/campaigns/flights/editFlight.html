@@ -73,7 +73,7 @@
                 <label for="type">Choose type (impression/clicks):</label>
                 <div class="input-group">
                     <select id="type" th:field="*{type}">
-                        <option th:each="type : ${flightTypes}"
+                        <option th:each="type : ${types}"
                                 th:value="*{type}" th:text="${type}">Type
                         </option>
                     </select>
