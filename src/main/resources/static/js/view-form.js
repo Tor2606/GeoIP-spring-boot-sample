@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $(".createNewCompany").click(function(){
+    $(".createNew").click(function(){
         $(".hidden-block").toggle();
     });
 });

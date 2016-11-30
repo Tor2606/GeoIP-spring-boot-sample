@@ -14,6 +14,8 @@ public class FlightForm {
 
     private String campaignName;
 
+    private String newWebsiteName;
+
     private String type;
 
     private int quantity;
@@ -90,5 +92,13 @@ public class FlightForm {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getNewWebsiteName() {
+        return newWebsiteName;
+    }
+
+    public void setNewWebsiteName(String newWebsiteName) {
+        this.newWebsiteName = newWebsiteName;
     }
 }

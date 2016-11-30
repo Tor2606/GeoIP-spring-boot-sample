@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping(value = "/app/websites")
@@ -41,7 +44,7 @@ public class WebsiteController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateWebsite(WebsiteForm websiteForm, ModelMap modelMap){
+    public String postCreateWebsite(WebsiteForm websiteForm, ModelMap modelMap, HttpServletRequest request){
         try{
             websiteService.createWebsite(websiteForm);
         }catch (Exception e){
@@ -72,12 +75,11 @@ public class WebsiteController {
     }
 
     @RequestMapping(value = "/{websiteId}/delete", method = RequestMethod.GET)
-    public String deleteCampaign(@PathVariable String websiteId, ModelMap modelMap) {
+    public String deleteWebsite(@PathVariable String websiteId, RedirectAttributes redirectAttributes) {
         try {
             websiteService.deleteWebsite(websiteId);
         } catch (Exception e) {
-            modelMap.put("exception", "Exception on deleting");
-            return APP_VIEW;
+            redirectAttributes.addFlashAttribute("error", "Exception on website deleting! Impossible to delete website!");
         }
         return REDIRECT + APP_PAGE;
     }

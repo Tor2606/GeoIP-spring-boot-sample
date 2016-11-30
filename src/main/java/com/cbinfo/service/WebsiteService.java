@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -45,7 +46,7 @@ public class WebsiteService {
             throw new Exception("Such site all-ready exist!");
         }
         Website website = websiteRepository.findOne(Long.valueOf(websiteId));
-        fillWebsite(website,websiteForm);
+        fillWebsite(website, websiteForm);
         saveWebsite(website);
     }
 
@@ -75,7 +76,7 @@ public class WebsiteService {
     }
 
     public void createWebsite(WebsiteForm websiteForm) throws Exception {
-        if(checkIfNameAlreadyExist(websiteForm.getName())){
+        if (checkIfNameAlreadyExist(websiteForm.getName())) {
             throw new Exception("Website all-ready exist!");
         }
         Website website = new Website();
@@ -86,5 +87,12 @@ public class WebsiteService {
     @Transactional
     public void deleteWebsite(String websiteId) {
         websiteRepository.delete(Long.valueOf(websiteId));
+    }
+
+    public void createWebsite(String newWebsiteName) throws Exception {
+        checkArgument(findWebsiteByName(newWebsiteName) == null, "Such website already exists!");
+        Website website = new Website();
+        website.setWebsiteName(newWebsiteName);
+        saveWebsite(website);
     }
 }

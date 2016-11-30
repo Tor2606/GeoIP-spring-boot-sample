@@ -109,11 +109,19 @@ public class FlightService {
         return object != null;
     }
 
-    public void updateFlight(FlightForm flightForm) throws ParseException {
+    public void updateFlight(FlightForm flightForm) throws Exception {
+        checkForWebsiteCreation(flightForm);
         Flight flight = findFlight(flightForm.getFlightId());
         fillFlightFromDTO(flightForm, flight);
         flight.setFlightName(constructFlightName(flight));
         saveFlight(flight);
+    }
+
+    private void checkForWebsiteCreation(FlightForm flightForm) throws Exception {
+        if(isNotBlank(flightForm.getNewWebsiteName())){
+            websiteService.createWebsite(flightForm.getNewWebsiteName());
+            flightForm.setWebsiteName(flightForm.getNewWebsiteName());
+        }
     }
 
     public List<FlightForm> findFlightFormsByCampaign(String campaignId) {

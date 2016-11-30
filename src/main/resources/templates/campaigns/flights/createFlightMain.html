@@ -12,6 +12,7 @@
     <link rel="stylesheet"
           href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="../../../static/js/view-form.js" th:src="@{/js/view-form.js}"></script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -34,40 +35,37 @@
                           method="post">
                         <input th:if="*{flightId} != null" type="hidden" th:field="*{flightId}" th:value="${flightId}"/>
 
-                        <div class="row">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="datepicker1" class="control-label">Choose start date:</label>
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control" id="datepicker1"
-                                               th:field="*{startDate}"
-                                               th:value="*{startDate}"/>
-                                    </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="datepicker1" class="control-label">Choose start date:</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="datepicker1"
+                                           th:field="*{startDate}"
+                                           th:value="*{startDate}"/>
                                 </div>
                             </div>
-                            <script>
-                                $(function () {
-                                    $("#datepicker1").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
-                                });
-                            </script>
                         </div>
-                        <div class="row">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="datepicker2" class="control-label">Choose end date:</label>
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control" id="datepicker2"
-                                               th:field="*{endDate}"
-                                               th:value="*{endDate}"/>
-                                    </div>
+                        <script>
+                            $(function () {
+                                $("#datepicker1").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
+                            });
+                        </script>
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="datepicker2" class="control-label">Choose end date:</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="datepicker2"
+                                           th:field="*{endDate}"
+                                           th:value="*{endDate}"/>
                                 </div>
                             </div>
-                            <script>
-                                $(function () {
-                                    $("#datepicker2").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
-                                });
-                            </script>
                         </div>
+                        <script>
+                            $(function () {
+                                $("#datepicker2").datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
+                            });
+                        </script>
 
                         <div class="form-group">
                             <label for="type">Choose type (impression/clicks):</label>
@@ -81,7 +79,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="quantity" class="control-label">Enter
+                            <label for="quantity">Enter
                                 quantity(impressions/clicks):</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="quantity"
@@ -99,6 +97,16 @@
                                             th:value="${websiteName}" th:text="${websiteName}">Company
                                     </option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <a class="btn btn-default createNew">Create new site</a>
+                            <div class="hidden-block" hidden="true">
+                                <label for="new-website">Website name(URL):</label>
+                                <div class="controls">
+                                    <input type="text" id="new-website" name="newWebsiteName"/>
+                                </div>
                             </div>
                         </div>
 
