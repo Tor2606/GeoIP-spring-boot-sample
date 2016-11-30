@@ -38,6 +38,7 @@ public class UserControllerTests {
     private static final String BLANK_PASSWORD = "   ";
     private static final String WRONG_REENTERED = "wrong_reentered";
     private static final String EXCEPTION_MESSAGE_ON_WRONG_REENTERING = "Exception on reentering";
+    private static final String NEW_COMPANY_NAME = "New company name";
 
     private MockMvc mockMvc;
 
@@ -61,14 +62,16 @@ public class UserControllerTests {
                 .param("email", EMAIL)
                 .param("password", PASSWORD)
                 .param("reenteredPassword", PASSWORD)
+                .param("newCompanyName", "")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(REDIRECT_LOGIN))
-                .andExpect(redirectedUrl("/"));
+                .andExpect(view().name(REDIRECT_APP))
+                .andExpect(redirectedUrl("/app"));
 
         Mockito.verify(userService, times(1)).isEmailRegistered(EMAIL);
         Mockito.verify(userService, times(1)).createUser(any(), any());
         Mockito.verify(userService, times(1)).checkReenteredPassword(PASSWORD, PASSWORD);
+        Mockito.verify(userService, times(1)).setNewCompanyToUserForm(any(),anyString());
         verifyNoMoreInteractions(userService);
     }
 

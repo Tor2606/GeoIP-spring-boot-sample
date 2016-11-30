@@ -1,10 +1,7 @@
 package com.cbinfo.controller;
 
-import com.cbinfo.model.User;
-import com.cbinfo.model.UserData;
-import com.cbinfo.service.UserDataService;
-import com.cbinfo.service.UserService;
-import com.cbinfo.service.UserSessionService;
+import com.cbinfo.model.*;
+import com.cbinfo.service.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +39,15 @@ public class ApplicationControllerTests {
     private UserService userService;
 
     @Mock
+    private CompanyService companyService;
+
+    @Mock
+    private CampaignService campaignService;
+
+    @Mock
+    private WebsiteService websiteService;
+
+    @Mock
     private UserDataService userDataService;
 
     @Before
@@ -52,7 +58,21 @@ public class ApplicationControllerTests {
         when(userDataService.findAll()).thenReturn(getUserDataListMock());
         when(userSessionService.getUser()).thenReturn(userMock);
         when(userService.findAll()).thenReturn(getUserListMock());
+        when(companyService.findAll()).thenReturn(getCompanyMock());
+        when(campaignService.findAllCurrentUserCampaigns()).thenReturn(getCampaignsMock());
+        when(websiteService.findAll()).thenReturn(getWebsitesMock());
+    }
 
+    private List<Website> getWebsitesMock() {
+        return newArrayList(new Website(), new Website());
+    }
+
+    private List<Company> getCompanyMock() {
+        return newArrayList(new Company(), new Company());
+    }
+
+    private List<Campaign> getCampaignsMock() {
+        return newArrayList(new Campaign(),new Campaign());
     }
 
     @Test
@@ -62,15 +82,23 @@ public class ApplicationControllerTests {
                 .andExpect(view().name(MAIN_VIEW))
                 .andExpect(forwardedUrl(MAIN_VIEW))
                 .andExpect(model().attribute("userDataList", hasSize(2)))
-                .andExpect(model().attribute("userList", hasSize(2)))
+                .andExpect(model().attribute("users", hasSize(2)))
+                .andExpect(model().attribute("companies", hasSize(2)))
+                .andExpect(model().attribute("campaigns", hasSize(2)))
+                .andExpect(model().attribute("websites", hasSize(2)))
                 .andExpect(model().attribute("user", is(userMock)));
-
         verify(userSessionService, times(1)).getUser();
         verifyNoMoreInteractions(userSessionService);
         verify(userService, times(1)).findAll();
         verifyNoMoreInteractions(userService);
         verify(userDataService, times(1)).findAll();
         verifyNoMoreInteractions(userDataService);
+        verify(companyService, times(1)).findAll();
+        verifyNoMoreInteractions(companyService);
+        verify(campaignService, times(1)).findAllCurrentUserCampaigns();
+        verifyNoMoreInteractions(campaignService);
+        verify(websiteService, times(1)).findAll();
+        verifyNoMoreInteractions(websiteService);
     }
 
     private List<UserData> getUserDataListMock(){

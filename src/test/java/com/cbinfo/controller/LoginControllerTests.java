@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginControllerTests {
-    private static final String LOGIN_VIEW = "login/login";
+    private static final String LOGIN_VIEW = "application/login";
     private static final String REDIRECT_TO_APP_HANDLER = "redirect:app";
 
     private MockMvc mockMvc;
