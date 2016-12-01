@@ -78,7 +78,7 @@ public class UserService {
         userSessionService.setUser(userFromDB);
     }
 
-    private void updateUserCompany(UserForm userForm, User userFromDB) {
+    protected void updateUserCompany(UserForm userForm, User userFromDB) {
         String companyNameInForm = userForm.getCompanyName();
         if ((companyNameInForm != userFromDB.getCompany().getName()) || (userFromDB.getCompany() == null)) {
             Company updatedCompany = companyService.getCompanyByName(companyNameInForm);

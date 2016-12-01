@@ -37,6 +37,7 @@ public class UserServiceTests {
     private static final String PASSWORD = "password";
     private static final String USERNAME = "Username";
     public static final String ENCODED_PASSWORD = "Encoded";
+    private static final String COMPANY_NAME = "Company name";
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -46,6 +47,12 @@ public class UserServiceTests {
 
     @Mock
     private UserSessionService userSessionService;
+
+    @Mock
+    private CompanyService companyService;
+
+    @Mock
+    private AuthenticationService authenticationService;
 
     @InjectMocks
     private UserService userService;
@@ -62,6 +69,8 @@ public class UserServiceTests {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         UserService spyUserService = Mockito.spy(UserService.class);
         spyUserService.passwordEncoder = passwordEncoder;
+        spyUserService.companyService = companyService;
+        spyUserService.authenticationService = authenticationService;
         doNothing().when(spyUserService).saveUser(any());
 
         spyUserService.createUser(userForm, request);
@@ -69,6 +78,13 @@ public class UserServiceTests {
         verify(spyUserService, times(1)).saveUser(any());
         verify(spyUserService, times(1)).createUser(any(), any());
         verifyNoMoreInteractions(spyUserService);
+
+        verify(companyService, times(1)).getCompanyByName(userForm.getCompanyName());
+        verifyNoMoreInteractions(companyService);
+
+        verify(authenticationService, times(1)).authenticate(userForm, request);
+        verifyNoMoreInteractions(authenticationService);
+
     }
 
     @Test
@@ -104,22 +120,26 @@ public class UserServiceTests {
         String reenteredPass = PASSWORD;
         UserService spyUserService = Mockito.spy(UserService.class);
         spyUserService.userSessionService = Mockito.mock(UserSessionService.class);
+
         doReturn(USERNAME).when(spyUserService).getUserPrincipalLogin();
         doReturn(userFromDB).when(spyUserService).findByEmail(USERNAME);
         doNothing().when(spyUserService).checkEmailOnUpdating(userForm, userFromDB);
+        doNothing().when(spyUserService).checkReenteredPassword(anyString(), anyString());
+        doNothing().when(spyUserService).updateUserCompany(userForm, userFromDB);
         doNothing().when(spyUserService).updateUserFields(userForm, userFromDB);
         doNothing().when(spyUserService).saveUser(userFromDB);
         doNothing().when(spyUserService.userSessionService).setUser(userFromDB);
 
         spyUserService.updateCurrentUser(userForm, reenteredPass);
 
-        verify(spyUserService, times(1)).findByEmail(USERNAME);
         verify(spyUserService, times(1)).getUserPrincipalLogin();
+        verify(spyUserService, times(1)).findByEmail(USERNAME);
         verify(spyUserService, times(1)).checkEmailOnUpdating(userForm, userFromDB);
         verify(spyUserService, times(1)).updateUserFields(userForm, userFromDB);
         verify(spyUserService, times(1)).saveUser(userFromDB);
         verify(spyUserService, times(1)).checkReenteredPassword(anyString(), anyString());
         verify(spyUserService, times(1)).updateCurrentUser(userForm, reenteredPass);
+        verify(spyUserService, times(1)).updateUserCompany(userForm, userFromDB);
         verifyNoMoreInteractions(spyUserService);
 
         verify(spyUserService.userSessionService, times(1)).setUser(userFromDB);
@@ -382,6 +402,7 @@ public class UserServiceTests {
         result.setLastName(LAST_NAME);
         result.setEmail(EMAIL_VALUE);
         result.setPassword(PASSWORD);
+        result.setCompanyName(COMPANY_NAME);
         return result;
     }
 

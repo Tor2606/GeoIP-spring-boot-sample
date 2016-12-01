@@ -28,7 +28,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RequestServiceTests {
-    //// TODO: 24.10.2016  think on regex for Artem
     private static String propertyFilePath = "src/test/java/com/cbinfo/resources/testing.properties";
     private static Properties testProperties = getProperties(propertyFilePath);
 

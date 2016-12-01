@@ -1,6 +1,7 @@
 package com.cbinfo.controller;
 
 import com.cbinfo.dto.form.UserForm;
+import com.cbinfo.service.CompanyService;
 import com.cbinfo.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class UserControllerTests {
     private static final String WRONG_REENTERED = "wrong_reentered";
     private static final String EXCEPTION_MESSAGE_ON_WRONG_REENTERING = "Exception on reentering";
     private static final String NEW_COMPANY_NAME = "New company name";
+    private static final String USER_TO_DELETE_ID = "2";
 
     private MockMvc mockMvc;
 
@@ -47,6 +49,9 @@ public class UserControllerTests {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private CompanyService companyService;
 
     @Before
     public void init() {
@@ -71,7 +76,7 @@ public class UserControllerTests {
         Mockito.verify(userService, times(1)).isEmailRegistered(EMAIL);
         Mockito.verify(userService, times(1)).createUser(any(), any());
         Mockito.verify(userService, times(1)).checkReenteredPassword(PASSWORD, PASSWORD);
-        Mockito.verify(userService, times(1)).setNewCompanyToUserForm(any(),anyString());
+        Mockito.verify(userService, times(1)).setNewCompanyToUserForm(any(), anyString());
         verifyNoMoreInteractions(userService);
     }
 
@@ -83,6 +88,7 @@ public class UserControllerTests {
                 .param("email", EMAIL)
                 .param("password", PASSWORD)
                 .param("reenteredPassword", PASSWORD)
+                .param("newCompanyName", "")
                 .requestAttr("userForm", getUserForm())
         )
                 .andExpect(status().isOk())
@@ -102,6 +108,7 @@ public class UserControllerTests {
                 .param("email", NOT_VALID_EMAIL)
                 .param("password", NOT_VALID_PASSWORD)
                 .param("reenteredPassword", NOT_VALID_PASSWORD)
+                .param("newCompanyName", "")
                 .requestAttr("userForm", getUserForm())
         )
                 .andExpect(status().isOk())
@@ -117,12 +124,13 @@ public class UserControllerTests {
     @Test
     public void postCreateUserWhenPasswordsAreNotTheSameTest() throws Exception {
         when(userService.isEmailRegistered(any())).thenReturn(Boolean.FALSE);
-        doThrow(new Exception(EXCEPTION_MESSAGE_ON_WRONG_REENTERING)).when(userService).checkReenteredPassword(PASSWORD,WRONG_REENTERED);
+        doThrow(new Exception(EXCEPTION_MESSAGE_ON_WRONG_REENTERING)).when(userService).checkReenteredPassword(PASSWORD, WRONG_REENTERED);
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("email", EMAIL)
                 .param("password", PASSWORD)
                 .param("reenteredPassword", WRONG_REENTERED)
+                .param("newCompanyName", "")
                 .requestAttr("userForm", getUserForm())
         )
                 .andExpect(status().isOk())
@@ -141,7 +149,8 @@ public class UserControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name(CREATE_USER_VIEW))
                 .andExpect(forwardedUrl(CREATE_USER_VIEW))
-                .andExpect(model().attributeExists("userForm"));
+                .andExpect(model().attributeExists("userForm"))
+                .andExpect(model().attributeExists("companies"));
 
         verifyNoMoreInteractions(userService);
     }
@@ -155,25 +164,33 @@ public class UserControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name(EDIT_USER_VIEW))
                 .andExpect(forwardedUrl(EDIT_USER_VIEW))
+                .andExpect(model().attributeExists("companies"))
                 .andExpect(model().attribute("userForm", is(userForm)));
 
         verify(userService, times(1)).getCurrentSessionUserToForm();
         verifyNoMoreInteractions(userService);
+        verify(companyService, times(1)).findAllNames();
+        verifyNoMoreInteractions(companyService);
     }
 
     @Test
     public void postEditUserOKTest() throws Exception {
+        UserForm userForm = getUserForm();
+
         mockMvc.perform(post("/users/edit")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("email", EMAIL)
                 .param("password", PASSWORD)
                 .param("reenteredPassword", PASSWORD)
+                .param("newCompanyName", NEW_COMPANY_NAME)
+                .requestAttr("userForm", userForm)
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(REDIRECT_APP))
                 .andExpect(redirectedUrl("/app"));
 
         verify(userService, times(1)).updateCurrentUser(any(), anyString());
+        verify(userService, times(1)).setNewCompanyToUserForm(any(UserForm.class), anyString());
         verifyNoMoreInteractions(userService);
     }
 
@@ -185,6 +202,7 @@ public class UserControllerTests {
                 .param("email", EMAIL)
                 .param("password", PASSWORD)
                 .param("reenteredPassword", PASSWORD)
+                .param("newCompanyName", NEW_COMPANY_NAME)
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name(EDIT_USER_VIEW))
@@ -192,6 +210,7 @@ public class UserControllerTests {
                 .andExpect(model().attribute("errorMessage", is("Error")));
 
         verify(userService, times(1)).updateCurrentUser(any(), anyString());
+        verify(userService, times(1)).setNewCompanyToUserForm(any(UserForm.class), anyString());
         verifyNoMoreInteractions(userService);
     }
 
@@ -201,6 +220,7 @@ public class UserControllerTests {
                 .param("password", BLANK_PASSWORD)
                 .param("email", EMAIL)
                 .param("reenteredPassword", BLANK_PASSWORD)
+                .param("newCompanyName", NEW_COMPANY_NAME)
                 .requestAttr("userForm", getUserForm())
         )
                 .andExpect(status().is3xxRedirection())
@@ -208,6 +228,7 @@ public class UserControllerTests {
                 .andExpect(redirectedUrl("/app"));
 
         verify(userService, times(1)).updateCurrentUser(any(), anyString());
+        verify(userService, times(1)).setNewCompanyToUserForm(any(UserForm.class), anyString());
         verifyNoMoreInteractions(userService);
     }
 
@@ -217,6 +238,7 @@ public class UserControllerTests {
                 .param("password", NOT_VALID_PASSWORD)
                 .param("reenteredPassword", PASSWORD)
                 .param("email", NOT_VALID_EMAIL)
+                .param("newCompanyName", NEW_COMPANY_NAME)
                 .requestAttr("userForm", getUserForm())
         )
                 .andExpect(status().isOk())
@@ -229,12 +251,27 @@ public class UserControllerTests {
         verifyNoMoreInteractions(userService);
     }
 
+    @Test
+    public void getDeleteUserTest() throws Exception {
+        UserForm userForm = getUserForm();
+        when(userService.getCurrentSessionUserToForm()).thenReturn(userForm);
+
+        mockMvc.perform(get("/users/delete/" + USER_TO_DELETE_ID))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(REDIRECT_APP))
+                .andExpect(redirectedUrl("/app"));
+
+        verify(userService, times(1)).delete(USER_TO_DELETE_ID);
+        verifyNoMoreInteractions(userService);
+    }
+
     private UserForm getUserForm() {
         UserForm result = new UserForm();
         result.setEmail(EMAIL);
         result.setPassword(PASSWORD);
         result.setFirstName(NAME);
         result.setLastName(LAST_NAME);
+        result.setCompanyName(NEW_COMPANY_NAME);
         System.out.println(result);
         return result;
     }
