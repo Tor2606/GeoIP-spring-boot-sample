@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 public class CampaignService {
-    //todo repair tests
     private static final String USER_ROLE = "ROLE_USER";
     private static final String CAMPAIGN_CREATION_TIME_TEMPLATE = "dd/MM/yyyy HH:mm:ss";
 

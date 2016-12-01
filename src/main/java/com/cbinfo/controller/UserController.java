@@ -36,9 +36,11 @@ public class UserController {
                                  HttpServletRequest request, @RequestParam String newCompanyName, ModelMap modelMap) {
         if (userService.isEmailRegistered(userForm.getEmail())) {
             modelMap.addAttribute("errorMessage", "Email is not available!");
+            modelMap.put("companies", companyService.findAllNames());
             return CREATE_USER_VIEW;
         }
         if (bindingResult.hasErrors()) {
+            modelMap.put("companies", companyService.findAllNames());
             return CREATE_USER_VIEW;
         }
 
@@ -46,6 +48,7 @@ public class UserController {
             userService.checkReenteredPassword(userForm.getPassword(), reenteredPassword);
         } catch (Exception e) {
             modelMap.addAttribute("errorMessage", e.getMessage());
+            modelMap.put("companies", companyService.findAllNames());
             return CREATE_USER_VIEW;
         }
         userService.setNewCompanyToUserForm(userForm, newCompanyName);
