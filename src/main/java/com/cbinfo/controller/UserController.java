@@ -74,8 +74,10 @@ public class UserController {
     public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam String reenteredPassword,
                                @RequestParam String newCompanyName, ModelMap modelMap) {
         if (bindingResult.hasFieldErrors("email")) {
+            modelMap.put("companies", companyService.findAllNames());
             return EDIT_USER_VIEW;
         } else if (isNotBlank(userForm.getPassword()) && bindingResult.hasFieldErrors("password")) {
+            modelMap.put("companies", companyService.findAllNames());
             return EDIT_USER_VIEW;
         }
         userService.setNewCompanyToUserForm(userForm, newCompanyName);
@@ -83,6 +85,7 @@ public class UserController {
             userService.updateCurrentUser(userForm, reenteredPassword);
         } catch (Exception e) {
             modelMap.addAttribute("errorMessage", e.getMessage());
+            modelMap.put("companies", companyService.findAllNames());
             return EDIT_USER_VIEW;
         }
         return REDIRECT + APP_PAGE;
