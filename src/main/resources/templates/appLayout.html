@@ -6,35 +6,36 @@
 </head>
 <body>
 
-<header class="page-header">
-    <div class="row">
-
-        <div class="col-md-10">
-            <div class="span2 left">
-                <a id="home"
-                   th:href="@{/app}">
-                    <div class="home-button"></div>
-                </a>
+<header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="span2 left">
+                    <a id="home"
+                       th:href="@{/app}">
+                        <div class="home-button"></div>
+                    </a>
+                </div>
+                <div class="span3">
+                    <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
+                        Time
+                    </p>
+                </div>
             </div>
-            <div class="span3">
-                <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
-                    Time
-                </p>
-            </div>
-        </div>
-        <div class="col-md-2 right">
-            <!-- Single button -->
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    <span th:text="${user.email}">User</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a th:href="@{/logout}">Logout</a></li>
-                    <li><a th:href="@{/users/edit}">Edit profile</a></li>
-                </ul>
+            <div class="col-md-2 right">
+                <!-- Single button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        <span th:text="${user.email}">User</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/logout}">Logout</a></li>
+                        <li><a th:href="@{/users/edit}">Edit profile</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -46,7 +47,9 @@
 
 </div>
 <footer class="footer fixed-bottom">
-    <p class="pull-right" style="margin: 20px">@By Islabukhin</p>
+    <div class="container">
+        <p class="pull-right" style="margin: 10px">@By Islabukhin</p>
+    </div>
 </footer>
 
 <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>

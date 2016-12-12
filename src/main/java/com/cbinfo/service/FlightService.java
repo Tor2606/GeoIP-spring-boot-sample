@@ -53,7 +53,7 @@ public class FlightService {
     }
 
     @Transactional
-    private Flight findFlight(String flightId) {
+    public Flight findFlight(String flightId) {
         return flightRepository.findOne(Long.valueOf(flightId));
     }
 

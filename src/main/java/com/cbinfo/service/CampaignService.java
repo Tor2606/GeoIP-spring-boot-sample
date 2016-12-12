@@ -48,7 +48,7 @@ public class CampaignService {
         List<Campaign> result = findAll();
         User user = userSessionService.getUser();
         if (user.getRole().name().equals(USER_ROLE)) {
-           result = result.stream().filter((campaign) -> campaign.getUser().equals(user)).collect(toList());
+           result = result.stream().filter((campaign) -> campaign.getUser().getEmail().equals(user.getEmail())).collect(toList());
         }
         return result;
     }

@@ -4,6 +4,7 @@ import com.cbinfo.model.enums.FlightTypes;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "flights")
@@ -34,6 +35,8 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightTypes flightType;
 
+    @OneToMany
+    private List<Banner> banners;
 
     private Integer quantity;
 
@@ -99,5 +102,13 @@ public class Flight {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Banner> getBanners() {
+        return banners;
+    }
+
+    public void setBanners(List<Banner> banners) {
+        this.banners = banners;
     }
 }

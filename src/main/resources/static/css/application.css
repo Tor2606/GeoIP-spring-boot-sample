@@ -17,21 +17,11 @@ body {
     margin: 10px;
 }
 
-.delete-button {
-    width: 30px;
-    height: 30px;
-    margin: 1px;
-    border: 1px solid black;
-    border-radius: 2px;
-    background: #ff9785 url(../img/trash_img.png) no-repeat center;
-    background-size: 25px,25px;
-}
-
 .user-context{
     margin: 30px;
 }
 
-.create-button{
+.edit-button{
     width: 30px;
     height: 30px;
     margin: 1px;
@@ -41,14 +31,44 @@ body {
     background-size: 25px,25px;
 }
 
-.create-button:hover {
+.edit-button:hover {
     background-color: #08c808;
 }
 
-.create-button:active {
+.edit-button:active {
     -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
     box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+}
+
+.eye-button{
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background: #4692f8 url(../img/eye_icon.png) no-repeat center;
+    background-size: 25px,25px;
+}
+
+.eye-button:hover {
+    background-color: #4a40c8;
+}
+
+.eye-button:active {
+    -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+}
+
+.delete-button {
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background: #ff9785 url(../img/trash_img.png) no-repeat center;
+    background-size: 25px,25px;
 }
 
 .delete-button:hover {

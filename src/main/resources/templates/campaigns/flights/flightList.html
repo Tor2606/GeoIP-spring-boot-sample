@@ -45,14 +45,18 @@
                 <tbody>
                 <tr th:each="flight, index : ${flights}">
                     <td th:text="${index.count}">...</td>
-                    <td data-th-text="${flight.name}">...</td>
+                    <td>
+                        <a th:href="@{'/app/flights/'+${flight.flightId}+'/banners'}">
+                            <span data-th-text="${flight.name}"></span>
+                        </a>
+                    </td>
                     <td th:text="${flight.startDate}">...</td>
                     <td th:text="${flight.endDate}">...</td>
                     <td th:text="${flight.type}">...</td>
                     <td th:text="${flight.quantity}">...</td>
                     <td>
                         <a th:href="@{'/app/flights/' + ${flight.flightId}} + '/edit'">
-                            <div class="create-button"></div>
+                            <div class="edit-button"></div>
                         </a>
                     </td>
 

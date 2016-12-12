@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 public class CountryBrowserInfoApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(applicationClass, args);
 	}
 

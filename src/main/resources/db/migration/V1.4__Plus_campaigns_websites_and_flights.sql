@@ -50,5 +50,3 @@ OIDS = FALSE
 );
 ALTER TABLE flights
   OWNER TO postgres;
-
-INSERT INTO websites (website_id, website_name) VALUES (1, 'testing.com');
