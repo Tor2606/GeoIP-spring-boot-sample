@@ -35,7 +35,7 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightTypes flightType;
 
-    @OneToMany
+    @OneToMany(mappedBy = "flight")
     private List<Banner> banners;
 
     private Integer quantity;

@@ -27,7 +27,7 @@
                         flight</a>
                 </div>
             </div>
-
+            <div th:if="${error} != null" class="alert alert-danger" th:text="${error}">Error</div>
             <h3 th:text="'Flights table of \''+ ${campaignName} +'\' campaign:' ">Flights table of :</h3>
             <table class="table table-stripped pull-left container">
                 <thead>

@@ -97,7 +97,13 @@ public class CampaignController {
 
     @RequestMapping(value = "/{campaignId}/flights/{flightId}/delete")
     public String deleteFlight(@PathVariable(value = "campaignId") String campaignId, @PathVariable(value = "flightId") String flightId, ModelMap modelMap) throws ParseException {
-        flightService.deleteFlight(flightId);
+        try{flightService.deleteFlight(flightId);
+        }catch (Exception e){
+            modelMap.put("campaignName", campaignService.findCampaign(campaignId).getCampaignName());
+            modelMap.put("flights", flightService.findFlightFormsByCampaign(campaignId));
+            modelMap.put("error", "Error: " + e.getMessage());
+            return CAMPAIGN_FLIGHT_LIST;
+        }
         return REDIRECT + CAMPAIGNS_LIST_PAGE + campaignId;
     }
 }
