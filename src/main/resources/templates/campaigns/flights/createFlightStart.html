@@ -22,7 +22,7 @@
                 <a th:href="@{/app/flights/create/main(flightId=${flightForm.flightId})}">Fill flight</a>
             </li>
             <li th:if="${flightId} != null">
-                <a th:href="@{/app/flights/create/banner(flightId=${flightForm.flightId})}">Create banner</a>
+                <a th:href="@{/app/flights/create/banners(flightId=${flightForm.flightId})}">Create banner</a>
             </li>
             <li th:if="${flightId} != null">
                 <a th:href="@{/app/flights/create/finish(flightId=${flightForm.flightId})}">Finish creation</a>
