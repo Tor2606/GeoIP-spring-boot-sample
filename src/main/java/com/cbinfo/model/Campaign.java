@@ -1,6 +1,7 @@
 package com.cbinfo.model;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class Campaign {
 
     @Column(name = "campaign_name")
     private String campaignName;
+
+    @Column
+    public Instant instant;
 
     @Column
     private Date created;

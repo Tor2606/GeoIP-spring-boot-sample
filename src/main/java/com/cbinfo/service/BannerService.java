@@ -37,7 +37,7 @@ public class BannerService {
     }
 
     protected boolean checkUrl(String url) {
-        Pattern pattern = Pattern.compile("^www[.].+[.].+");
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+[.][a-zA-Z0-9]+");
         return isNotBlank(url)&&pattern.matcher(url).matches();
     }
 

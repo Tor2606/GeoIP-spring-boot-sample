@@ -20,8 +20,8 @@ public class BannerServiceTest {
 
     @Test
     public void checkUrlTest(){
-        assert(bannerService.checkUrl("www.eet.ry"));
-        assert(!bannerService.checkUrl("www..we"));
-        assert(!bannerService.checkUrl("www.er."));
+        assert(bannerService.checkUrl("ee2Et.ry"));
+        assert(!bannerService.checkUrl("..we"));
+        assert(!bannerService.checkUrl("1EEer."));
     }
 }

@@ -120,20 +120,6 @@ public class FlightController {
         return CREATE_FLIGHT_BANNER_VIEW;
     }
 
-    @RequestMapping(value = "/create/{flightId}/banners/{bannerId}/delete")
-    public String getCreateFlightDeleteBanner(@PathVariable(value = "flightId") String flightId, @PathVariable(value = "bannerId") String bannerId, ModelMap modelMap){
-        try {
-            bannerService.delete(bannerId);
-        }catch (Exception e){
-            modelMap.put("error", e.getMessage());
-            modelMap.put("banners", bannerService.findBannerFormByFlight(flightId));
-            modelMap.put("flightId", flightId);
-            return CREATE_FLIGHT_BANNER_VIEW;
-        }
-
-        return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + flightId;
-    }
-
     @RequestMapping(value = "/create/banners/create", method = RequestMethod.POST)
     public String postCreateFlightCreateBanner(BannerForm bannerForm, ModelMap modelMap){
         try {
@@ -148,6 +134,20 @@ public class FlightController {
         return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + bannerForm.getFlightId();
     }
 
+    @RequestMapping(value = "/create/{flightId}/banners/{bannerId}/delete")
+    public String getCreateFlightDeleteBanner(@PathVariable(value = "flightId") String flightId, @PathVariable(value = "bannerId") String bannerId, ModelMap modelMap){
+        try {
+            bannerService.delete(bannerId);
+        }catch (Exception e){
+            modelMap.put("error", e.getMessage());
+            modelMap.put("banners", bannerService.findBannerFormByFlight(flightId));
+            modelMap.put("flightId", flightId);
+            return CREATE_FLIGHT_BANNER_VIEW;
+        }
+
+        return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + flightId;
+    }
+    
     @RequestMapping(value = "/create/banners/edit", method = RequestMethod.POST)
     public String postCreateFlightEditBanner(BannerForm bannerForm, ModelMap modelMap){
         try {
