@@ -21,7 +21,7 @@ public class FlightController {
     private static final String CREATE_FLIGHT_START_PAGE = "/app/flights/create/start";
     private static final String CREATE_FLIGHT_MAIN_PAGE = "/app/flights/create/main";
     private static final String CREATE_FLIGHT_FINISH_PAGE = "/app/flights/create/finish";
-    private static final String CREATE_FLIGHT_BANNER_PAGE = "/app/flights/create/banner";
+    private static final String CREATE_FLIGHT_BANNER_PAGE = "/app/flights/create/banners";
 
     private static final String CREATE_FLIGHT_START_VIEW = "campaigns/flights/createFlightStart";
     private static final String CREATE_FLIGHT_MAIN_VIEW = "campaigns/flights/createFlightMain";

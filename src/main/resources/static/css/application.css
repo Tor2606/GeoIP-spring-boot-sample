@@ -27,12 +27,12 @@ body {
     margin: 1px;
     border: 1px solid black;
     border-radius: 2px;
-    background: #1df81e url(../img/edit_icon.png) no-repeat center;
+    background: #edeedf url(../img/edit_icon.png) no-repeat center;
     background-size: 25px,25px;
 }
 
 .edit-button:hover {
-    background-color: #08c808;
+    background-color: #7A7B76;
 }
 
 .edit-button:active {
@@ -47,12 +47,12 @@ body {
     margin: 1px;
     border: 1px solid black;
     border-radius: 2px;
-    background: #4692f8 url(../img/eye_icon.png) no-repeat center;
+    background: #edeedf url(../img/eye_icon.png) no-repeat center;
     background-size: 25px,25px;
 }
 
 .eye-button:hover {
-    background-color: #4a40c8;
+    background-color: #7A7B76;
 }
 
 .eye-button:active {
@@ -67,12 +67,12 @@ body {
     margin: 1px;
     border: 1px solid black;
     border-radius: 2px;
-    background: #ff9785 url(../img/trash_img.png) no-repeat center;
+    background: #edeedf url(../img/trash_img.png) no-repeat center;
     background-size: 25px,25px;
 }
 
 .delete-button:hover {
-    background-color: #ff664e;
+    background-color: #7A7B76;
 }
 
 .delete-button:active {
@@ -82,15 +82,15 @@ body {
 }
 
 .home-button{
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin: 3px;
     background: url(../img/home_icon.png) no-repeat center;
     background-size: 40px,40px;
 }
 
 .footer {
-    background-color: #578aff;
+    background-color: #3e3f3a;
     height: 50px;
     box-shadow: 0px -3px 1px 0px rgba(0, 0, 0, 0.60);
 }

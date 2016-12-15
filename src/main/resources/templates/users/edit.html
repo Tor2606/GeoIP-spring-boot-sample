@@ -14,49 +14,39 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="span6 offset3 text-center form-wrapper">
+        <div class="col-md-offset-3 col-md-6 text-center form-wrapper">
             <div class="form-body">
                 <h2>Please, edit the form</h2>
                 <p class="text-error help-block" th:if="${errorMessage} != null"
                    th:text="${errorMessage}">Error</p>
                 <form th:action="@{/users/edit}" method="post" th:object="${userForm}">
                     <div class="form-group">
-                        <label for="email">Email*</label>
-                        <div class="controls">
-                            <input type="text" id="email" name="email" th:field="*{email}"/>
+                        <label for="email" class="control-label">Email*</label>
+
+                        <input class="form-control" type="text" id="email" name="email" th:field="*{email}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}"
                                       th:errors="*{email}">Error</span>
-                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="password">Change password</label>
-                        <div class="controls">
-                            <input type="password" id="password" name="password" th:field="*{password}"/>
+                        <label for="password" class="control-label">Change password</label>
+                            <input class="form-control" type="password" id="password" name="password" th:field="*{password}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('password')}"
                                       th:errors="*{password}">Error</span>
-                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="reenteredPassword">Reenter password</label>
-                        <div class="controls">
-                            <input type="password" id="reenteredPassword" name="reenteredPassword"/>
-                        </div>
+                        <label for="reenteredPassword" class="control-label">Reenter password</label>
+                            <input class="form-control" type="password" id="reenteredPassword" name="reenteredPassword"/>
                     </div>
                     <div class="form-group">
-                        <label for="first_name">Name</label>
-                        <div class="controls">
-                            <input type="text" id="first_name" name="firstName" th:field="*{firstName}"/>
-                        </div>
+                        <label for="first_name" class="control-label">Name</label>
+                            <input class="form-control" type="text" id="first_name" name="firstName" th:field="*{firstName}"/>
                     </div>
                     <div class="form-group">
-                        <label for="last_name">Second Name</label>
-                        <div class="controls">
-                            <input type="text" id="last_name" name="lastName" th:field="*{lastName}"/>
-
-                        </div>
+                        <label for="last_name" class="control-label">Second Name</label>
+                            <input class="form-control" type="text" id="last_name" name="lastName" th:field="*{lastName}"/>
                     </div>
                     <div class="form-group">
-                        <label for="companies">Company</label>
+                        <label for="companies" class="control-label">Company</label>
                         <select id="companies" th:field="*{companyName}">
                             <option th:each="company : ${companies}"
                                     th:value="${company}" th:text="${company}">Company
@@ -67,10 +57,8 @@
                         <a class="createNew">No company in the list? Press to create new!</a>
                     </div>
                     <div class="form-group hidden-block" hidden="true">
-                        <label for="company-Name">New Company Name</label>
-                        <div class="controls">
-                            <input type="text" id="company-Name" name="newCompanyName"/>
-                        </div>
+                        <label for="company-Name" class="control-label">New Company Name</label>
+                            <input class="form-control" type="text" id="company-Name" name="newCompanyName"/>
                     </div>
                     <button type="submit" class="btn btn-default">Submit change</button>
                     <a id="home"

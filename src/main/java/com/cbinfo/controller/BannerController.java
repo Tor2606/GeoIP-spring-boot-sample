@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping(value = "/app/flights")
 public class BannerController {
+
+    // TODO: 14.12.2016 Keep modal viewed after page refreshes
+    // TODO: 14.12.2016 datepicker move(first to line, second make be near first), create new site make be right cho
+    //// TODO: 14.12.2016 Websites must be shown just for user who created it(+userId column)
+    // TODO: 14.12.2016 website creation must be in modal and checked by ajax(checks if name equals to names of users sites)
+    //// TODO: 14.12.2016 On banner creation we must check if url is url of website
+    // TODO: 14.12.2016 change buttons edit and delete, move them to right
     private static final String REDIRECT = "redirect:";
     private static final String FLIGHTS = "/app/flights/";
     private static final String BANNERS = "/banners";
