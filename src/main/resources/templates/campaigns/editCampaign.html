@@ -24,12 +24,13 @@
                   th:method="post">
                 <input type="hidden" th:field="*{campaignId}" th:value="*{campaignId}"/>
                 <div class="form-group">
-                    <label for="campaignName">Campaign name:</label>
-                    <div class="controls">
-                        <input type="text" id="campaignName" name="campaignName" th:value="*{campaignName}"/>
+                    <div class="input-group">
+                        <label for="campaignName">Campaign name:</label>
+                        <input class="form-control" type="text" id="campaignName" name="campaignName"
+                               th:value="*{campaignName}"/>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-info">Change</button>
+                <button type="submit" class="btn btn-primary">Change</button>
             </form>
         </div>
     </div>

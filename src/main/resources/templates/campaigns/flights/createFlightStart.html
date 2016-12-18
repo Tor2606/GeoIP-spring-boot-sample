@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label for="campaigns">Choose campaign:</label>
                             <div class="input-group">
-                                <select id="campaigns" th:field="*{campaignName}">
+                                <select class="form-control" id="campaigns" th:field="*{campaignName}">
                                     <option th:each="campaignName : ${campaignNames}"
                                             th:value="${campaignName}" th:text="${campaignName}">
                                         Campaign

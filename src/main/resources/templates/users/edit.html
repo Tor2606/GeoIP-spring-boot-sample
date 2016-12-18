@@ -29,41 +29,46 @@
                     </div>
                     <div class="form-group">
                         <label for="password" class="control-label">Change password</label>
-                            <input class="form-control" type="password" id="password" name="password" th:field="*{password}"/>
+                        <input class="form-control" type="password" id="password" name="password"
+                               th:field="*{password}"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('password')}"
                                       th:errors="*{password}">Error</span>
                     </div>
                     <div class="form-group">
                         <label for="reenteredPassword" class="control-label">Reenter password</label>
-                            <input class="form-control" type="password" id="reenteredPassword" name="reenteredPassword"/>
+                        <input class="form-control" type="password" id="reenteredPassword" name="reenteredPassword"/>
                     </div>
                     <div class="form-group">
                         <label for="first_name" class="control-label">Name</label>
-                            <input class="form-control" type="text" id="first_name" name="firstName" th:field="*{firstName}"/>
+                        <input class="form-control" type="text" id="first_name" name="firstName"
+                               th:field="*{firstName}"/>
                     </div>
                     <div class="form-group">
                         <label for="last_name" class="control-label">Second Name</label>
-                            <input class="form-control" type="text" id="last_name" name="lastName" th:field="*{lastName}"/>
+                        <input class="form-control" type="text" id="last_name" name="lastName" th:field="*{lastName}"/>
                     </div>
                     <div class="form-group">
-                        <label for="companies" class="control-label">Company</label>
-                        <select id="companies" th:field="*{companyName}">
-                            <option th:each="company : ${companies}"
-                                    th:value="${company}" th:text="${company}">Company
-                            </option>
-                        </select>
+                        <div class="input-group">
+                            <label for="companies" class="control-label">Company</label>
+
+                            <select class="form-control" id="companies" th:field="*{companyName}">
+                                <option th:each="company : ${companies}"
+                                        th:value="${company}" th:text="${company}">Company
+                                </option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <a class="createNew">No company in the list? Press to create new!</a>
                     </div>
                     <div class="form-group hidden-block" hidden="true">
                         <label for="company-Name" class="control-label">New Company Name</label>
-                            <input class="form-control" type="text" id="company-Name" name="newCompanyName"/>
+                        <input class="form-control" type="text" id="company-Name" name="newCompanyName"/>
                     </div>
                     <button type="submit" class="btn btn-default">Submit change</button>
                     <a id="home"
                        th:href="@{/app}">
-                        <div class="btn btn-default">Exit</div>
+                        <div class="btn btn-default">Close</div>
                     </a>
                 </form>
             </div>

@@ -36,14 +36,12 @@
                           method="post">
                         <input th:if="*{flightId} != null" type="hidden" th:field="*{flightId}" th:value="${flightId}"/>
 
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="datepicker1" class="control-label">Choose start date:</label>
-                                <div class="input-group date">
-                                    <input type="text" class="form-control" id="datepicker1"
-                                           th:field="*{startDate}"
-                                           th:value="*{startDate}"/>
-                                </div>
+                        <div class="form-group">
+                            <label for="datepicker1" class="control-label">Choose start date:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="datepicker1"
+                                       th:field="*{startDate}"
+                                       th:value="*{startDate}"/>
                             </div>
                         </div>
                         <script>
@@ -52,14 +50,12 @@
                             });
                         </script>
 
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="datepicker2" class="control-label">Choose end date:</label>
-                                <div class="input-group date">
-                                    <input type="text" class="form-control" id="datepicker2"
-                                           th:field="*{endDate}"
-                                           th:value="*{endDate}"/>
-                                </div>
+                        <div class="form-group">
+                            <label for="datepicker2" class="control-label">Choose end date:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="datepicker2"
+                                       th:field="*{endDate}"
+                                       th:value="*{endDate}"/>
                             </div>
                         </div>
                         <script>
@@ -71,7 +67,7 @@
                         <div class="form-group">
                             <label for="type">Choose type (impression/clicks):</label>
                             <div class="input-group">
-                                <select id="type" th:field="*{type}">
+                                <select class="form-control" id="type" th:field="*{type}">
                                     <option th:each="type : ${types}"
                                             th:value="${type}" th:text="${type}">Type
                                     </option>
@@ -90,19 +86,21 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-inline">
                             <label for="websites">Choose website:</label>
                             <div class="input-group">
-                                <select id="websites" th:field="*{websiteName}">
+                                <select class="form-control" id="websites" th:field="*{websiteName}">
                                     <option th:each="websiteName : ${websiteNames}"
                                             th:value="${websiteName}" th:text="${websiteName}">Company
                                     </option>
                                 </select>
                             </div>
+                            <div class="input-group">
+                                <a class="btn btn-info createNew">Create new site</a>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <a class="btn btn-default createNew">Create new site</a>
                             <div class="hidden-block" hidden="true">
                                 <label for="new-website">Website name(URL):</label>
                                 <div class="controls">

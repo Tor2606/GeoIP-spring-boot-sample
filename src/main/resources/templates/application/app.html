@@ -39,11 +39,11 @@
                     <div th:if="${error} !=null" class="alert alert-danger" th:text="${error}">Error</div>
                     <div class="row">
                         <div class="col-md-2">
-                            <a class="btn btn-info " th:href="@{app/campaigns/create}">Create
+                            <a class="btn btn-primary " th:href="@{app/campaigns/create}">Create
                                 campaign</a>
                         </div>
                         <div class="col-md-2">
-                            <a class="btn btn-info " th:href="@{app/flights/create/start}">Create
+                            <a class="btn btn-primary " th:href="@{app/flights/create/start}">Create
                                 flight</a>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
 
             <div class="tab-pane" id="tab2">
                 <div class="context user-context">
-                    <a class="btn btn-info left" th:href="@{app/websites/create}">Create
+                    <a class="btn btn-primary left" th:href="@{app/websites/create}">Create
                         website</a>
                     <div th:if="${param.deleteException}" th:text="${deleteException}" class="alert alert-danger">
                         Something
