@@ -15,6 +15,10 @@ public class Website {
     @Column(name = "website_name")
     private String websiteName;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany
     private List<Flight> flights;
 
@@ -40,5 +44,13 @@ public class Website {
 
     public void setFlights(List<Flight> flights) {
         this.flights = flights;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

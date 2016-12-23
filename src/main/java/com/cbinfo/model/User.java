@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Campaign> campaigns;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Website> websites;
+
     public List<Campaign> getCampaigns() {
         return campaigns;
     }
@@ -201,5 +204,13 @@ public class User implements UserDetails {
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (campaigns != null ? campaigns.hashCode() : 0);
         return result;
+    }
+
+    public List<Website> getWebsites() {
+        return websites;
+    }
+
+    public void setWebsites(List<Website> websites) {
+        this.websites = websites;
     }
 }

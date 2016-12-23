@@ -24,7 +24,7 @@ body {
 .edit-button{
     width: 30px;
     height: 30px;
-    margin: 1px;
+    margin: 2px;
     border: 1px solid black;
     border-radius: 2px;
     background: #edeedf url(../img/edit_icon.png) no-repeat center;
@@ -64,7 +64,7 @@ body {
 .delete-button {
     width: 30px;
     height: 30px;
-    margin: 1px;
+    margin: 2px;
     border: 1px solid black;
     border-radius: 2px;
     background: #edeedf url(../img/trash_img.png) no-repeat center;

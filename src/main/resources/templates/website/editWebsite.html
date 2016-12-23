@@ -18,12 +18,12 @@
             <h2>Edit website:</h2>
             <p class="text-error help-block" th:if="${error} != null"
                th:text="${error}">Error</p>
-            <form th:action="@{'/app/websites/' + ${websiteId}}" th:object="${websiteForm}"
+            <form th:action="@{'/app/websites/' + ${websiteId}}"
                   th:method="post">
                 <div class="form-group">
                     <label for="websiteName">Website name(URL):</label>
                     <div class="controls">
-                        <input type="text" id="websiteName" name="websiteName" th:value="*{name}" th:field="*{name}"/>
+                        <input type="text" id="websiteName" name="name" th:value="${name}" th:field="${name}"/>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit change</button>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -91,7 +92,7 @@ public class FlightController {
             return REDIRECT + CREATE_FLIGHT_START_PAGE;
         }
         modelMap.put("types", newArrayList(FlightTypes.values()));
-        modelMap.put("websiteNames", websiteService.getAllWebsiteNames());
+        modelMap.put("websiteNames", websiteService.findAllWebsiteNamesForCurrentUser());
         modelMap.put("flightForm", flightService.findFlightForm(flightId));
         return CREATE_FLIGHT_MAIN_VIEW;
     }
@@ -105,6 +106,9 @@ public class FlightController {
             flightService.updateFlight(flightForm);
         } catch (Exception e) {
             modelMap.put("error", "Error:" + e.getMessage());
+            modelMap.put("types", newArrayList(FlightTypes.values()));
+            modelMap.put("websiteNames", websiteService.findAllWebsiteNamesForCurrentUser());
+            modelMap.put("flightForm", flightService.findFlightForm(flightForm.getFlightId()));
             return CREATE_FLIGHT_MAIN_VIEW;
         }
         return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + flightForm.getFlightId();
@@ -149,7 +153,7 @@ public class FlightController {
     }
     
     @RequestMapping(value = "/create/banners/edit", method = RequestMethod.POST)
-    public String postCreateFlightEditBanner(BannerForm bannerForm, ModelMap modelMap){
+    public String postCreateFlightEditBanner(BannerForm bannerForm, ModelMap modelMap, RedirectAttributes redirectAttributes){
         try {
             bannerService.editBanner(bannerForm);
         } catch (Exception e) {
@@ -158,6 +162,7 @@ public class FlightController {
             modelMap.put("flightId", bannerForm.getFlightId());
             return CREATE_FLIGHT_BANNER_VIEW;
         }
+        redirectAttributes.addFlashAttribute("open_banner", bannerForm.getTitle());
         return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + bannerForm.getFlightId();
     }
 
@@ -179,7 +184,7 @@ public class FlightController {
     public String getEditFlight(@PathVariable(value = "flightId") String flightId, ModelMap modelMap) {
         modelMap.put("types", FlightTypes.values());
         modelMap.put("flightId", flightId);
-        modelMap.put("websiteNames", websiteService.getAllWebsiteNames());
+        modelMap.put("websiteNames", websiteService.findAllWebsiteNamesForCurrentUser());
         modelMap.put("campaignNames", campaignService.findAllCampaignsNames());
         modelMap.put("flightForm", flightService.findFlightForm(flightId));
         return EDIT_FLIGHT_VIEW;

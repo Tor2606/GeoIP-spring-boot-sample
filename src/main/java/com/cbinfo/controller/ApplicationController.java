@@ -43,7 +43,7 @@ public class ApplicationController {
         modelMap.put("users", userService.findAll());
         modelMap.put("companies", companyService.findAll());
         modelMap.put("campaigns", campaignService.findAllCurrentUserCampaigns());
-        modelMap.put("websites", websiteService.findAll());
+        modelMap.put("websites", websiteService.findAllWebsitesForCurrentUser());
         return MAIN_VIEW;
     }
 }

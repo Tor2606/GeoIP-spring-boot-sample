@@ -68,7 +68,7 @@ public class FlightService {
             flight.setEndDate(toDate(flightForm.getEndDate()));
         }
         if (isNotBlank(flightForm.getWebsiteName())) {
-            flight.setWebsite(websiteService.findWebsiteByName(flightForm.getWebsiteName()));
+            flight.setWebsite(websiteService.findWebsiteByNameForCurrentUser(flightForm.getWebsiteName()));
         }
         if (isNotBlank(flightForm.getCampaignName())) {
             flight.setCampaign(campaignService.findCampaignByName(flightForm.getCampaignName()));

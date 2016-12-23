@@ -1,16 +1,14 @@
 package com.cbinfo.controller;
 
-import com.cbinfo.dto.form.WebsiteForm;
 import com.cbinfo.model.User;
 import com.cbinfo.service.UserSessionService;
 import com.cbinfo.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,6 @@ public class WebsiteController {
 
     private static final String EDIT_WEBSITE_VIEW = "website/editWebsite";
     private static final String CREATE_WEBSITE_VIEW = "website/createWebsite";
-    private static final String APP_VIEW = "application/app";
 
     @Autowired
     private WebsiteService websiteService;
@@ -44,9 +41,9 @@ public class WebsiteController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postCreateWebsite(WebsiteForm websiteForm, ModelMap modelMap, HttpServletRequest request){
+    public String postCreateWebsite(String name, ModelMap modelMap, HttpServletRequest request){
         try{
-            websiteService.createWebsite(websiteForm);
+            websiteService.createWebsite(name);
         }catch (Exception e){
             modelMap.put("error", "Error:" + e.getMessage());
             return CREATE_WEBSITE_VIEW;
@@ -54,19 +51,30 @@ public class WebsiteController {
         return REDIRECT + APP_PAGE;
     }
 
+    // TODO: 21.12.2016 Change(make) all website creation to this endpoint
+    @RequestMapping(value = "/ajax-create", method = RequestMethod.POST)
+    public ResponseEntity postCreateWebsite(@RequestParam(name = "websiteName") String name){
+        try{
+            websiteService.createWebsite(name);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @RequestMapping(value = "/{websiteId}")
     public String getEditWebsite(@PathVariable String websiteId, ModelMap modelMap){
-        modelMap.put("websiteForm", websiteService.findWebsiteForm(websiteId));
+        modelMap.put("name", websiteService.findWebsiteNameById(websiteId));
         modelMap.put("websiteId", websiteId);
         return EDIT_WEBSITE_VIEW;
     }
 
     @RequestMapping(value = "/{websiteId}", method = RequestMethod.POST)
-    public String postEditWebsite(@PathVariable String websiteId, WebsiteForm websiteForm, ModelMap modelMap){
+    public String postEditWebsite(@PathVariable String websiteId, String name, ModelMap modelMap){
         try{
-            websiteService.editWebsite(websiteId, websiteForm);
+            websiteService.editWebsite(websiteId, name);
         }catch (Exception e){
-            modelMap.put("websiteForm", websiteForm);
+            modelMap.put("name", name);
             modelMap.put("websiteId", websiteId);
             modelMap.put("error", "Error: " + e.getMessage());
             return EDIT_WEBSITE_VIEW;
