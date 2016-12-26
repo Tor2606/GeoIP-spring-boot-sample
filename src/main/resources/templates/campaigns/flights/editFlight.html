@@ -2,23 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorator="appLayout">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Cbinfo app</title>
     <link rel="stylesheet" href="../../../static/css/application.css" th:href="@{/css/application.css}"/>
     <!-- Bootstrap -->
     <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
           media="screen"/>
-    <link href="../../../static/css/bootstrap-responsive.min.css" th:href="@{/css/bootstrap-responsive.min.css}"
-          rel="stylesheet"/>
-    <link href="../../../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"
-          rel="stylesheet"/>
     <link rel="stylesheet"
           href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script src="../../../static/js/view-form.js" th:src="@{/js/view-form.js}"></script>
 </head>
 <body>
 
 <div layout:fragment="content">
+
+    <div th:id="${'createWebsiteModal'}" class="modal fade"
+         style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h3 class="modal-title"><p>Create site:</p></h3>
+                    <div class="form-group">
+                        <label for="createWebsite">Enter
+                            url(***.**):</label>
+                        <input type="text" class="form-control" id="createWebsite"
+                               name="websiteName"/>
+                        <div class="alert-danger hidden-block" hidden="true" id="site-creation-error">Error</div>
+                        <div class="alert-success hidden-block" hidden="true" id="site-creation-success">Success! Site was created!</div>
+                    </div>
+                    <button id="createWebsiteButton" class="btn btn-primary create-website-btn">Create</button>
+                    <button type="button" class="btn btn-danger"
+                            data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="context user-context">
             <div th:if="${error} != null" class="alert alert-danger" th:text="${error}">Error</div>
@@ -95,21 +116,15 @@
                     <div class="input-group">
                         <select class="form-control" id="websites" th:field="*{websiteName}">
                             <option th:each="websiteName : ${websiteNames}"
-                                    th:value="*{websiteName}" th:text="${websiteName}">website
+                                    th:value="${websiteName}" th:text="${websiteName}">Company
                             </option>
                         </select>
                     </div>
                     <div class="input-group">
-                        <a class="btn btn-info createNew">Create new site</a>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="hidden-block" hidden="true">
-                        <label for="new-website">Website name(URL):</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="new-website" name="newWebsiteName"/>
-                        </div>
+                        <a data-toggle="modal"
+                           th:href="${'#createWebsiteModal'}">
+                            <div class="btn btn-info">Create new site</div>
+                        </a>
                     </div>
                 </div>
 
@@ -121,6 +136,34 @@
             </form>
         </div>
     </div>
+    <script type="text/javascript" language="JavaScript">
+        $('#createWebsiteButton').click(function creation() {
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var siteName = $('#createWebsite').val();
+            var headers = {};
+            headers[csrfHeader] = csrfToken;
+            $.ajax({
+                type: "POST",
+                url: '/app/websites/ajax-create',
+                headers: headers,
+                data: {websiteName: siteName},
+                success: function (response) {
+                    $('#site-creation-error').hide();
+                    $('#site-creation-success').show()
+                    $('#websites').append($('<option/>', {
+                        value: siteName,
+                        text: siteName
+                    }));
+                },
+                error: function (xhr, options, thrownError) {
+                    $('#site-creation-success').hide();
+                    $('#site-creation-error').text(xhr.responseText);
+                    $('#site-creation-error').show();
+                }
+            });
+        });
+    </script>
 </div>
 
 </body>

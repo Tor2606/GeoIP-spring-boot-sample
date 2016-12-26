@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.cbinfo.utils.WebsiteUtils.checkUrl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class WebsiteService {
@@ -89,7 +91,9 @@ public class WebsiteService {
     }
 
     public void createWebsite(String newWebsiteName) throws Exception {
-        checkArgument(findWebsiteByNameForCurrentUser(newWebsiteName) == null, "Such website already exists!");
+        checkArgument(!checkIfNameAlreadyExist(newWebsiteName), "Such website already exists!");
+        checkArgument(isNotBlank(newWebsiteName), "Enter site name!");
+        checkArgument(checkUrl(newWebsiteName), "Not valid field!");
         Website website = new Website();
         fillWebsite(website, newWebsiteName);
         saveWebsite(website);

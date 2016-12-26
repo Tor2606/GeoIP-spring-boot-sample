@@ -2,6 +2,7 @@ package com.cbinfo.service;
 
 import com.cbinfo.dto.form.FlightForm;
 import com.cbinfo.model.Flight;
+import com.cbinfo.model.Website;
 import com.cbinfo.model.enums.FlightTypes;
 import com.cbinfo.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.util.List;
 
-import static com.cbinfo.utils.myDateUtil.dateToString;
-import static com.cbinfo.utils.myDateUtil.toDate;
+import static com.cbinfo.utils.MyDateUtil.dateToString;
+import static com.cbinfo.utils.MyDateUtil.toDate;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -76,7 +77,7 @@ public class FlightService {
         if (isNotBlank(flightForm.getType())) {
             flight.setFlightType(FlightTypes.valueOf(flightForm.getType()));
         }
-        if (flightForm.getQuantity()!= 0) {
+        if (flightForm.getQuantity() != 0) {
             flight.setQuantity(flightForm.getQuantity());
         }
     }
@@ -110,18 +111,10 @@ public class FlightService {
     }
 
     public void updateFlight(FlightForm flightForm) throws Exception {
-        checkForWebsiteCreation(flightForm);
         Flight flight = findFlight(flightForm.getFlightId());
         fillFlightFromDTO(flightForm, flight);
         flight.setFlightName(constructFlightName(flight));
         saveFlight(flight);
-    }
-
-    private void checkForWebsiteCreation(FlightForm flightForm) throws Exception {
-        if(isNotBlank(flightForm.getNewWebsiteName())){
-            websiteService.createWebsite(flightForm.getNewWebsiteName());
-            flightForm.setWebsiteName(flightForm.getNewWebsiteName());
-        }
     }
 
     public List<FlightForm> findFlightFormsByCampaign(String campaignId) {
@@ -137,5 +130,13 @@ public class FlightService {
     @Transactional
     public void deleteFlight(String flightId) {
         flightRepository.delete(Long.valueOf(flightId));
+    }
+
+    public String getFlightsURL(String flightId) {
+        Website website = findFlight(flightId).getWebsite();
+        if (website != null){
+            return website.getWebsiteName();
+        }
+        return "";
     }
 }

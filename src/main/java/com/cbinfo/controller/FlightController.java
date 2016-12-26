@@ -21,13 +21,14 @@ public class FlightController {
     private static final String APP_PAGE = "/app";
     private static final String CREATE_FLIGHT_START_PAGE = "/app/flights/create/start";
     private static final String CREATE_FLIGHT_MAIN_PAGE = "/app/flights/create/main";
-    private static final String CREATE_FLIGHT_FINISH_PAGE = "/app/flights/create/finish";
     private static final String CREATE_FLIGHT_BANNER_PAGE = "/app/flights/create/banners";
+    private static final String FLIGHTS = "/app/flights/";
+    private static final String FLIGHT_ID_PARAM = "?flightId=";
+    private static final String EDIT = "/edit";
 
     private static final String CREATE_FLIGHT_START_VIEW = "campaigns/flights/createFlightStart";
     private static final String CREATE_FLIGHT_MAIN_VIEW = "campaigns/flights/createFlightMain";
     private static final String CREATE_FLIGHT_FINISH_VIEW = "campaigns/flights/createFlightFinish";
-    private static final String FLIGHT_ID_PARAM = "?flightId=";
     private static final String EDIT_FLIGHT_VIEW = "campaigns/flights/editFlight";
     private static final String CREATE_FLIGHT_BANNER_VIEW = "campaigns/flights/createFlightBanner";
 
@@ -121,17 +122,16 @@ public class FlightController {
         }
         modelMap.put("banners", bannerService.findBannerFormByFlight(flightId));
         modelMap.put("flightId", flightId);
+        modelMap.put("urlBeginning", flightService.getFlightsURL(flightId));
         return CREATE_FLIGHT_BANNER_VIEW;
     }
 
     @RequestMapping(value = "/create/banners/create", method = RequestMethod.POST)
-    public String postCreateFlightCreateBanner(BannerForm bannerForm, ModelMap modelMap){
+    public String postCreateFlightCreateBanner(BannerForm bannerForm, ModelMap modelMap) {
         try {
             bannerService.createBanner(bannerForm);
         } catch (Exception e) {
-            modelMap.put("error", "Error: " + e.getMessage());
-            modelMap.put("banners", bannerService.findBannerFormByFlight(bannerForm.getFlightId()));
-            modelMap.put("flightId", bannerForm.getFlightId());
+            fillModelMap(bannerForm, modelMap, e);
             return CREATE_FLIGHT_BANNER_VIEW;
         }
 
@@ -139,31 +139,37 @@ public class FlightController {
     }
 
     @RequestMapping(value = "/create/{flightId}/banners/{bannerId}/delete")
-    public String getCreateFlightDeleteBanner(@PathVariable(value = "flightId") String flightId, @PathVariable(value = "bannerId") String bannerId, ModelMap modelMap){
+    public String getCreateFlightDeleteBanner(@PathVariable(value = "flightId") String flightId, @PathVariable(value = "bannerId") String bannerId, ModelMap modelMap) {
         try {
             bannerService.delete(bannerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             modelMap.put("error", e.getMessage());
             modelMap.put("banners", bannerService.findBannerFormByFlight(flightId));
             modelMap.put("flightId", flightId);
+            modelMap.put("urlBeginning", flightService.getFlightsURL(flightId));
             return CREATE_FLIGHT_BANNER_VIEW;
         }
 
         return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + flightId;
     }
-    
+
     @RequestMapping(value = "/create/banners/edit", method = RequestMethod.POST)
-    public String postCreateFlightEditBanner(BannerForm bannerForm, ModelMap modelMap, RedirectAttributes redirectAttributes){
+    public String postCreateFlightEditBanner(BannerForm bannerForm, ModelMap modelMap, RedirectAttributes redirectAttributes) {
         try {
             bannerService.editBanner(bannerForm);
         } catch (Exception e) {
-            modelMap.put("error", "Error: " + e.getMessage());
-            modelMap.put("banners", bannerService.findBannerFormByFlight(bannerForm.getFlightId()));
-            modelMap.put("flightId", bannerForm.getFlightId());
+            fillModelMap(bannerForm, modelMap, e);
             return CREATE_FLIGHT_BANNER_VIEW;
         }
         redirectAttributes.addFlashAttribute("open_banner", bannerForm.getTitle());
         return REDIRECT + CREATE_FLIGHT_BANNER_PAGE + FLIGHT_ID_PARAM + bannerForm.getFlightId();
+    }
+
+    private void fillModelMap(BannerForm bannerForm, ModelMap modelMap, Exception e) {
+        modelMap.put("error", "Error: " + e.getMessage());
+        modelMap.put("banners", bannerService.findBannerFormByFlight(bannerForm.getFlightId()));
+        modelMap.put("flightId", bannerForm.getFlightId());
+        modelMap.put("urlBeginning", flightService.getFlightsURL(bannerForm.getFlightId()));
     }
 
     @RequestMapping(value = "/create/finish")
@@ -198,6 +204,6 @@ public class FlightController {
             modelMap.put("error", "Error:" + e.getMessage());
             return EDIT_FLIGHT_VIEW;
         }
-        return REDIRECT + APP_PAGE;
+        return REDIRECT + FLIGHTS + flightForm.getFlightId() + EDIT;
     }
 }

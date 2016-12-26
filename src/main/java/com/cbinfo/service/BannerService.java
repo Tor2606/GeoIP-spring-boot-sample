@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -30,15 +29,10 @@ public class BannerService {
     public void createBanner(BannerForm bannerForm) throws Exception {
         checkArgument(isNotBlank(bannerForm.getTitle()), "Empty title!!!");
         checkArgument(ifTitleNotExists(bannerForm), "Banner with such title already exists!");
-        checkArgument(checkUrl(bannerForm.getUrl()), "Wrong url!!! ");
+        checkArgument(checkUrlIfCorrect(bannerForm), "You don't have such site!!!");
         checkArgument(bannerForm.getFile() != null, "Empty file!!!");
         checkArgument(ifImage(bannerForm.getFile()), "File is not image!");
         save(bannerFormToBannerOnCreate(bannerForm));
-    }
-
-    protected boolean checkUrl(String url) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+[.][a-zA-Z0-9]+");
-        return isNotBlank(url)&&pattern.matcher(url).matches();
     }
 
     private boolean ifTitleNotExists(BannerForm bannerForm) {
@@ -109,9 +103,14 @@ public class BannerService {
     }
 
     public void editBanner(BannerForm bannerForm) throws IOException {
+        checkArgument(checkUrlIfCorrect(bannerForm), "You don't have such site!!!");
         Banner banner = findBanner(bannerForm.getId());
         fillBanner(banner, bannerForm);
         save(banner);
+    }
+
+    private boolean checkUrlIfCorrect(BannerForm bannerForm) {
+        return bannerForm.getUrl().startsWith(flightService.getFlightsURL(bannerForm.getFlightId()));
     }
 
     @Transactional

@@ -19,7 +19,7 @@ public class Website {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "website")
     private List<Flight> flights;
 
     public long getWebsiteId() {

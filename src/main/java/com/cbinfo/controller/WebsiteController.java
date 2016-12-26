@@ -51,13 +51,12 @@ public class WebsiteController {
         return REDIRECT + APP_PAGE;
     }
 
-    // TODO: 21.12.2016 Change(make) all website creation to this endpoint
     @RequestMapping(value = "/ajax-create", method = RequestMethod.POST)
     public ResponseEntity postCreateWebsite(@RequestParam(name = "websiteName") String name){
         try{
             websiteService.createWebsite(name);
         }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -3,6 +3,7 @@ package com.cbinfo.controller;
 import com.cbinfo.dto.form.BannerForm;
 import com.cbinfo.model.User;
 import com.cbinfo.service.BannerService;
+import com.cbinfo.service.FlightService;
 import com.cbinfo.service.UserSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(value = "/app/flights")
 public class BannerController {
 
-    // TODO: 14.12.2016 Keep modal viewed after page refreshes
-    // TODO: 14.12.2016 website creation must be in modal and checked by ajax(checks if name equals to names of users sites)
-    //// TODO: 14.12.2016 On banner creation we must check if url is url of website
+    //todo clean code
     private static final String REDIRECT = "redirect:";
     private static final String FLIGHTS = "/app/flights/";
     private static final String BANNERS = "/banners";
@@ -28,6 +27,9 @@ public class BannerController {
 
     @Autowired
     private BannerService bannerService;
+
+    @Autowired
+    private FlightService flightService;
 
     @ModelAttribute("user")
     public User user() {
@@ -64,6 +66,7 @@ public class BannerController {
     @RequestMapping(value = "/{flightId}/banners")
     public String getBannerList(@PathVariable String flightId, ModelMap modelMap) {
         modelMap.put("flightId", flightId);
+        modelMap.put("urlBeginning", flightService.getFlightsURL(flightId));
         modelMap.put("banners", bannerService.findBannerFormByFlight(flightId));
         return BANNER_LIST_VIEW;
     }
@@ -83,7 +86,7 @@ public class BannerController {
 
     @ResponseBody
     @RequestMapping(value = "/banners/img")
-    public byte[] getBannerImage(@RequestParam(name = "title") String title){
+    public byte[] getBannerImage(@RequestParam(name = "title") String title) {
         return bannerService.getBannerImage(title);
     }
 }

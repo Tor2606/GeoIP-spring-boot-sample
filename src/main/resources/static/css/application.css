@@ -25,60 +25,32 @@ body {
     width: 30px;
     height: 30px;
     margin: 2px;
-    border: 1px solid black;
-    border-radius: 2px;
-    background: #edeedf url(../img/edit_icon.png) no-repeat center;
+    background: url(../img/edit_icon.png) no-repeat center;
     background-size: 25px,25px;
 }
 
 .edit-button:hover {
-    background-color: #7A7B76;
+    background-size: 30px,30px;
 }
 
 .edit-button:active {
-    -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-}
-
-.eye-button{
-    width: 30px;
-    height: 30px;
-    margin: 1px;
-    border: 1px solid black;
-    border-radius: 2px;
-    background: #edeedf url(../img/eye_icon.png) no-repeat center;
-    background-size: 25px,25px;
-}
-
-.eye-button:hover {
-    background-color: #7A7B76;
-}
-
-.eye-button:active {
-    -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    background-size: 27px,27px;
 }
 
 .delete-button {
     width: 30px;
     height: 30px;
     margin: 2px;
-    border: 1px solid black;
-    border-radius: 2px;
-    background: #edeedf url(../img/trash_img.png) no-repeat center;
+    background: url(../img/trash_img.png) no-repeat center;
     background-size: 25px,25px;
 }
 
 .delete-button:hover {
-    background-color: #7A7B76;
+    background-size: 30px,30px;
 }
 
 .delete-button:active {
-    -webkit-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
-    box-shadow: inset 2px -1px 3px 0px rgba(0,0,0,0.75);
+    background-size: 27px,27px;
 }
 
 .home-button{
