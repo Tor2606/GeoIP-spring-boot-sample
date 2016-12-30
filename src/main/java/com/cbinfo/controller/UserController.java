@@ -65,7 +65,13 @@ public class UserController {
 
     @RequestMapping("/edit")
     public String getEditUser(ModelMap modelMap) {
-        modelMap.put("userForm", userService.getCurrentSessionUserToForm());
+        UserForm currentUser = null;
+        try {
+            currentUser = userService.getCurrentSessionUserToForm();
+        } catch (Exception e) {
+            return REDIRECT + "/";
+        }
+        modelMap.put("userForm", currentUser);
         modelMap.put("companies", companyService.findAllNames());
         return EDIT_USER_VIEW;
     }
@@ -73,6 +79,11 @@ public class UserController {
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam String reenteredPassword,
                                @RequestParam String newCompanyName, ModelMap modelMap) {
+        try {
+            userService.getCurrentSessionUserToForm();
+        } catch (Exception e) {
+            return REDIRECT + "/";
+        }
         if (bindingResult.hasFieldErrors("email")) {
             modelMap.put("companies", companyService.findAllNames());
             return EDIT_USER_VIEW;

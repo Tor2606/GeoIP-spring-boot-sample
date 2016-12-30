@@ -11,6 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Date;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -50,6 +52,11 @@ public class FlightController {
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
+    }
+
+    @ModelAttribute("loggedTime")
+    public Date loggedTime() {
+        return userSessionService.getLoggedTime();
     }
 
     @RequestMapping(value = "/create/start")

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.text.ParseException;
+import java.util.Date;
 
 @Controller
 @RequestMapping(value = "/app/campaigns")
@@ -40,6 +41,11 @@ public class CampaignController {
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
+    }
+
+    @ModelAttribute("loggedTime")
+    public Date loggedTime() {
+        return userSessionService.getLoggedTime();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)

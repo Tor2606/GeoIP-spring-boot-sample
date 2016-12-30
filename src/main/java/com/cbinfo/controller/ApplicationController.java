@@ -8,6 +8,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping(value = "/app")
 public class ApplicationController {
@@ -35,6 +37,11 @@ public class ApplicationController {
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
+    }
+
+    @ModelAttribute("loggedTime")
+    public Date loggedTime() {
+        return userSessionService.getLoggedTime();
     }
 
     @RequestMapping("")

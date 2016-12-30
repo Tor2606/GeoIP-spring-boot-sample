@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserSessionService {
@@ -15,6 +17,8 @@ public class UserSessionService {
     private UserService userService;
 
     protected User user;
+
+    private Date loggedTime;
 
     public User getUser() {
         setUserIfNull();
@@ -29,6 +33,7 @@ public class UserSessionService {
         if (user == null) {
             org.springframework.security.core.userdetails.User principal = getPrincipalFromSecurityContextHolder();
             findAndSetUserFromPrincipal(principal);
+            setLoggedTime(new Date());
         }
     }
 
@@ -44,5 +49,13 @@ public class UserSessionService {
             return null;
         }
         return principal;
+    }
+
+    public Date getLoggedTime() {
+        return loggedTime;
+    }
+
+    public void setLoggedTime(Date loggedTime) {
+        this.loggedTime = loggedTime;
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping(value = "/app/flights")
 public class BannerController {
@@ -36,6 +38,11 @@ public class BannerController {
         return userSessionService.getUser();
     }
 
+    @ModelAttribute("loggedTime")
+    public Date loggedTime() {
+        return userSessionService.getLoggedTime();
+    }
+
     @RequestMapping(value = "/banners/create", method = RequestMethod.POST)
     public String postCreateBanner(BannerForm bannerForm, ModelMap modelMap) {
         try {
@@ -44,6 +51,7 @@ public class BannerController {
             modelMap.put("error", "Error: " + e.getMessage());
             modelMap.put("flightId", bannerForm.getFlightId());
             modelMap.put("banners", bannerService.findBannerFormByFlight(bannerForm.getFlightId()));
+            modelMap.put("urlBeginning", flightService.getFlightsURL(bannerForm.getFlightId()));
             return BANNER_LIST_VIEW;
         }
         return REDIRECT + FLIGHTS + bannerForm.getFlightId() + BANNERS;

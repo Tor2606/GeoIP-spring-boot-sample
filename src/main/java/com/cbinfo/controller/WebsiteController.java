@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Controller
 @RequestMapping(value = "/app/websites")
@@ -33,6 +34,11 @@ public class WebsiteController {
     @ModelAttribute("user")
     public User user() {
         return userSessionService.getUser();
+    }
+
+    @ModelAttribute("loggedTime")
+    public Date loggedTime() {
+        return userSessionService.getLoggedTime();
     }
 
     @RequestMapping(value = "/create")

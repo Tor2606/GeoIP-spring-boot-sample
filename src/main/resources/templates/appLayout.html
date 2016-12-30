@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <title>cbinfo</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -15,11 +15,6 @@
                        th:href="@{/app}">
                         <div class="home-button"></div>
                     </a>
-                </div>
-                <div class="span3">
-                    <p class="time-text" th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}">
-                        Time
-                    </p>
                 </div>
             </div>
             <div class="col-md-2 right">
@@ -48,7 +43,12 @@
 </div>
 <footer class="footer fixed-bottom">
     <div class="container">
-        <p class="pull-right" style="margin: 10px; color: #fbffca">@By Islabukhin</p>
+        <div class="pull-left">
+            <p class="time-text footer-text" th:text="'Logged in: ' +  ${#calendars.format(loggedTime, 'dd.MM.yyyy HH:mm')}">
+                Time
+            </p>
+        </div>
+        <p class="pull-right footer-text">@By Islabukhin</p>
     </div>
 </footer>
 
