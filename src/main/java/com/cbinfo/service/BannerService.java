@@ -114,7 +114,7 @@ public class BannerService {
     }
 
     @Transactional
-    private Banner findBanner(String id) {
+    public Banner findBanner(String id) {
         return bannerRepository.findOne(Long.valueOf(id));
     }
 

@@ -1,0 +1,13 @@
+<div id="advertisement">
+    <script>
+        $.ajax({
+            type: 'Get',
+            url: '/ad/script/1',
+            dataType: "html",
+            success: function (response) {
+                alert(response);
+                $(response).appendTo("#advertisement");
+            }
+        });
+    </script>
+</div>

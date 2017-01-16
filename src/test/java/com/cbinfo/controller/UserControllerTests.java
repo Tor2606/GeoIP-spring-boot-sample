@@ -45,7 +45,7 @@ public class UserControllerTests {
     private MockMvc mockMvc;
 
     @InjectMocks
-    private UserController userController;
+    private CreateUserController createUserController;
 
     @Mock
     private UserService userService;
@@ -56,7 +56,7 @@ public class UserControllerTests {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(createUserController).build();
     }
 
     @Test

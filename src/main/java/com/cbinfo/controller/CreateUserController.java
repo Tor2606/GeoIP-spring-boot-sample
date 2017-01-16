@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,15 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 @Controller
 @RequestMapping("/users")
-public class UserController {
+public class CreateUserController {
     private static final String CREATE_USER_VIEW = "users/create";
     private static final String REDIRECT = "redirect:";
     private static final String APP_PAGE = "/app";
-    private static final String EDIT_USER_VIEW = "users/edit";
 
     @Autowired
     private CompanyService companyService;
@@ -61,52 +57,6 @@ public class UserController {
         modelMap.put("userForm", new UserForm());
         modelMap.put("companies", companyService.findAllNames());
         return CREATE_USER_VIEW;
-    }
-
-    @RequestMapping("/edit")
-    public String getEditUser(ModelMap modelMap) {
-        UserForm currentUser = null;
-        try {
-            currentUser = userService.getCurrentSessionUserToForm();
-        } catch (Exception e) {
-            return REDIRECT + "/";
-        }
-        modelMap.put("userForm", currentUser);
-        modelMap.put("companies", companyService.findAllNames());
-        return EDIT_USER_VIEW;
-    }
-
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String postEditUser(@Valid UserForm userForm, BindingResult bindingResult, @RequestParam String reenteredPassword,
-                               @RequestParam String newCompanyName, ModelMap modelMap) {
-        try {
-            userService.getCurrentSessionUserToForm();
-        } catch (Exception e) {
-            return REDIRECT + "/";
-        }
-        if (bindingResult.hasFieldErrors("email")) {
-            modelMap.put("companies", companyService.findAllNames());
-            return EDIT_USER_VIEW;
-        } else if (isNotBlank(userForm.getPassword()) && bindingResult.hasFieldErrors("password")) {
-            modelMap.put("companies", companyService.findAllNames());
-            return EDIT_USER_VIEW;
-        }
-        userService.setNewCompanyToUserForm(userForm, newCompanyName);
-        try {
-            userService.updateCurrentUser(userForm, reenteredPassword);
-        } catch (Exception e) {
-            modelMap.addAttribute("errorMessage", e.getMessage());
-            modelMap.put("companies", companyService.findAllNames());
-            return EDIT_USER_VIEW;
-        }
-        return REDIRECT + APP_PAGE;
-    }
-
-
-    @RequestMapping(value = "/delete/{userId}", method = RequestMethod.GET)
-    public String deleteUser(@PathVariable String userId) {
-        userService.delete(userId);
-        return REDIRECT + APP_PAGE;
     }
 }
 

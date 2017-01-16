@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public final class MyDateUtil {
+    // TODO: 28.12.2016 breadcrumbs (path)?
+    // TODO: 30.12.2016 add Optional(last)
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 

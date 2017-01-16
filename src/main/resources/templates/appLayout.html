@@ -1,12 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>cbinfo</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://onecreative.aol.com/ads/jsapi/ADTECH.js"></script>
+
 </head>
 <body>
 
 <header>
+    <div th:id="${'editUserModal'}" class="modal fade"
+         style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div id="edit-user-form">
+                        <div class="form-group">
+                            <label for="email" class="control-label">Email*</label>
+                            <input class="form-control" type="text" id="email" name="email"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="control-label">Change password</label>
+                            <input class="form-control" type="password" id="password" name="password"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="reenteredPassword" class="control-label">Reenter password</label>
+                            <input class="form-control" type="password" id="reenteredPassword"
+                                   name="reenteredPassword"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstName" class="control-label">Name</label>
+                            <input class="form-control" type="text" id="firstName" name="firstName"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="control-label">Second Name</label>
+                            <input class="form-control" type="text" id="lastName" name="lastName"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <select class="form-control" id="companies">
+                                    <option th:each="company : ${companies}"
+                                            th:value="${company.name}" th:text="${company.name}">Company
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <a class="createNew">No company in the list? Press to create new!</a>
+                        </div>
+                        <div class="form-group hidden-block" hidden="true">
+                            <label for="newCompanyName" class="control-label">New Company Name</label>
+                            <input class="form-control" type="text" id="newCompanyName" name="newCompanyName"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="alert-danger" hidden="true" id="user-editing-error">Error</div>
+                            <div class="alert-success" hidden="true" id="user-editing-success">Success!
+                                User was changed!
+                            </div>
+                        </div>
+                        <button id="submit-user-editing" class="btn btn-default">Submit change</button>
+                        <button type="button" class="btn btn-danger"
+                                data-dismiss="modal">Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-md-10">
@@ -28,7 +91,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a th:href="@{/logout}">Logout</a></li>
-                        <li><a th:href="@{/users/edit}">Edit profile</a></li>
+                        <li><a data-toggle="modal" id="editUserModalLink"
+                               href="#editUserModal">Edit profile</a></li>
                     </ul>
                 </div>
             </div>
@@ -44,7 +108,8 @@
 <footer class="footer fixed-bottom">
     <div class="container">
         <div class="pull-left">
-            <p class="time-text footer-text" th:text="'Logged in: ' +  ${#calendars.format(loggedTime, 'dd.MM.yyyy HH:mm')}">
+            <p class="time-text footer-text"
+               th:text="'Logged in: ' +  ${#calendars.format(loggedTime, 'dd.MM.yyyy HH:mm')}">
                 Time
             </p>
         </div>
@@ -53,5 +118,62 @@
 </footer>
 
 <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+<script src="../static/js/view-form.js" th:src="@{/js/view-form.js}"></script>
+<script type="text/javascript" language="JavaScript">
+    $('#editUserModalLink').click(function () {
+        var csrfToken = $("meta[name='_csrf']").attr("content");
+        var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+        var headers = {};
+        headers[csrfHeader] = csrfToken;
+
+        $.ajax({
+            type: 'Get',
+            url: '/app/users/edit',
+            dataType: "json",
+            success: function (response) {
+                $('#email').val(response.email);
+                $('#firstName').val(response.firstName);
+                $('#lastName').val(response.lastName);
+                $('#companies').val(response.companyName).change();
+            },
+            error: function (xhr, options, thrownError) {
+                $('#user-editing-error').text(xhr.responseText);
+                $('#user-editing-error').show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript" language="JavaScript">
+    $('#submit-user-editing').click(function () {
+        var csrfToken = $("meta[name='_csrf']").attr("content");
+        var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+        var headers = {};
+        headers[csrfHeader] = csrfToken;
+
+        var email = $('#email').val();
+        var password = $('#password').val();
+        var reenteredPassword = $('#reenteredPassword').val();
+        var firstName = $('#firstName').val();
+        var lastName = $('#lastName').val();
+        var companyName = $('#companies option:selected').val();
+        var newCompanyName = $('#newCompanyName').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/app/users/edit',
+            headers: headers,
+            data: {email, password, reenteredPassword, firstName, lastName, companyName, newCompanyName},
+            success: function (response) {
+                $('#user-editing-error').hide();
+                $('#user-editing-success').show();
+            },
+            error: function (xhr, options, thrownError) {
+                $('#user-editing-success').hide();
+                $('#user-editing-error').text(xhr.responseText);
+                $('#user-editing-error').show();
+            }
+        });
+    });
+</script>
 </body>
 </html>
