@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
 
+import static com.cbinfo.model.enums.UserRoles.ROLE_ADMIN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Controller
@@ -52,9 +53,11 @@ public class ApplicationController {
 
     @RequestMapping("")
     public String getMainPage(ModelMap modelMap) {
-        modelMap.put("userDataList", userDataService.findAll());
-        modelMap.put("users", userService.findAll());
-        modelMap.put("companies", companyService.findAll());
+        if (user().getRole().equals(ROLE_ADMIN)) {
+            modelMap.put("userDataList", userDataService.findAll());
+            modelMap.put("users", userService.findAll());
+            modelMap.put("companies", companyService.findAll());
+        }
         modelMap.put("campaigns", campaignService.findAllCurrentUserCampaigns());
         modelMap.put("websites", websiteService.findAllWebsitesForCurrentUser());
         return MAIN_VIEW;
