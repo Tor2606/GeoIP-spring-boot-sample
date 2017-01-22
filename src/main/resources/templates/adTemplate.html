@@ -1,3 +1,10 @@
 <div xmlns:th="http://www.thymeleaf.org">
-        <a th:href="${title}"><img th:src="@{/app/flights/banners/img(title=${title})}"/></a>
+    <p>Advertisement</p>
+    <div th:each="banner : ${banners}" style="display: inline">
+        <div style="margin: 5px">
+            <a th:href="${banner.link}"><img th:src="@{/app/flights/banners/img(title=${banner.title})}"/></a>
+            <p th:text="${banner.description}">description</p>
+            <!-- src is our service domain + uri; now it's just for testing -->
+        </div>
+    </div>
 </div>

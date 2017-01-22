@@ -75,7 +75,7 @@ public class BannerService {
         return findBannersByFLightId(flightId).stream().map(this::bannerToBannerForm).collect(toList());
     }
 
-    private List<Banner> findBannersByFLightId(String flightId) {
+    public List<Banner> findBannersByFLightId(String flightId) {
         return newArrayList(bannerRepository.findBannersByFlightId(Long.valueOf(flightId)));
     }
 

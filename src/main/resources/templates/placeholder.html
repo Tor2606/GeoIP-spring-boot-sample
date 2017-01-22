@@ -1,14 +1,16 @@
 <!--Should be added to the estimated advertisement position on page-->
 <div id="advertisement">
-    <script>
-        $.ajax({
-            type: 'Get',
-            url: '/ad/script/1',
-            dataType: "html",
-            success: function (response) {
-                alert(response);
-                $(response).appendTo("#advertisement");
-            }
-        });
-    </script>
+
 </div>
+
+<script>
+    $.ajax({
+        type: 'Get',
+        url: '/ad/script/5', /*1 is id of flight*/
+        dataType: "html",
+        success: function (response) {
+            alert(response);
+            $(response).appendTo("#advertisement");
+        }
+    });
+</script>
