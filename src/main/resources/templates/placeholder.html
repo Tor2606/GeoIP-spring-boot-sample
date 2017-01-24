@@ -6,10 +6,9 @@
 <script>
     $.ajax({
         type: 'Get',
-        url: '/ad/script/5', /*1 is id of flight*/
+        url: '/ad/script/1', /*1 is id of flight*/
         dataType: "html",
         success: function (response) {
-            alert(response);
             $(response).appendTo("#advertisement");
         }
     });
